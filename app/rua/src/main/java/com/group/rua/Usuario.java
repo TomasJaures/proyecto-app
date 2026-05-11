@@ -1,7 +1,7 @@
 package com.group.rua;
 
 public abstract class Usuario {
-    private String id;
+    private Long idUsuario;
     private String nombre;
     private String apellido1;
     private String apellido2;
@@ -13,7 +13,7 @@ public abstract class Usuario {
      * @param correo
      * @param contrasena
      */
-    public Boolean iniciarSesion(int correo, int contrasena) {
+    public boolean iniciarSesion(String correo, String contrasena) {
         // TODO - implement Usuario.iniciarSesion
         throw new UnsupportedOperationException();
     }
@@ -26,7 +26,7 @@ public abstract class Usuario {
      * @param correo
      * @param contrasena
      */
-    public void registrarse(int nombre, int apellido1, int apellido2, int correo, int contrasena) {
+    public void registrarse(String nombre, String apellido1, String apellido2, String correo, String contrasena) {
         // TODO - implement Usuario.registrarse
         throw new UnsupportedOperationException();
     }

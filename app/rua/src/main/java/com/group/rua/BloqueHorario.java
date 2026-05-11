@@ -1,17 +1,19 @@
 package com.group.rua;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 
 public class BloqueHorario {
-    private String idBloque;
-    private String diaSemana;
-    private String horaInicio;
-    private String horaFin;
+    private Long idBloque;
+    private DayOfWeek diaSemana;
+    private LocalTime horaInicio;
+    private LocalTime horaFin;
 
     public void validarSolapamiento() {
         // TODO - implement BloqueHorario.validarSolapamiento
         throw new UnsupportedOperationException();
     }
 
-    public Boolean esProyeccion() {
+    public boolean esProyeccion() {
         // TODO - implement BloqueHorario.esProyeccion
         throw new UnsupportedOperationException();
     }

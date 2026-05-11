@@ -1,12 +1,12 @@
 package com.group.rua;
-
+import com.group.rua.enums.EstadoAsignatura;
 import java.util.List;
 
 public class Asignatura {
-    private String idAsignatura;
+    private Long idAsignatura;
     private String nombre;
     private String codigo;
-    private String estado;
+    private EstadoAsignatura estado;
 
     public List<Alumno> getAsistentes() {
         // TODO - implement Asignatura.getAsistentes
@@ -20,9 +20,9 @@ public class Asignatura {
 
     /**
      *
-     * @param Alumno
+     * @param alumno
      */
-    public void vincularAlumno(int Alumno) {
+    public void vincularAlumno(Alumno alumno) {
         // TODO - implement Asignatura.vincularAlumno
         throw new UnsupportedOperationException();
     }

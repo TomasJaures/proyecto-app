@@ -1,13 +1,16 @@
 package com.group.rua;
+import com.group.rua.enums.EstadoQR;
 import java.time.LocalDateTime;
+import java.time.Duration;
 
 public class Qr {
-    private String idQR;
+    private Long idQR;
     private String token;
     private LocalDateTime fechaGeneracion;
-    private int tiempoValidez;
+    private Duration tiempoValidez;
+    private EstadoQR estado;
 
-    public Boolean esValido() {
+    public boolean esValido() {
         // TODO - implement Qr.esValido
         throw new UnsupportedOperationException();
     }
