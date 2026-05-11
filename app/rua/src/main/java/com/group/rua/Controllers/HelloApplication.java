@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HelloApplication {
     @GetMapping("/")
     String hello(){
-        return "Hello World desde la WEB!";
+        return "Hello World desde RENDER!!!";
     }
 }
