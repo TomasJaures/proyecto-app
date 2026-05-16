@@ -1,0 +1,8 @@
+Ir a proyecto desde la terminal:
+cd proyectos/repo-rua/proyecto-app/app/rua-web
+
+Correr programa en la pagin web:
+npm run dev
+
+URL FIGMA:
+https://www.figma.com/make/t3H6SMLG2u7e7L1MFDZcIj/Crear-p%C3%A1gina-web-interactiva?code-node-id=0-9&p=f&fullscreen=1
