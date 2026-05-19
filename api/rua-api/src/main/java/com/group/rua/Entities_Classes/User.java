@@ -9,6 +9,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+
+/**
+ * He quitado temporalmente la herencia, no se usar herencia en Spring Boot y por lo que vi se tiene que hacer tomando en cuenta las tablas de la BD y sus conexiones, por eso de momento le quite la herencia. 
+ */
+
 @Entity
 @Table(name = "usuarios") //Tabla usuarios en la BD;
 public class User {
