@@ -1,0 +1,294 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.pagina{
+  display: flex;
+  min-height: 100vh;
+}
+
+/* PANEL IZQUIERDO */
+
+.izquierda{
+  width: 50%;
+  background-color: #00852B;
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 80px;
+}
+
+.contenido-izquierda h1{
+  font-size: 100px;
+}
+
+.contenido-izquierda h2{
+  margin-top: 10px;
+  font-weight: normal;
+}
+
+.contenido-izquierda p{
+  margin-top: 50px;
+  line-height: 35px;
+  width: 400px;
+  font-size: 24px;
+}
+
+.footer{
+  opacity: 0.7;
+}
+
+/* PANEL DERECHO */
+
+.derecha{
+  width: 50%;
+  background-color: #EEF4EE;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CARD */
+
+.card{
+  background-color: white;
+  width: 420px;
+
+  padding: 40px;
+
+  border-radius: 20px;
+
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+.card h1{
+  color: #00852B;
+  margin-bottom: 10px;
+}
+
+.card p{
+  margin-bottom: 20px;
+}
+
+/* BOTONES */
+
+.grupo-botones{
+  display: flex;
+  margin-bottom: 30px;
+}
+
+.grupo-botones button{
+  flex: 1;
+  padding: 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.activo{
+  background-color: #00A63E;
+  color: white;
+  border-radius: 10px;
+}
+
+.inactivo{
+  background-color: #E8F3E8;
+  color: #666;
+  border-radius: 10px;
+}
+
+/* INPUTS */
+
+label{
+  display: block;
+  margin-bottom: 8px;
+  margin-top: 15px;
+
+  font-size: 13px;
+  font-weight: bold;
+}
+
+input{
+  width: 100%;
+
+  padding: 14px;
+
+  border-radius: 10px;
+  border: 1px solid #C8E0C8;
+
+  margin-bottom: 10px;
+
+  font-size: 15px;
+}
+
+input::placeholder{
+  color: #999;
+}
+
+/* BOTON CONFIRMAR */
+
+.confirmar{
+  width: 100%;
+  margin-top: 20px;
+
+  padding: 14px;
+
+  background-color: #00A63E;
+  color: white;
+
+  border: none;
+  border-radius: 10px;
+
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* SIGNUP */
+
+.signup{
+  text-align: center;
+  margin-top: 20px;
+}
+
+.signup a{
+  color: #00A63E;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+
+/* BARRA MOBILE */
+
+.barra-mobile{
+  display: none;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px){
+
+  .pagina{
+    flex-direction: column;
+  }
+
+  /* ocultar panel izquierdo */
+  .izquierda{
+    display: none;
+  }
+
+  /* panel derecho ocupa todo */
+  .derecha{
+    width: 100%;
+    min-height: 100vh;
+
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  /* mostrar barra superior */
+  .barra-mobile{
+    display: flex;
+
+    width: 100%;
+    height: 80px;
+
+    background-color: #00852B;
+    color: white;
+
+    justify-content: center;
+    align-items: center;
+
+    margin-bottom: 30px;
+  }
+
+  .barra-mobile h1{
+    font-size: 32px;
+  }
+
+  /* card más pequeña */
+  .card{
+    width: 90%;
+    max-width: 420px;
+  }
+}
+.terminos{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-top: 20px;
+}
+
+.terminos input{
+  width: 18px;
+  height: 18px;
+
+  margin: 0;
+}
+
+.terminos label{
+  margin: 0;
+  font-size: 14px;
+}
+.navbar{
+  width: 100%;
+  height: 80px;
+
+  background-color: #00852B;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 40px;
+}
+
+/* LOGO */
+
+.logo{
+  font-size: 32px;
+}
+
+/* CENTRO */
+
+.usuario{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rol{
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.nombre{
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* BOTON */
+
+.salir{
+  background-color: white;
+  color: #00852B;
+
+  border: none;
+  border-radius: 10px;
+
+  padding: 10px 18px;
+
+  cursor: pointer;
+  font-weight: bold;
+}
