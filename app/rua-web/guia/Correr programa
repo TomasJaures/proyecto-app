@@ -1,6 +1,12 @@
 Ir a proyecto desde la terminal:
 cd proyectos/repo-rua/proyecto-app/app/rua-web
 
+Ejecuta estos comandos, paso a paso:
+git branch FrontEnd-Alonso
+git add .
+git commit -m "El mensaje de mi actualizacion"
+git push -u origin FrontEnd-Alonso
+
 Correr programa en la pagin web:
 npm run dev
 

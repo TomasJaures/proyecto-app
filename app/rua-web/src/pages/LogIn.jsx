@@ -3,6 +3,7 @@ import Card from "../components/card.jsx";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import Navbar from "../components/navbar.jsx";
+import axios from "axios";
 
 function LogIn() {
 
@@ -10,13 +11,26 @@ function LogIn() {
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
 
-  function onConfirmarClick() {
+  async function onConfirmarClick() {
 
-  console.log("ROL:", rol);
+  try {
 
-  console.log("CORREO:", correo);
+    const respuesta = await axios.post(
+      "http://localhost:3000/login",
+      {
+        rol: rol,
+        correo: correo,
+        clave: clave
+      }
+    );
 
-  console.log("CLAVE:", clave);
+    console.log("RESPUESTA DEL SERVIDOR:", respuesta.data);
+
+  } catch (error) {
+
+    console.log("ERROR:", error);
+
+  }
 }
 
   return (

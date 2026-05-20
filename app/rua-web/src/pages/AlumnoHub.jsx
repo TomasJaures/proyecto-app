@@ -1,5 +1,5 @@
-import Navbar from "./components/Navbar";
-import Card from "./components/Card";
+import Navbar from "../components/navbar";
+import Card from "../components/card";
 
 function Dashboard() {
 
