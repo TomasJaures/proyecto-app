@@ -2,7 +2,6 @@ package com.group.rua;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-//import org.springframework.web.bind.annotation.RequestParam;
 
 
 @SpringBootApplication
@@ -12,5 +11,3 @@ public class RuaApplication {
 		SpringApplication.run(RuaApplication.class, args);
 	}
 }
-
-

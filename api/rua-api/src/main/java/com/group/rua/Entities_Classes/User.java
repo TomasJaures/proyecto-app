@@ -29,7 +29,11 @@ public class User {
     public String contrasena;
 
     public String correo_verificado;
-    public String token_verificacion;
+
+    /**
+     * Token de confirmacion
+     */
+    public String tokenConfirmation;
 
     @Column(insertable = false, updatable = false)
     public LocalDateTime fecha_creacion;
