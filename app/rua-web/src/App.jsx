@@ -2,8 +2,8 @@ import { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Login from "./pages/LogIn.jsx";
-import Signup from "./pages/SignUp.jsx";
+import Login from "./pages/Login.jsx";
+//<Route path="/login" element={<Login />} />
 
 function App() {
 
@@ -11,10 +11,8 @@ function App() {
     <BrowserRouter>
 
       <Routes>
-        
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-
+        
       </Routes>
 
     </BrowserRouter>
