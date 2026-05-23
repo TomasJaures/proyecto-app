@@ -1,7 +1,6 @@
-package com.group.rua.Controllers;
+package com.group.rua.Session.log_in;
 
 import com.group.rua.Entities_Classes.User;
-import com.group.rua.Services.LoginService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
