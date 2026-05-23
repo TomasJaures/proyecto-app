@@ -4,7 +4,9 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/LogIn.jsx";
 import Signup from "./pages/SignUp.jsx";
 import AlumnoHub from "./pages/AlumnoHub.jsx";
-import ErrorPage from "./pages/ErrorPage.jsx";
+import QrAttempt from "./pages/QrAttempt.jsx";
+import FatalError from "./pages/FatalError.jsx";
+import GeneradorQR from "./pages/GeneradorQR.jsx";
 
 function App() {
 
@@ -21,7 +23,11 @@ function App() {
 
         <Route path="/alumnohub" element={<AlumnoHub />} />
 
-        <Route path="/error" element={<ErrorPage />} />
+        <Route path="/qrattempt" element={<QrAttempt />} />
+
+        <Route path="/generadorqr" element={<GeneradorQR />} />
+
+        <Route path="/error" element={<FatalError />} />
 
       </Routes>
 

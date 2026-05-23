@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-function ErrorPage() {
+function FatalError() {
 
   const navigate = useNavigate();
 
@@ -26,9 +26,9 @@ function ErrorPage() {
 
         <button
           className="boton-error"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/login")}
         >
-          Retroceder
+          Volver al Log In
         </button>
 
       </div>
@@ -37,4 +37,4 @@ function ErrorPage() {
   );
 }
 
-export default ErrorPage;
+export default FatalError;

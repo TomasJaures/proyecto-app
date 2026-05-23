@@ -2,7 +2,6 @@ import RuaAside from "../components/rua-aside.jsx";
 import Card from "../components/card.jsx";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import Navbar from "../components/navbar.jsx";
 import axios from "axios";
 
 function LogIn() {

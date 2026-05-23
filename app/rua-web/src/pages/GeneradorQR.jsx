@@ -1,58 +1,13 @@
 import { useEffect, useState } from "react";
-import Navbar from "./components/Navbar";
-import Card from "./components/Card";
+import Navbar from "../components/navbar";
+import Card from "../components/card";
 import QRCode from "react-qr-code";
-
-<Card className="card-qr">
-
-  <h1 className="titulo-clase">
-    Programación Avanzada
-  </h1>
-
-  <p className="texto-qr">
-    Muestre este QR a los alumnos para registrar asistencia
-  </p>
-
-  <div className="zona-qr">
-
-    {
-      tiempo > 0 ? (
-
-        <QRCode
-          value={qrValue}
-          size={220}
-        />
-
-      ) : (
-
-        <button
-          className="boton-regenerar"
-          onClick={generarQR}
-        >
-          Regenerar QR
-        </button>
-
-      )
-    }
-
-  </div>
-
-  <p className="temporizador">
-    {minutos}:{segundos}
-  </p>
-
-  <button className="boton-volver">
-    Volver
-  </button>
-
-</Card>
 
 function GeneradorQR() {
 
   const [qrValue, setQrValue] = useState("");
   const [tiempo, setTiempo] = useState(180);
 
-  // Genera un QR aleatorio
   function generarQR() {
 
     const codigo = crypto.randomUUID();
@@ -62,14 +17,12 @@ function GeneradorQR() {
 
   }
 
-  // Generar QR al cargar la página
   useEffect(() => {
 
     generarQR();
 
   }, []);
 
-  // Temporizador
   useEffect(() => {
 
     if (tiempo <= 0) return;
@@ -84,7 +37,6 @@ function GeneradorQR() {
 
   }, [tiempo]);
 
-  // Formato MM:SS
   const minutos = String(Math.floor(tiempo / 60)).padStart(2, "0");
   const segundos = String(tiempo % 60).padStart(2, "0");
 
@@ -98,7 +50,7 @@ function GeneradorQR() {
 
       <div className="contenedor-central">
 
-        <Card>
+        <Card className="card-qr">
 
           <h1 className="titulo-clase">
             Programación Avanzada
