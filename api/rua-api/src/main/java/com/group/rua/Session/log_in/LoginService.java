@@ -11,9 +11,9 @@ public class LoginService {
     private final UserRepo userRepo;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public LoginService(UserRepo userRepo) {
+    public LoginService(UserRepo userRepo, BCryptPasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     public boolean authenticate(String correo, String contrasenaPlana) {

@@ -28,6 +28,10 @@ public class SignupService {
      * 4- enviar correo de confirmacion
      */
     public void createUser(User user){
+        //para validar si es que el correo existe en la bd
+        if (userTable.findByCorreo(user.correo).isPresent()) {
+            throw new IllegalArgumentException("El correo ya se encuentra registrado.");
+        }
 
         String token = generateToken();
         user.tokenConfirmation = token;

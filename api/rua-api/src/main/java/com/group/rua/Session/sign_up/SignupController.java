@@ -16,6 +16,11 @@ import com.group.rua.Entities_Classes.User;
 @RequestMapping("/account")
 public class SignupController {
 
+    //Constructor
+    private final SignupService signupService;
+    public SignupController(SignupService signupService){
+        this.signupService = signupService;
+    }
 
     /**
      * Crear usuario en la BD
@@ -25,15 +30,15 @@ public class SignupController {
 
     @PostMapping("/create")
     public ResponseEntity<Void> createUser(@RequestBody User user){
-        
+
         signupService.createUser(user);
 
-        URI uri = URI.create("redirect:http://localhost:8080/account/email_sended");
+        URI uri = URI.create("http://localhost:8080/account/email_sended");
 
         return ResponseEntity
-            .status(HttpStatus.FOUND)
-            .location(uri)
-            .build();
+                .status(HttpStatus.FOUND)
+                .location(uri)
+                .build();
     }
 
     /**
@@ -74,9 +79,4 @@ public class SignupController {
         return "Hubo un problema con tu correo :(";
     }
 
-    //Constructor
-    private final SignupService signupService;
-    public SignupController(SignupService signupService){
-        this.signupService = signupService;
-    }
 }
