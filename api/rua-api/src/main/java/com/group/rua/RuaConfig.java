@@ -31,7 +31,9 @@ public class RuaConfig {
 
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:1427")
-                        .allowedMethods("*");
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }

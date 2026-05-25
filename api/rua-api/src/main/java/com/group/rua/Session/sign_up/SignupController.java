@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.group.rua.RuaConfig;
 import com.group.rua.Entities_Classes.User;
 
 @RestController
 @RequestMapping("/account")
+@CrossOrigin(origins = "http://localhost:1427")
 public class SignupController {
 
     //Constructor
