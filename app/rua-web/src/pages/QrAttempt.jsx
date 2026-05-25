@@ -3,7 +3,7 @@ import { Html5Qrcode } from "html5-qrcode";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import Navbar from "../components/Navbar.jsx";
+import Navbar from "../components/navbar.jsx";
 
 function QrAttempt() {
 

@@ -7,6 +7,8 @@ import AlumnoHub from "./pages/AlumnoHub.jsx";
 import QrAttempt from "./pages/QrAttempt.jsx";
 import FatalError from "./pages/FatalError.jsx";
 import GeneradorQR from "./pages/GeneradorQR.jsx";
+import EmailSended from "./pages/EmailSended.jsx";
+import DocenteHub from "./pages/DocenteHub.jsx";
 
 function App() {
 
@@ -21,9 +23,13 @@ function App() {
 
         <Route path="/signup" element={<Signup />} />
 
+        <Route path="/emailsended" element={<EmailSended />} />
+
         <Route path="/alumnohub" element={<AlumnoHub />} />
 
         <Route path="/qrattempt" element={<QrAttempt />} />
+
+        <Route path="/docentehub" element={<DocenteHub />} />
 
         <Route path="/generadorqr" element={<GeneradorQR />} />
 

@@ -1,0 +1,16 @@
+Si da un error tipo: "Invoke-RestMethod : No se pueden controlar redirecciones desde protocolos http y https a otros protocolos distintos"
+
+Es normal
+
+Invoke-RestMethod `
+    -Uri "http://localhost:8080/account/create" `
+    -Method POST `
+    -ContentType "application/json" `
+    -Body '{
+    "nombre":"Tomas",
+    "apellido1":"Jaures",
+    "apellido2":"Painen",
+    "correo":"t.jaures01@ufromail.cl",
+    "contrasena":"12345678",
+    "correo_verificado":"false"
+    }'
