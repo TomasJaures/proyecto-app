@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.group.rua.RuaConfig;
 import com.group.rua.Entities_Classes.User;
 
 @RestController
@@ -30,10 +31,9 @@ public class SignupController {
 
     @PostMapping("/create")
     public ResponseEntity<Void> createUser(@RequestBody User user){
-
         signupService.createUser(user);
 
-        URI uri = URI.create("http://localhost:8080/account/email_sended");
+        URI uri = URI.create(RuaConfig.BACKEND_URL + "/account/email_sended");
 
         return ResponseEntity
                 .status(HttpStatus.FOUND)
@@ -54,8 +54,8 @@ public class SignupController {
 
         URI uri = URI.create(
             result ? 
-            "redirect:http://localhost:8080/account/confirmation_success" : 
-            "redirect:http://localhost:8080/account/confirmation_fail");
+            RuaConfig.BACKEND_URL + "/account/confirmation_success" : 
+            RuaConfig.BACKEND_URL + "/account/confirmation_fail");
         return ResponseEntity.status(HttpStatus.FOUND).location(uri).build();
     }
 

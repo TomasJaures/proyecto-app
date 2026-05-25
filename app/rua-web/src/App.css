@@ -292,3 +292,154 @@ input::placeholder{
   cursor: pointer;
   font-weight: bold;
 }
+.contenedor-horario {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.tabla-horario {
+  border-collapse: collapse;
+  width: 90%;
+  max-width: 1200px;
+  background-color: white;
+}
+
+.tabla-horario th,
+.tabla-horario td {
+  border: 1px solid black;
+  text-align: center;
+  padding: 15px;
+  min-width: 100px;
+  height: 60px;
+}
+
+.tabla-horario th {
+  background-color: #2e7d32;
+  color: white;
+}
+
+.hora {
+  font-weight: bold;
+  background-color: #f0f0f0;
+}
+
+
+.error-page {
+
+  min-height: 100vh;
+  background-color: white;
+
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* LOGO */
+.logo {
+
+  position: absolute;
+
+  top: 30px;
+  left: 40px;
+
+  color: #2E7D32;
+
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* CONTENIDO CENTRAL */
+.error-contenido {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+/* ICONO */
+.error-icono {
+
+  font-size: 7rem;
+
+  color: red;
+
+  margin-bottom: 20px;
+}
+
+.error-contenido h2 {
+
+  font-size: 2rem;
+
+  margin-bottom: 10px;
+}
+
+.error-contenido p {
+
+  color: gray;
+
+  margin-bottom: 30px;
+}
+
+/* BOTON */
+.boton-error {
+
+  padding: 12px 24px;
+
+  border: none;
+  border-radius: 10px;
+
+  background-color: #2E7D32;
+
+  color: white;
+
+  font-size: 1rem;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.boton-error:hover {
+
+  transform: scale(1.05);
+}
+
+.loading-overlay {
+
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100vh;
+
+  background-color: rgba(255, 255, 255, 0.75);
+
+  backdrop-filter: blur(3px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999;
+}
+
+.loading-gif {
+
+  width: 120px;
+  height: 120px;
+
+  object-fit: contain;
+}
+
+.contenedor-botones {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}

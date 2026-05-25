@@ -18,7 +18,6 @@ public class LoginService {
 
     public boolean authenticate(String correo, String contrasenaPlana) {
         Optional<User> optUser = userRepo.findByCorreo(correo);
-
         if (optUser.isPresent()) {
             User user = optUser.get();
             if (!"true".equals(user.correo_verificado)) {
