@@ -1,21 +1,26 @@
-import { useState } from "react";
-import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MyButtons from "./components/MyButtons";
+import { TopBar } from "./components/TopBar/Topbar";
+import ContextualHelp from "./components/ContextualHelp";
 
-import Login from "./pages/Login.jsx";
-//<Route path="/login" element={<Login />} />
 
 function App() {
 
+
+  const tmp = {
+    background: "#723c3c"
+  }
+
+  const rolAndName = "Alumno - Tomas"
   return (
-    <BrowserRouter>
-
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        
-      </Routes>
-
-    </BrowserRouter>
+    <div style={tmp}>
+      <TopBar 
+      nameAndRolString={rolAndName} URLToGoWhenClick="/home"
+      />
+      <ContextualHelp/>
+      
+      <h1> Bienvenido! </h1>
+      <MyButtons/>
+    </div>
   );
 }
 

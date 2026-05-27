@@ -1,0 +1,56 @@
+/*
+====================================
+BOTONES
+====================================
+*/
+.btn {
+  width: 100%;
+  margin: 5px;
+  padding: 14px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px; /* Esquinas redondeadas */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+/* 1. Botón Cancelar (Rojo claro / Alerta) */
+.btn-red {
+  background-color: #fde8e8;
+  color: #c83737;
+  border: 1.5px solid #f8baba;
+}
+.btn-red:hover {
+  background-color: #fbcbcb;
+}
+
+/* 2. Botón Escanear (Verde sólido / Acción principal) */
+.btn-darkgreen {
+  background-color: #2b8a4a;
+  color: #ffffff;
+  border: none;
+}
+.btn-darkgreen:hover {
+  background-color: #226f3b;
+}
+
+/* 3. Botón Volver al inicio (Verde muy claro) */
+.btn-lightgreen {
+  background-color: #eef9f1;
+  color: #407c53;
+  border: 1.5px solid #ccead4;
+}
+.btn-lightgreen:hover {
+  background-color: #daf2df;
+}
+
+/* 4. Botón Volver (Blanco con borde gris/verde tenue) */
+.btn-white {
+  background-color: #ffffff;
+  color: #3d4a41;
+  border: 1.5px solid #cbd5cd;
+}
+.btn-white:hover {
+  background-color: #f4f6f4;
+}

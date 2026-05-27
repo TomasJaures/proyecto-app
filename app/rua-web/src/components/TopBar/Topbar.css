@@ -1,0 +1,71 @@
+/* ==========================================
+   NOMBRES DE ESTILOS TEMPORALES PARA TOPBAR
+   ========================================== */
+
+/* Contenedor principal de la barra superior */
+.topbar-container-temp {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 70px;
+  background-color: #f5f5f5; /* Gris claro temporal */
+  border-bottom: 2px solid #e0e0e0;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Área del logo (Izquierda) */
+.topbar-logo-area-temp {
+  display: flex;
+  align-items: center;
+}
+
+/* El elemento gráfico del logo */
+.topbar-logo-svg-temp {
+  display: block;
+}
+
+/* Área que junta la info y el botón (Derecha) */
+.topbar-actions-area-temp {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Separación entre el texto y el botón */
+}
+
+/* Texto de Información del Usuario (Rol y Nombre) */
+.topbar-user-info-temp {
+  margin: 0;
+  font-family: sans-serif;
+  font-size: 14px;
+  color: #333333;
+  font-weight: 500;
+}
+
+/* Botón Volver completamente a la derecha */
+.topbar-btn-volver-temp {
+  background-color: #333333; /* Negro/Gris oscuro temporal */
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.topbar-btn-volver-temp:hover {
+  background-color: #555555;
+}
+
+
+/* ==========================================
+   RESPONSIVE (Control de desaparición)
+   ========================================== */
+@media (max-width: 768px) {
+  /* Desaparece la información del usuario en pantallas chicas */
+  .topbar-user-info-temp {
+    display: none;
+  }
+}
