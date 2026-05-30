@@ -1,5 +1,6 @@
 import Navbar from "../components/navbar";
 import Card from "../components/card";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
@@ -34,7 +35,9 @@ function Dashboard() {
 
           <div className="contenedor-botones">
 
-            <button className="boton-dashboard activo">
+            <button className="boton-dashboard activo"
+            onClick={() => navigate("/qrattempt")}
+            >
 
               <img
                 src="/assets/qr-icon.svg"
