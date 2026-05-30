@@ -14,9 +14,10 @@ function EmailSended() {
       {/* CONTENIDO */}
       <div className="email-contenido">
 
-        <div className="email-icono">
-          ✉️
-        </div>
+        <img
+              src="/assets/email-icon.svg"
+              alt="Email"
+            />
 
         <h2>¡Te hemos enviado un correo!</h2>
 
