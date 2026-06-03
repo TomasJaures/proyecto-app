@@ -1186,3 +1186,53 @@ body{
 
     font-size: 18px;
 }
+
+.bloque-clase {
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 90px; /* aproximadamente 2 filas de tu horario */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    border-radius: 8px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+/* PENDIENTE */
+
+.bloque-clase.pendiente {
+    background-color: #E0E0E0;
+    color: #555;
+}
+
+/* PRESENTE */
+
+.bloque-clase.presente {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* AUSENTE */
+
+.bloque-clase.ausente {
+    background-color: #E53935;
+    color: white;
+}
+
+/* CANCELADO */
+
+.bloque-clase.cancelado {
+    background-color: #FFB300;
+    color: white;
+}

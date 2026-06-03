@@ -11,6 +11,7 @@ function DocenteHub() {
     const [abierto, setAbierto] = useState(false);
     const [seleccion, setSeleccion] = useState("Seleccione acción");
     const [mostrarAyuda, setMostrarAyuda] = useState(false);
+    const [modo, setModo] = useState(null);
 
     function generateQR() {
         setSeleccion("Generar QR");
@@ -61,9 +62,12 @@ function DocenteHub() {
                                 <div className="dropdown-menu">
 
                                     <div
-                                        onClick={() => seleccionarOpcion(
-                                            "Seleccione un bloque vacío para añadir la clase"
-                                        )}
+                                        onClick={() => {
+                                            seleccionarOpcion(
+                                                "Seleccione un bloque vacío para añadir la clase"
+                                            );
+                                            setModo("añadir");
+                                        }}
                                     >
                                         Añadir Clase
                                     </div>
@@ -179,7 +183,9 @@ function DocenteHub() {
 
             )}
 
-            <Horario />
+            <Horario
+                modo={modo}
+                setModo={setModo}/>
 
         </div>
     );
