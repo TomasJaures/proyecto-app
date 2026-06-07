@@ -13,6 +13,12 @@ function DocenteHub() {
     const [mostrarAyuda, setMostrarAyuda] = useState(false);
     const [modo, setModo] = useState(null);
 
+    const [mostrarModalClase, setMostrarModalClase] = useState(false);
+
+    const [nombreClase, setNombreClase] = useState("");
+    const [codigoClase, setCodigoClase] = useState("");
+
+
     function generateQR() {
         setSeleccion("Generar QR");
         navigate("/generadorqr");
@@ -21,6 +27,25 @@ function DocenteHub() {
     function seleccionarOpcion(opcion) {
         setSeleccion(opcion);
         setAbierto(false);
+    }
+
+    function continuarAgregarClase() {
+
+    if (
+        nombreClase.trim() === "" ||
+        codigoClase.trim() === ""
+    ) {
+        alert("Complete todos los campos");
+        return;
+    }
+
+    setMostrarModalClase(false);
+
+    setSeleccion(
+        "Seleccione un bloque vacío para añadir la clase"
+    );
+
+    setModo("añadir");
     }
 
     return (
@@ -63,19 +88,20 @@ function DocenteHub() {
 
                                     <div
                                         onClick={() => {
-                                            seleccionarOpcion(
-                                                "Seleccione un bloque vacío para añadir la clase"
-                                            );
-                                            setModo("añadir");
+                                            setAbierto(false);
+                                            setMostrarModalClase(true);
                                         }}
                                     >
                                         Añadir Clase
                                     </div>
 
                                     <div
-                                        onClick={() => seleccionarOpcion(
-                                            "Seleccione clase para clonar"
-                                        )}
+                                        onClick={() => {
+                                            seleccionarOpcion(
+                                                "Seleccione la clase que desea clonar"
+                                            );
+                                            setModo("clonar");
+                                        }}
                                     >
                                         Clonar Clase
                                     </div>
@@ -89,17 +115,23 @@ function DocenteHub() {
                                     </div>
 
                                     <div
-                                        onClick={() => seleccionarOpcion(
-                                            "Seleccione clase para moverla"
-                                        )}
+                                        onClick={() => {
+                                            seleccionarOpcion(
+                                                "Seleccione la clase que desea mover"
+                                            );
+                                            setModo("mover");
+                                        }}
                                     >
                                         Mover Clase
                                     </div>
 
                                     <div
-                                        onClick={() => seleccionarOpcion(
-                                            "Seleccione la clase que quiere remover"
-                                        )}
+                                        onClick={() => {
+                                            seleccionarOpcion(
+                                                "Seleccione la clase que quiere remover"
+                                            );
+                                            setModo("remover");
+                                        }}
                                     >
                                         Remover Clase
                                     </div>
@@ -183,9 +215,68 @@ function DocenteHub() {
 
             )}
 
+            {mostrarModalClase && (
+
+                <div className="modal-overlay">
+
+                    <div className="modal-ayuda">
+
+                        <button
+                            className="cerrar-modal"
+                            onClick={() => setMostrarModalClase(false)}
+                        >
+                            ✕
+                        </button>
+
+                        <h2>
+                            Crear Clase
+                        </h2>
+
+                        <label>
+                            Código de la clase
+                        </label>
+
+                        <input
+                            type="text"
+                            value={codigoClase}
+                            onChange={(e) =>
+                                setCodigoClase(e.target.value)
+                            }
+                            placeholder="Ej: INF221"
+                        />
+
+                        <label>
+                            Nombre de la clase
+                        </label>
+
+                        <input
+                            type="text"
+                            value={nombreClase}
+                            onChange={(e) =>
+                                setNombreClase(e.target.value)
+                            }
+                            placeholder="Ej: Programación"
+                        />
+
+                        <button
+                            className="btn-qr"
+                            onClick={continuarAgregarClase}
+                        >
+                            Continuar
+                        </button>
+
+                    </div>
+
+                </div>
+
+            )}
+
             <Horario
                 modo={modo}
-                setModo={setModo}/>
+                setModo={setModo}
+                nombreClase={nombreClase}
+                codigoClase={codigoClase}
+            />
 
         </div>
     );

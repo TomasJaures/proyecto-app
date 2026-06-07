@@ -1,10 +1,25 @@
-function BloqueClase({ estado = "pendiente", nombre = "Programación" }) {
+function BloqueClase({
+    codigo,
+    nombre,
+    estado
+}) {
 
     return (
+
         <div className={`bloque-clase ${estado}`}>
-            <span>{nombre}</span>
+
+            <strong>
+                {codigo}
+            </strong>
+
+            <span>
+                {nombre}
+            </span>
+
         </div>
+
     );
+
 }
 
 export default BloqueClase;

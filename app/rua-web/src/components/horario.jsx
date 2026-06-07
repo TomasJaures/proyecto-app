@@ -1,7 +1,12 @@
 import { useState } from "react";
 import BloqueClase from "./BloqueClase";
 
-function Horario({ modo, setModo }) {
+function Horario({
+  modo,
+  setModo,
+  nombreClase,
+  codigoClase
+}) {
 
   const horas = [
     "8:30",
@@ -27,33 +32,167 @@ function Horario({ modo, setModo }) {
   ];
 
   const [clases, setClases] = useState([]);
+  const [claseSeleccionada, setClaseSeleccionada] = useState(null);
 
   function manejarClick(fila, columna) {
 
-    if (modo !== "añadir") {
+    /* AÑADIR */
+
+    if (modo === "añadir") {
+
+      const existe = clases.some(
+        clase =>
+          clase.fila === fila &&
+          clase.columna === columna
+      );
+
+      if (existe) {
+        return;
+      }
+
+      setClases([
+        ...clases,
+        {
+          fila,
+          columna,
+
+          codigo: codigoClase,
+          nombre: nombreClase,
+
+          estado: "pendiente"
+        }
+      ]);
+
+      setModo(null);
       return;
     }
 
-    const existe = clases.some(
-      clase =>
-        clase.fila === fila &&
-        clase.columna === columna
+    /* REMOVER */
+
+    if (modo === "remover") {
+
+      const existe = clases.some(
+        clase =>
+          clase.fila === fila &&
+          clase.columna === columna
+      );
+
+      if (!existe) {
+        return;
+      }
+
+      const confirmar = window.confirm(
+        "¿Desea eliminar esta clase?"
+      );
+
+      if (!confirmar) {
+        return;
+      }
+
+      setClases(
+        clases.filter(
+          clase =>
+            !(
+              clase.fila === fila &&
+              clase.columna === columna
+            )
+        )
+      );
+
+      setModo(null);
+      return;
+    }
+
+    if (modo === "mover") {
+
+    const clase = clases.find(
+        c =>
+            c.fila === fila &&
+            c.columna === columna
     );
 
-    if (existe) {
-      return;
+    if (clase) {
+
+        setClaseSeleccionada(clase);
+
+        return;
     }
 
-    const nuevaClase = {
-      fila,
-      columna,
-      nombre: "Nueva Clase",
-      estado: "pendiente"
-    };
+    if (claseSeleccionada) {
 
-    setClases([...clases, nuevaClase]);
+        const ocupado = clases.some(
+            c =>
+                c.fila === fila &&
+                c.columna === columna
+        );
 
-    setModo(null);
+        if (ocupado) {
+            return;
+        }
+
+        setClases(
+            clases.map(c =>
+                c === claseSeleccionada
+                    ? {
+                          ...c,
+                          fila,
+                          columna
+                      }
+                    : c
+            )
+        );
+
+        setClaseSeleccionada(null);
+        setModo(null);
+    }
+
+    return;
+}
+
+  if (modo === "clonar") {
+
+    const clase = clases.find(
+        c =>
+            c.fila === fila &&
+            c.columna === columna
+    );
+
+    if (clase) {
+
+        setClaseSeleccionada(clase);
+
+        return;
+    }
+
+    if (claseSeleccionada) {
+
+        const ocupado = clases.some(
+            c =>
+                c.fila === fila &&
+                c.columna === columna
+        );
+
+        if (ocupado) {
+            return;
+        }
+
+        setClases([
+            ...clases,
+            {
+                ...claseSeleccionada,
+
+                fila,
+                columna
+            }
+        ]);
+
+        setClaseSeleccionada(null);
+        setModo(null);
+    }
+
+    return;
+}
+
   }
 
   return (
@@ -103,10 +242,13 @@ function Horario({ modo, setModo }) {
                   >
 
                     {clase && (
+
                       <BloqueClase
+                        codigo={clase.codigo}
                         nombre={clase.nombre}
                         estado={clase.estado}
                       />
+
                     )}
 
                   </td>
