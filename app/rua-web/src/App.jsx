@@ -9,6 +9,7 @@ import FatalError from "./pages/FatalError.jsx";
 import GeneradorQR from "./pages/GeneradorQR.jsx";
 import EmailSended from "./pages/EmailSended.jsx";
 import DocenteHub from "./pages/DocenteHub.jsx";
+import DocenteHorario from "./pages/DocenteHorario.jsx";
 
 function App() {
 
@@ -30,6 +31,8 @@ function App() {
         <Route path="/qrattempt" element={<QrAttempt />} />
 
         <Route path="/docentehub" element={<DocenteHub />} />
+
+        <Route path="/docentehorario" element={<DocenteHorario />} />
 
         <Route path="/generadorqr" element={<GeneradorQR />} />
 
