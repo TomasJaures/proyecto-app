@@ -1,49 +1,77 @@
-import Navbar from "./components/Navbar";
-import Card from "./components/Card";
+import Navbar from "../components/navbar";
+import Card from "../components/card";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
   return (
-        
-    <div className="pagina-dashboard">
 
-      <Card>
+    <div className="dashboard-layout">
 
-        <h1 className="titulo-dashboard">
-          Selecciona una opción
-        </h1>
+      <Navbar
+        rol="Docente"
+        nombre="Hola,"
+      />
 
-        <div className="contenedor-botones">
+      <main className="pagina-dashboard">
 
-          <button className="boton-dashboard">
+        <div className="bienvenida">
 
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png"
-              alt="Asistencia"
-            />
+          <h1>
+            Hola,
+          </h1>
 
-            <span>
-              Registrar Asistencia
-            </span>
-
-          </button>
-
-          <button className="boton-dashboard">
-
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/942/942748.png"
-              alt="Cursos"
-            />
-
-            <span>
-              Ver Cursos
-            </span>
-
-          </button>
+          <p>
+            Estás registrado como Alumno.
+          </p>
 
         </div>
 
-      </Card>
+        <Card>
+
+          <h2 className="titulo-dashboard">
+            Selecciona la opción que necesitas:
+          </h2>
+
+          <div className="contenedor-botones">
+
+            <button className="boton-dashboard activo"
+            onClick={() => navigate("/qrattempt")}
+            >
+
+              <img
+                src="/assets/qr-icon.svg"
+                alt="Escaner"
+              />
+
+              <span>
+                Escanear QR
+              </span>
+
+            </button>
+
+            <button className="boton-dashboard">
+
+              <img
+                src="/assets/asistencia-icon.svg"
+                alt="Cursos"
+              />
+
+              <span>
+                Ver Asistencia
+              </span>
+
+            </button>
+
+          </div>
+
+        </Card>
+
+      </main>
+
+      <footer className="footer">
+        Sitio web no afiliado con la UFRO
+      </footer>
 
     </div>
   );

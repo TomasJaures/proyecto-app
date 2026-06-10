@@ -22,7 +22,9 @@ function Navbar({ rol, nombre }) {
       </div>
 
       {/* DERECHA */}
-      <button className="salir">
+      <button className="salir"
+      onClick={() => navigate("/login")}
+      >
         Salir
       </button>
 

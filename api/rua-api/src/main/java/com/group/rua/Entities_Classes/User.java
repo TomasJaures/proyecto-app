@@ -42,31 +42,4 @@ public class User {
     @Column(insertable = false, updatable = false)
     public LocalDateTime fecha_creacion;
 
-    /**
-     *
-     * @param correo
-     * @param contrasena
-     */
-    public boolean iniciarSesion(String correo, String contrasena) {
-        // TODO - implement Usuario.iniciarSesion
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     *
-     * @param nombre
-     * @param apellido1
-     * @param apellido2
-     * @param correo
-     * @param contrasena
-     */
-    public void registrarse(String nombre, String apellido1, String apellido2, String correo, String contrasena) {
-        // TODO - implement Usuario.registrarse
-        throw new UnsupportedOperationException();
-    }
-
-    public void correoValidacion() {
-        // TODO - implement Usuario.correoValidacion
-        throw new UnsupportedOperationException();
-    }
 }

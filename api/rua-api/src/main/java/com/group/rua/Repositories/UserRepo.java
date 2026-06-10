@@ -1,8 +1,8 @@
 package com.group.rua.Repositories;
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.group.rua.Entities_Classes.User;
+
+import java.util.Optional;
 
 /**
  * Repositorio para usuario en la base de datos
@@ -10,4 +10,5 @@ import com.group.rua.Entities_Classes.User;
 public interface UserRepo extends JpaRepository<User, Long> {
     Optional<User> findByTokenConfirmation(String TokenConfirmation);
     Optional<User> deleteByTokenConfirmation(String TokenConfirmation);
+    Optional<User> findByCorreo(String correo); //para buscar un usuario usando su correo
 }

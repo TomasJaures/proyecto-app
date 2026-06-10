@@ -15,7 +15,7 @@ public class MainPageController {
      */
     @GetMapping
     public ResponseEntity<Void> loginRedirect(){
-        URI uri = URI.create("/login");
+        URI uri = URI.create("account/login");
         return ResponseEntity.status(HttpStatus.FOUND).location(uri).build();
     }
 }

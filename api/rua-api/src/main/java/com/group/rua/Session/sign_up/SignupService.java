@@ -3,13 +3,17 @@ package com.group.rua.Session.sign_up;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.group.rua.RuaConfig;
 import com.group.rua.Entities_Classes.User;
+import com.group.rua.General.EmailDesing;
 import com.group.rua.Repositories.UserRepo;
+
+import jakarta.mail.internet.MimeMessage;
 
 /**
  * TODO: Falta añadir que token pueda expirar
@@ -17,8 +21,8 @@ import com.group.rua.Repositories.UserRepo;
 @Service
 public class SignupService {
     
-    private String confirmationLink = "http://localhost:8080/account/verify_email"; //Link que el usuario tiene que dar click para confirmar su identidad (faltandole el token)
-    private String hostEmail = "t.jaures01@ufromail.cl"; //Email host de la pagina SendGrid
+    private String confirmationLink = RuaConfig.BACKEND_URL + "/account/verify_email"; //Link que el usuario tiene que dar click para confirmar su identidad (faltandole el token)
+    private String hostEmail = "ruaaplicacion@gmail.com"; //Email host de la pagina SendGrid
 
     /**
      * Todo el proceso para crear usuario (Sin confirmar)
@@ -28,6 +32,10 @@ public class SignupService {
      * 4- enviar correo de confirmacion
      */
     public void createUser(User user){
+        //para validar si es que el correo existe en la bd
+        if (userTable.findByCorreo(user.correo).isPresent()) {
+            throw new IllegalArgumentException("El correo ya se encuentra registrado.");
+        }
 
         String token = generateToken();
         user.tokenConfirmation = token;
@@ -35,7 +43,15 @@ public class SignupService {
         user.contrasena = encryptPassword(user.contrasena);
 
         saveUserInBD(user);
-        sendConfirmationEmail(user.correo, token);
+        try {
+            sendConfirmationEmail(user.correo, token);
+        } catch (Exception e) {
+            System.out.println("------------------------");
+            System.out.println("ERROR EN EL ENVIO DE CORREO");
+            System.out.println("------------------------");
+            
+        }
+        
     }
 
     /**
@@ -54,17 +70,23 @@ public class SignupService {
     }
 
 
-    public void sendConfirmationEmail(String destinationEmail, String token){
-        SimpleMailMessage message = new SimpleMailMessage();
+    public void sendConfirmationEmail(String destinationEmail, String token) throws Exception {
 
-        String link = confirmationLink + "?token_verificacion=" + token; //Se añade el token
+        String link = confirmationLink + "?token_verificacion=" + token;
 
-        message.setFrom(hostEmail);
-        message.setTo(destinationEmail);
+        MimeMessage message = mailSender.createMimeMessage();
 
-        message.setSubject("Verificación de cuenta");
-        message.setText("Confirma tu correo!!!: " + link); //<--- Al correo solo le llega un link
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
+        helper.setFrom(hostEmail);
+        helper.setTo(destinationEmail);
+        helper.setSubject("Verificación de cuenta");
+
+        String html = EmailDesing.createDesign(link);
+
+        helper.setText(html, true);
+
+        //Envio definitivo
         mailSender.send(message);
     }
 
