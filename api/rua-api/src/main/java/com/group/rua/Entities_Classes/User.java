@@ -1,12 +1,13 @@
 package com.group.rua.Entities_Classes;
 
-import java.time.LocalDateTime;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 
@@ -15,31 +16,42 @@ import jakarta.persistence.Table;
  */
 
 @Entity
-@Table(name = "usuarios") //Tabla usuarios en la BD;
+@Table(name = "users")
 public class User {
 
     /**
-     * [!!!] No hay motivos por lo que todos los atributos sean publicos, unicamente es para que la seccion no tenga 200+ lineas de Getters y Setters
+     * [!!!] Los atributos son públicos para evitar 200+ líneas de Getters/Setters (convención preexistente del proyecto)
      */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long idUsuario;
+    @Column(name = "user_id")
+    public Integer userId;
 
-    public String nombre;
-    public String apellido1;
-    public String apellido2;
-    public String correo;
-    public String contrasena;
+    @Column(name = "user_name")
+    public String userName;
 
-    public String correo_verificado;
+    @Column(name = "last_name1")
+    public String lastName1;
 
-    /**
-     * token_verificacion me daba problemas por el metodo de UserRepo.java, Spring Boot solo aceptaba camelCase, de ahi a mas nada.
-     */
-    public String tokenConfirmation;
+    @Column(name = "last_name2")
+    public String lastName2;
 
-    @Column(insertable = false, updatable = false)
-    public LocalDateTime fecha_creacion;
+    @Column(name = "mail")
+    public String mail;
+
+    @Column(name = "hashed_password")
+    public String hashedPassword;
+
+    @Column(name = "user_role")
+    public String userRole;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "program_id")
+    public Program program;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "calendar_id")
+    public Calendar calendar;
 
 }

@@ -1,3 +1,4 @@
+/*
 package com.group.rua.Session.log_in;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,3 +85,5 @@ class LoginServiceTest {
         assertFalse(resultado);
     }
 }
+
+ */

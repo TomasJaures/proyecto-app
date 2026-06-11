@@ -1,0 +1,14 @@
+### Registrarse
+POST http://localhost:1428/account/create
+Content-Type: application/json
+
+{
+    "userName": "Tomas",
+    "lastName1": "Jaures",
+    "lastName2": "Painen",
+    "mail": "t.jaures01@ufromail.cl",
+    "hashedPassword": "12345678"
+}
+
+### Confirmar identidad (Cambiar el token)
+GET http://localhost:1428/account/verify_email?token_verificacion=2c632766-622b-46fa-85c1-81995923649f

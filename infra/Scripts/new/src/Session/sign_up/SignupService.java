@@ -1,27 +1,3 @@
-package com.group.rua.Session.sign_up;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
-
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import com.group.rua.RuaConfig;
-import com.group.rua.Entities_Classes.Calendar;
-import com.group.rua.Entities_Classes.ConfirmationToken;
-import com.group.rua.Entities_Classes.Program;
-import com.group.rua.Entities_Classes.UnconfirmedUser;
-import com.group.rua.Entities_Classes.User;
-import com.group.rua.General.EmailDesing;
-import com.group.rua.Repositories.ConfirmationTokenRepo;
-import com.group.rua.Repositories.UnconfirmedUserRepo;
-import com.group.rua.Repositories.UserRepo;
-
-import jakarta.mail.internet.MimeMessage;
-
 /**
  * TODO: Falta añadir expiración de token (campo expire_at ya existe en confirmation_token)
  */
@@ -30,6 +6,24 @@ public class SignupService {
 
     private final String confirmationLink = RuaConfig.BACKEND_URL + "/account/verify_email";
     private final String hostEmail = "ruaaplicacion@gmail.com";
+
+    private final UnconfirmedUserRepo unconfirmedUserRepo;
+    private final ConfirmationTokenRepo confirmationTokenRepo;
+    private final UserRepo userRepo;
+    private final JavaMailSender mailSender;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public SignupService(UnconfirmedUserRepo unconfirmedUserRepo,
+                         ConfirmationTokenRepo confirmationTokenRepo,
+                         UserRepo userRepo,
+                         JavaMailSender mailSender,
+                         BCryptPasswordEncoder passwordEncoder) {
+        this.unconfirmedUserRepo = unconfirmedUserRepo;
+        this.confirmationTokenRepo = confirmationTokenRepo;
+        this.userRepo = userRepo;
+        this.mailSender = mailSender;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * Proceso completo para crear un usuario no confirmado:
@@ -40,16 +34,14 @@ public class SignupService {
      * 5- Enviar correo de confirmación
      */
     public void createUser(UnconfirmedUser user) {
-        // Verificar duplicados en usuarios pendientes
-        if (unconfirmedUserRepo.findByMail(user.mail).isPresent()) {
-            throw new IllegalArgumentException("Ya existe una solicitud de registro pendiente para este correo.");
-        }
-        
         // Verificar duplicados en usuarios confirmados
         if (userRepo.findByMail(user.mail).isPresent()) {
             throw new IllegalArgumentException("El correo ya se encuentra registrado.");
         }
-        
+        // Verificar duplicados en usuarios pendientes
+        if (unconfirmedUserRepo.findByMail(user.mail).isPresent()) {
+            throw new IllegalArgumentException("Ya existe una solicitud de registro pendiente para este correo.");
+        }
 
         user.hashedPassword = encryptPassword(user.hashedPassword);
         UnconfirmedUser savedUser = saveUnconfirmedUser(user);
@@ -98,13 +90,6 @@ public class SignupService {
         confirmedUser.hashedPassword = unconfirmedUser.hashedPassword;
         // TODO: Definir rol por defecto o recibirlo durante el registro
         confirmedUser.userRole = "student";
-
-
-        Calendar calendar = new Calendar();
-        Program program = new Program();
-
-        confirmedUser.calendar = calendar;
-        confirmedUser.program = program;
         userRepo.save(confirmedUser);
     }
 
@@ -121,9 +106,7 @@ public class SignupService {
         String html = EmailDesing.createDesign(link);
         helper.setText(html, true);
 
-        System.out.println(link);
-        //TODO: Descomentar linea
-        //mailSender.send(message);
+        mailSender.send(message);
     }
 
     public UnconfirmedUser saveUnconfirmedUser(UnconfirmedUser user) {
@@ -146,22 +129,5 @@ public class SignupService {
 
     public String encryptPassword(String password) {
         return passwordEncoder.encode(password);
-    }
-
-    private final UnconfirmedUserRepo unconfirmedUserRepo;
-    private final ConfirmationTokenRepo confirmationTokenRepo;
-    private final UserRepo userRepo;
-    private final JavaMailSender mailSender;
-    private final BCryptPasswordEncoder passwordEncoder;
-    public SignupService(UnconfirmedUserRepo unconfirmedUserRepo,
-                         ConfirmationTokenRepo confirmationTokenRepo,
-                         UserRepo userRepo,
-                         JavaMailSender mailSender,
-                         BCryptPasswordEncoder passwordEncoder) {
-        this.unconfirmedUserRepo = unconfirmedUserRepo;
-        this.confirmationTokenRepo = confirmationTokenRepo;
-        this.userRepo = userRepo;
-        this.mailSender = mailSender;
-        this.passwordEncoder = passwordEncoder;
     }
 }

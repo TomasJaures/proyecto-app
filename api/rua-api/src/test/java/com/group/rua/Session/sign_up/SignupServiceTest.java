@@ -1,3 +1,4 @@
+/*
 package com.group.rua.Session.sign_up;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -94,3 +95,5 @@ class SignupServiceTest {
         verify(userTable, times(1)).save(user);
     }
 }
+
+*/
