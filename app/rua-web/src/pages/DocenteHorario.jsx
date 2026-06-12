@@ -4,7 +4,7 @@ import Navbar from "../components/navbar";
 import { useNavigate } from "react-router-dom";
 import Card from "../components/card";
 
-function DocenteHub() {
+function DocenteHorario() {
 
     const navigate = useNavigate();
 
@@ -66,7 +66,7 @@ function DocenteHub() {
                 <Card>
 
                     <div className="acciones-docente">
-
+                        {/* BOTON qr*/}
                         <button
                             className="btn-qr"
                             onClick={generateQR}
@@ -75,7 +75,7 @@ function DocenteHub() {
                         </button>
 
                         <div className="dropdown">
-
+                            {/* OPCIONES */}
                             <button
                                 className="btn-opciones"
                                 onClick={() => setAbierto(!abierto)}
@@ -216,7 +216,7 @@ function DocenteHub() {
             )}
 
             {mostrarModalClase && (
-
+                    /* ADICION DE CLASE*/
                 <div className="modal-overlay">
 
                     <div className="modal-ayuda">
@@ -282,4 +282,4 @@ function DocenteHub() {
     );
 }
 
-export default DocenteHub;
+export default DocenteHorario;

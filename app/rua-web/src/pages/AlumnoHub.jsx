@@ -32,7 +32,7 @@ function Dashboard() {
           <h2 className="titulo-dashboard">
             Selecciona la opción que necesitas:
           </h2>
-
+            {/* BOTONES */}
           <div className="contenedor-botones">
 
             <button className="boton-dashboard activo"

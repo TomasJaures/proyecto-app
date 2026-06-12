@@ -28,7 +28,7 @@ function Dashboard() {
         </div>
 
         <Card>
-
+            {/* BOTONES */}
           <h2 className="titulo-dashboard">
             Selecciona la opción que necesitas:
           </h2>

@@ -46,7 +46,6 @@ function SignUp() {
         asistencia en la universidad de la frontera
       </RuaAside>
 
-      {/* PANEL DERECHO */}
       <main className="derecha">
 
         <div className="barra-mobile">
