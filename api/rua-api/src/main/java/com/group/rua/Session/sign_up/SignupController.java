@@ -16,7 +16,7 @@ import com.group.rua.Entities_Classes.UnconfirmedUser;
 
 @RestController
 @RequestMapping("/account")
-@CrossOrigin(origins = "http://localhost:1427")
+@CrossOrigin(origins = RuaConfig.FRONTEND_URL)
 public class SignupController {
 
     private final SignupService signupService;

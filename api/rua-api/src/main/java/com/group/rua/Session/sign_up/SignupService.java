@@ -15,11 +15,14 @@ import com.group.rua.Entities_Classes.ConfirmationToken;
 import com.group.rua.Entities_Classes.Program;
 import com.group.rua.Entities_Classes.UnconfirmedUser;
 import com.group.rua.Entities_Classes.User;
+import com.group.rua.Exceptions.DuplicatedInUnconfirmedUsers;
+import com.group.rua.Exceptions.DuplicatedInUsers;
 import com.group.rua.General.EmailDesing;
 import com.group.rua.Repositories.ConfirmationTokenRepo;
 import com.group.rua.Repositories.UnconfirmedUserRepo;
 import com.group.rua.Repositories.UserRepo;
 
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
 /**
@@ -40,16 +43,8 @@ public class SignupService {
      * 5- Enviar correo de confirmación
      */
     public void createUser(UnconfirmedUser user) {
-        // Verificar duplicados en usuarios pendientes
-        if (unconfirmedUserRepo.findByMail(user.mail).isPresent()) {
-            throw new IllegalArgumentException("Ya existe una solicitud de registro pendiente para este correo.");
-        }
-        
-        // Verificar duplicados en usuarios confirmados
-        if (userRepo.findByMail(user.mail).isPresent()) {
-            throw new IllegalArgumentException("El correo ya se encuentra registrado.");
-        }
-        
+        // Validar duplicados en BD
+        validateDuplicatedUserInBD(user); 
 
         user.hashedPassword = encryptPassword(user.hashedPassword);
         UnconfirmedUser savedUser = saveUnconfirmedUser(user);
@@ -65,6 +60,22 @@ public class SignupService {
             System.out.println("------------------------");
         }
     }
+
+    public void validateDuplicatedUserInBD(UnconfirmedUser user){
+        validateDuplicatedUnconfirmedUsers(user);
+        validateDuplicatedUsers(user);
+    }
+
+    public void validateDuplicatedUnconfirmedUsers(UnconfirmedUser user){
+        if (unconfirmedUserRepo.findByMail(user.mail).isPresent())
+            throw new DuplicatedInUnconfirmedUsers("Correo ya registrado en tabla UnconfirmedUsers");
+    }
+
+    public void validateDuplicatedUsers(UnconfirmedUser user){
+        if (userRepo.findByMail(user.mail).isPresent())
+            throw new DuplicatedInUsers("Correo ya registrado en tabla Users");
+    }
+    
 
     /**
      * Verifica el token recibido por correo.
@@ -108,7 +119,7 @@ public class SignupService {
         userRepo.save(confirmedUser);
     }
 
-    public void sendConfirmationEmail(String destinationEmail, String token) throws Exception {
+    public void sendConfirmationEmail(String destinationEmail, String token) throws MessagingException {
         String link = confirmationLink + "?token_verificacion=" + token;
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -123,7 +134,7 @@ public class SignupService {
 
         System.out.println(link);
         //TODO: Descomentar linea
-        //mailSender.send(message);
+        mailSender.send(message);
     }
 
     public UnconfirmedUser saveUnconfirmedUser(UnconfirmedUser user) {
@@ -134,8 +145,7 @@ public class SignupService {
         ConfirmationToken confirmationToken = new ConfirmationToken();
         confirmationToken.content = token;
         confirmationToken.createdAt = LocalDateTime.now();
-        // TODO: Definir tiempo de expiración real (ej: 24 horas)
-        confirmationToken.expireAt = LocalDateTime.now().plusHours(24);
+        confirmationToken.expireAt = LocalDateTime.now().plusMinutes(5); //5 Minutos para confirmar
         confirmationToken.unconfirmedUser = user;
         confirmationTokenRepo.save(confirmationToken);
     }
