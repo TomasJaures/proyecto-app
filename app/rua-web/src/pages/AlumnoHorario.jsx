@@ -18,15 +18,7 @@ function AlumnoHorario() {
     const [nombreClase, setNombreClase] = useState("");
     const [codigoClase, setCodigoClase] = useState("");
 
-
-
-
-    setSeleccion(
-        "Seleccione un bloque vacío para añadir la clase"
-    );
-
-    setModo("añadir");
-    }
+    
 
     return (
         <div>
@@ -62,7 +54,22 @@ function AlumnoHorario() {
                 codigoClase={codigoClase}
             />
 
+            <button
+          className="boton-hub"
+          onClick={() => navigate("/alumnohub")}
+        >
+          Volver al Hub
+        </button>
+
+
+        
+
         </div>
+
     );
+
+
+
+}
 
 export default AlumnoHorario;

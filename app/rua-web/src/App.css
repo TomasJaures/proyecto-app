@@ -1236,3 +1236,229 @@ body{
     background-color: #FFB300;
     color: white;
 }
+
+
+
+.boton-hub {
+
+  padding: 12px 24px;
+
+  border: none;
+  border-radius: 10px;
+
+  background-color: #2E7D32;
+
+  color: white;
+
+  font-size: 1rem;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.boton-hub:hover {
+
+  transform: scale(1.05);
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #EEF5EE;
+}
+
+.pagina-asignaturas{
+    min-height:100vh;
+    background:#EEF5EE;
+}
+
+
+.titulo-asignaturas{
+
+    text-align:center;
+
+    margin-top:40px;
+
+}
+
+
+.titulo-asignaturas h1{
+
+    color:#00852B;
+
+}
+
+
+
+.toolbar{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:20px;
+
+    margin:30px;
+
+}
+
+
+.toolbar button{
+
+    padding:12px 25px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#00A63E;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+
+
+
+.contenedor-asignaturas{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+
+
+
+
+.card-asignatura{
+
+    width:600px;
+
+    background:white;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    border:1px solid #CFE7CF;
+
+}
+
+
+
+
+.header-asignatura{
+
+    background:#EAF7ED;
+
+    padding:20px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+
+.header-asignatura span{
+
+    color:#666;
+
+    font-size:14px;
+
+}
+
+
+.modulos{
+
+    padding:20px;
+
+}
+
+
+
+.modulos div{
+
+    padding:10px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+}
+
+
+
+
+.nuevo-modulo{
+
+    width:100%;
+
+    padding:10px;
+
+    border:none;
+
+    background:white;
+
+    color:#00852B;
+
+    cursor:pointer;
+
+}
+
+
+
+.modal-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.4);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+
+.popup{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:20px;
+
+}
+
+
+.acciones-cambios{
+
+    position:fixed;
+
+    bottom:30px;
+
+    right:30px;
+
+}
