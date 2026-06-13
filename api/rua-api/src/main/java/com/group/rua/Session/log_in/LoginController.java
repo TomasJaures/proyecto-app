@@ -1,14 +1,14 @@
 package com.group.rua.Session.log_in;
 
+import com.group.rua.RuaConfig;
 import com.group.rua.Entities_Classes.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 @RequestMapping("/account")
-@CrossOrigin(origins = "http://localhost:1427")
+@CrossOrigin(origins = RuaConfig.FRONTEND_URL)
 public class LoginController {
 
     private final LoginService loginService;
