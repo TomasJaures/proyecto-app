@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.group.rua.RuaConfig;
-import com.group.rua.Entities_Classes.User;
+import com.group.rua.Entities_Classes.UnconfirmedUser;
 
 @RestController
 @RequestMapping("/account")
@@ -32,7 +32,7 @@ public class SignupController {
      */
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createUser(@RequestBody User user){
+    public ResponseEntity<Void> createUser(@RequestBody UnconfirmedUser user){
         signupService.createUser(user);
 
         URI uri = URI.create(RuaConfig.BACKEND_URL + "/account/email_sended");
@@ -44,14 +44,14 @@ public class SignupController {
     }
 
     /**
-     * 
-     * @param token_verificacion
-     * @return
+     * Verifica el token recibido por correo y, si es válido,
+     * mueve al usuario de 'unconfirmed_user' a 'users'.
+     *
+     * @param token_verificacion token UUID enviado por correo
      */
     @GetMapping("/verify_email")
     public ResponseEntity<Void> verifyEmail(@RequestParam String token_verificacion){
 
-        //Si en el futuro da u
         boolean result = signupService.verifyToken(token_verificacion);
 
         URI uri = URI.create(

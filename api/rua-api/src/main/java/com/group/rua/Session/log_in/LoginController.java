@@ -20,7 +20,7 @@ public class LoginController {
     //TODO: Falta el rol
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody User loginData) {
-        boolean isAuthenticated = loginService.authenticate(loginData.correo, loginData.contrasena);
+        boolean isAuthenticated = loginService.authenticate(loginData.mail, loginData.hashedPassword);
 
         if (isAuthenticated) {
             System.out.println("Esta autenticado");
