@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 
 
 /**
- * He quitado temporalmente la herencia, no se usar herencia en Spring Boot y por lo que vi se tiene que hacer tomando en cuenta las tablas de la BD y sus conexiones, por eso de momento le quite la herencia. 
+ * He quitado temporalmente la herencia, no se usar herencia en Spring Boot y por lo que vi se tiene que hacer tomando en cuenta las tablas de la BD y sus conexiones, por eso de momento le quite la herencia.
  */
 
 @Entity

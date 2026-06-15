@@ -1,6 +1,7 @@
 import RuaAside from "../components/rua-aside.jsx";
 import Card from "../components/card.jsx";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
@@ -8,8 +9,10 @@ function LogIn() {
 
   const [rol, setRol] = useState("docente");
   const [correo, setCorreo] = useState("");
-  const [clave, setClave] = useState("");
+  const [contrasena, setContrasena] = useState("");
+  const navigate = useNavigate();
 
+  async function onConfirmarClick() {
   async function onConfirmarClick() {
 
   try {
@@ -87,9 +90,9 @@ function LogIn() {
           <label>CLAVE RUA</label>
 
           <input type="password" placeholder="••••••••"
-          value={clave}
+          value={contrasena}
 
-          onChange={(e) => setClave(e.target.value)}
+          onChange={(e) => setContrasena(e.target.value)}
           />
 
           <button className="confirmar" onClick={onConfirmarClick}>Confirmar</button>

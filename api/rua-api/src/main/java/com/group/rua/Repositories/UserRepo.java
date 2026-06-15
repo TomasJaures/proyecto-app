@@ -7,6 +7,6 @@ import java.util.Optional;
 /**
  * Repositorio para usuario en la base de datos
  */
-public interface UserRepo extends JpaRepository<User, Integer> {
-    Optional<User> findByMail(String mail);
+public interface UserRepo extends JpaRepository<User, Long> {
+   Optional<User> findByMail(String mail); //para buscar un usuario usando su correo
 }

@@ -43,4 +43,3 @@ public class UnconfirmedUser {
     public LocalDateTime blockTime;
 
 }
-

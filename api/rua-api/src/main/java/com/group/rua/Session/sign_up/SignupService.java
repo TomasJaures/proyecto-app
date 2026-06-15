@@ -62,6 +62,7 @@ public class SignupService {
     }
 
     public void validateDuplicatedUserInBD(UnconfirmedUser user){
+        validateInstitutionalEmail(user);
         validateDuplicatedUnconfirmedUsers(user);
         validateDuplicatedUsers(user);
     }
@@ -75,7 +76,13 @@ public class SignupService {
         if (userRepo.findByMail(user.mail).isPresent())
             throw new DuplicatedInUsers("Correo ya registrado en tabla Users");
     }
-    
+
+    public void validateInstitutionalEmail(UnconfirmedUser user) {
+        String correoLower = user.mail.toLowerCase();
+        if (!correoLower.endsWith("@ufrontera.cl") && !correoLower.endsWith("@ufromail.cl")) {
+            throw new IllegalArgumentException("Debe utilizar un correo institucional válido (@ufrontera.cl o @ufromail.cl)");
+        }
+    }
 
     /**
      * Verifica el token recibido por correo.
@@ -107,9 +114,13 @@ public class SignupService {
         confirmedUser.lastName2 = unconfirmedUser.lastName2;
         confirmedUser.mail = unconfirmedUser.mail;
         confirmedUser.hashedPassword = unconfirmedUser.hashedPassword;
-        // TODO: Definir rol por defecto o recibirlo durante el registro
-        confirmedUser.userRole = "student";
 
+        String correoLower = unconfirmedUser.mail.toLowerCase();
+        if (correoLower.endsWith("@ufrontera.cl")) {
+            confirmedUser.userRole = "TEACHER";
+        } else if (correoLower.endsWith("@ufromail.cl")) {
+            confirmedUser.userRole = "STUDENT";
+        }
 
         Calendar calendar = new Calendar();
         Program program = new Program();

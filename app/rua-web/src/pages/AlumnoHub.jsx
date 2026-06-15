@@ -4,6 +4,15 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
+  const navigate = useNavigate();
+  function scanQR(){
+    navigate("/qrattempt")
+  }
+  function seeAsistance(){
+    navigate("/alumno_asistance")
+  }
+
+
   return (
 
     <div className="dashboard-layout">

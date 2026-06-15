@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+import com.group.rua.RuaConfig;
+import com.group.rua.Entities_Classes.UnconfirmedUser;
 import com.group.rua.RuaConfig;
 import com.group.rua.Entities_Classes.UnconfirmedUser;
 
@@ -38,6 +41,9 @@ public class SignupController {
 
         URI uri = URI.create(RuaConfig.BACKEND_URL + "/account/email_sended");
         return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .location(uri)
+                .build();
                 .status(HttpStatus.FOUND)
                 .location(uri)
                 .build();
