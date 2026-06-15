@@ -47,12 +47,12 @@ public class SignupController {
      * Verifica el token recibido por correo y, si es válido,
      * mueve al usuario de 'unconfirmed_user' a 'users'.
      *
-     * @param token_verificacion token UUID enviado por correo
+     * @param confirmationTokenString token UUID enviado por correo
      */
     @GetMapping("/verify_email")
-    public ResponseEntity<Void> verifyEmail(@RequestParam String token_verificacion) {
+    public ResponseEntity<Void> verifyEmail(@RequestParam String confirmationTokenString) {
 
-        boolean result = signupService.verifyToken(token_verificacion);
+        boolean result = signupService.verifyToken(confirmationTokenString);
 
         URI uri = URI.create(
             result ?
@@ -66,17 +66,17 @@ public class SignupController {
      */
 
     @GetMapping("/email_sended")
-    public String notifyEmailSended() {
-        return "Te hemos enviado un EMAIL!! Revisa tu correo de SPAM";
+    public ResponseEntity<String> notifyEmailSended() {
+        return ResponseEntity.ok("Te hemos enviado un EMAIL!! Revisa tu correo de SPAM");
     }
 
     @GetMapping("/confirmation_success")
-    public String confirmationSuccess() {
-        return "Correo verificado correctamente! Puedes volver al Log In";
+    public ResponseEntity<String> confirmationSuccess() {
+        return ResponseEntity.ok("Correo verificado correctamente! Puedes volver al Log In");
     }
 
     @GetMapping("/confirmation_fail")
-    public String confirmationFail() {
-        return "Hubo un problema con tu correo :(";
+    public ResponseEntity<String> confirmationFail() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hubo un problema con tu correo :(");
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/account")
 @CrossOrigin(origins = RuaConfig.FRONTEND_URL)
@@ -31,4 +32,5 @@ public class LoginController {
                     .body("Credenciales inválidas o correo no verificado.");
         }
     }
+
 }

@@ -75,6 +75,10 @@
     		<artifactId>spring-dotenv</artifactId>
     		<version>4.0.0</version>
 		</dependency>
+	
+		<!-- container para pruebas de BD -->
+		<!-- (Colocar aqui) -->
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
