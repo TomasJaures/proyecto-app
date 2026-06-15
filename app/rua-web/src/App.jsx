@@ -1,21 +1,17 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/LogIn.jsx";
 import Signup from "./pages/SignUp.jsx";
 import AlumnoHub from "./pages/AlumnoHub.jsx";
+import AlumnoHorario from "./pages/AlumnoHorario.jsx";
 import QrAttempt from "./pages/QrAttempt.jsx";
 import FatalError from "./pages/FatalError.jsx";
 import GeneradorQR from "./pages/GeneradorQR.jsx";
 import EmailSended from "./pages/EmailSended.jsx";
 import DocenteHub from "./pages/DocenteHub.jsx";
-import AlumnoHub from "./pages/AlumnoHub.jsx";
-import QrAttempt from "./pages/QrAttempt.jsx";
-import FatalError from "./pages/FatalError.jsx";
-import GeneradorQR from "./pages/GeneradorQR.jsx";
-import EmailSended from "./pages/EmailSended.jsx";
-import DocenteHub from "./pages/DocenteHub.jsx";
+import DocenteAdmin from "./pages/DocenteAdmin.jsx";
+import DocenteHorario from "./pages/DocenteHorario.jsx";
 
 function App() {
 
@@ -26,11 +22,7 @@ function App() {
 
         <Route path="/" element={<Navigate to="/login" />} />
 
-
-        <Route path="/" element={<Navigate to="/login" />} />
-
         <Route path="/login" element={<Login />} />
-
 
         <Route path="/signup" element={<Signup />} />
 
@@ -38,9 +30,15 @@ function App() {
 
         <Route path="/alumnohub" element={<AlumnoHub />} />
 
+        <Route path="/alumnohorario" element={<AlumnoHorario />} />
+
         <Route path="/qrattempt" element={<QrAttempt />} />
 
         <Route path="/docentehub" element={<DocenteHub />} />
+
+        <Route path="/docenteadmin" element={<DocenteAdmin />} />
+
+        <Route path="/docentehorario" element={<DocenteHorario />} />
 
         <Route path="/generadorqr" element={<GeneradorQR />} />
 

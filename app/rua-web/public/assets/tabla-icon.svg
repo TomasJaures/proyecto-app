@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="181.77739mm"
+   height="141.76952mm"
+   viewBox="0 0 181.77739 141.76952"
+   version="1.1"
+   id="svg3848"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="tabla-icon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview3850"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.46858866"
+     inkscape:cx="344.65196"
+     inkscape:cy="373.46187"
+     inkscape:window-width="1366"
+     inkscape:window-height="696"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs3845" />
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-14.253223,-49.913923)">
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#00852b;stroke-width:6.535;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4267"
+       width="175.24239"
+       height="135.23451"
+       x="17.520723"
+       y="53.181423" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#00852b;stroke-width:2.79698;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       id="rect14043"
+       width="173.00435"
+       height="53.4781"
+       x="18.934019"
+       y="94.136963" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#00852b;stroke-width:2.83501;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       id="rect14525"
+       width="71.211098"
+       height="134.2739"
+       x="69.643562"
+       y="55.316334" />
+  </g>
+</svg>

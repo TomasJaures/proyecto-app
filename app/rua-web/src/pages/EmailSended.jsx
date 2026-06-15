@@ -8,10 +8,10 @@ function EmailSended() {
 
     <div className="email-page">
 
-      {/* LOGO */}
+      
       <h1 className="logo">RUA</h1>
 
-      {/* CONTENIDO */}
+      
       <div className="email-contenido">
 
         <img
@@ -24,7 +24,7 @@ function EmailSended() {
         <p>
           Revisa tu bandeja de entrada para continuar.
         </p>
-
+        {/* BOTON */}
         <button
           className="boton-email"
           onClick={() => navigate("/login")}

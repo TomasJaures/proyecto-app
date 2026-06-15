@@ -4,15 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
-  const navigate = useNavigate();
-  function scanQR(){
-    navigate("/qrattempt")
-  }
-  function seeAsistance(){
-    navigate("/alumno_asistance")
-  }
-
-
   return (
 
     <div className="dashboard-layout">
@@ -41,7 +32,7 @@ function Dashboard() {
           <h2 className="titulo-dashboard">
             Selecciona la opción que necesitas:
           </h2>
-
+            {/* BOTONES */}
           <div className="contenedor-botones">
 
             <button className="boton-dashboard activo"
