@@ -1,0 +1,146 @@
+# Guía de Ejecución de SonarQube
+
+## Objetivo
+
+Este documento describe el procedimiento para ejecutar el análisis de calidad de código del proyecto RUA utilizando SonarQube y JaCoCo.
+
+---
+
+## Requisitos Previos
+
+Antes de comenzar, verificar que:
+
+- Docker esté ejecutándose.
+- El contenedor de SonarQube se encuentre activo.
+- SonarQube sea accesible desde `http://localhost:9000`.
+- IntelliJ IDEA esté configurado para utilizar Java 21.
+- El proyecto haya sido descargado y abierto correctamente.
+
+---
+
+## 1. Generar Reportes de Pruebas y Cobertura
+
+### Importante
+
+Debido a diferencias de configuración de Java entre entornos, se recomienda ejecutar las tareas de Maven desde IntelliJ IDEA.
+
+### Procedimiento
+
+1. Abrir el panel **Maven** en IntelliJ.
+2. Navegar a:
+
+```text
+rua
+└── Lifecycle
+    ├── clean
+    └── test
+```
+
+3. Ejecutar `clean`.
+4. Ejecutar `test`.
+5. Esperar hasta obtener el mensaje:
+
+```text
+BUILD SUCCESS
+```
+
+Este proceso ejecuta las pruebas unitarias y genera el reporte de cobertura mediante JaCoCo.
+
+---
+
+## 2. Ejecutar el Análisis de SonarQube
+
+Abrir la terminal integrada de IntelliJ y ubicarse en la raíz del proyecto.
+
+Ejecutar el siguiente comando:
+
+```powershell
+.\mvnw sonar:sonar `
+"-Dsonar.host.url=http://localhost:9000" `
+"-Dsonar.token=TU_TOKEN_AQUI" `
+"-Dsonar.projectName=RUA" `
+"-Dsonar.projectKey=RUA"
+```
+
+> El token debe ser generado por cada integrante desde su cuenta de SonarQube.
+
+Esperar hasta obtener:
+
+```text
+BUILD SUCCESS
+```
+
+---
+
+## 3. Consultar Resultados
+
+1. Abrir `http://localhost:9000`.
+2. Seleccionar el proyecto **RUA**.
+3. Acceder a la pestaña **Overall Code**.
+
+Las métricas principales son:
+
+| Métrica | Descripción |
+|----------|-------------|
+| Coverage | Cobertura de pruebas unitarias |
+| Issues | Problemas detectados por SonarQube |
+| Code Smells | Posibles mejoras de mantenibilidad |
+| Bugs | Errores potenciales |
+| Vulnerabilities | Posibles problemas de seguridad |
+| Quality Gate | Estado general de calidad |
+
+---
+
+## Solución de Problemas
+
+### Error: release version 21 not supported
+
+**Causa:** La terminal utiliza una versión distinta de Java.
+
+**Solución:** Ejecutar las tareas `clean` y `test` desde el panel Maven de IntelliJ.
+
+---
+
+### Error: Not authorized
+
+**Causa:** Token inválido o expirado.
+
+**Solución:** Generar un nuevo token desde:
+
+```text
+My Account → Security
+```
+
+---
+
+### Coverage igual a 0%
+
+**Causa:** SonarQube no encuentra el reporte de JaCoCo.
+
+**Verificar:**
+
+- Que se ejecutó correctamente la tarea `test`.
+- Que el plugin JaCoCo está configurado en `pom.xml`.
+- Que existe el directorio:
+
+```text
+target/site/jacoco/
+```
+
+---
+
+## Flujo General
+
+```text
+Iniciar SonarQube
+        ↓
+Ejecutar clean
+        ↓
+Ejecutar test
+        ↓
+Generar cobertura JaCoCo
+        ↓
+Ejecutar sonar:sonar
+        ↓
+Revisar resultados en SonarQube
+```
