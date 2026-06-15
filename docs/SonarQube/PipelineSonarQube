@@ -55,11 +55,7 @@ Abrir la terminal integrada de IntelliJ y ubicarse en la raíz del proyecto.
 Ejecutar el siguiente comando:
 
 ```powershell
-.\mvnw sonar:sonar `
-"-Dsonar.host.url=http://localhost:9000" `
-"-Dsonar.token=TU_TOKEN_AQUI" `
-"-Dsonar.projectName=RUA" `
-"-Dsonar.projectKey=RUA"
+.\mvnw clean verify sonar:sonar "-Dsonar.token=TU_TOKEN_AQUI"
 ```
 
 > El token debe ser generado por cada integrante desde su cuenta de SonarQube.
