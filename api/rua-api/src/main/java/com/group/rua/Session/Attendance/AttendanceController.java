@@ -1,5 +1,6 @@
 package com.group.rua.Session.Attendance;
 
+import com.group.rua.RuaConfig;
 import com.group.rua.Entities_Classes.Attendance;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/attendance")
-@CrossOrigin(origins = "http://localhost:1427")
+@CrossOrigin(origins = RuaConfig.FRONTEND_URL)
 public class AttendanceController {
 
     private final AttendanceService attendanceService;

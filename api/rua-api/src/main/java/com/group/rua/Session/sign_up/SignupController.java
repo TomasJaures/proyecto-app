@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
-import com.group.rua.RuaConfig;
-import com.group.rua.Entities_Classes.UnconfirmedUser;
 import com.group.rua.RuaConfig;
 import com.group.rua.Entities_Classes.UnconfirmedUser;
 
@@ -44,9 +41,6 @@ public class SignupController {
                 .status(HttpStatus.FOUND)
                 .location(uri)
                 .build();
-                .status(HttpStatus.FOUND)
-                .location(uri)
-                .build();
     }
 
     /**
@@ -74,15 +68,18 @@ public class SignupController {
     @GetMapping("/email_sended")
     public ResponseEntity<String> notifyEmailSended() {
         return ResponseEntity.ok("Te hemos enviado un EMAIL!! Revisa tu correo de SPAM");
+        //TODO: Añadir interfaz de FrontEnd.
     }
 
     @GetMapping("/confirmation_success")
     public ResponseEntity<String> confirmationSuccess() {
         return ResponseEntity.ok("Correo verificado correctamente! Puedes volver al Log In");
+        //TODO: Añadir interfaz de FrontEnd.
     }
 
     @GetMapping("/confirmation_fail")
     public ResponseEntity<String> confirmationFail() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hubo un problema con tu correo :(");
+        //TODO: Añadir interfaz de FrontEnd.
     }
 }

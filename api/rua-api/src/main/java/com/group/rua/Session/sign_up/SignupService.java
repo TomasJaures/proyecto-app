@@ -81,6 +81,7 @@ public class SignupService {
         String correoLower = user.mail.toLowerCase();
         if (!correoLower.endsWith("@ufrontera.cl") && !correoLower.endsWith("@ufromail.cl")) {
             throw new IllegalArgumentException("Debe utilizar un correo institucional válido (@ufrontera.cl o @ufromail.cl)");
+            //TODO: HACER INTERFAZ en FRONTEND!
         }
     }
 
@@ -115,12 +116,8 @@ public class SignupService {
         confirmedUser.mail = unconfirmedUser.mail;
         confirmedUser.hashedPassword = unconfirmedUser.hashedPassword;
 
-        String correoLower = unconfirmedUser.mail.toLowerCase();
-        if (correoLower.endsWith("@ufrontera.cl")) {
-            confirmedUser.userRole = "TEACHER";
-        } else if (correoLower.endsWith("@ufromail.cl")) {
-            confirmedUser.userRole = "STUDENT";
-        }
+        String role = asignRoleByMail(unconfirmedUser.mail);
+        confirmedUser.userRole = role;        
 
         Calendar calendar = new Calendar();
         Program program = new Program();
@@ -131,7 +128,8 @@ public class SignupService {
     }
 
     public void sendConfirmationEmail(String destinationEmail, String token) throws MessagingException {
-        String link = confirmationLink + "?token_verificacion=" + token;
+        String link = confirmationLink + "?confirmationTokenString=" + token;
+        
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -143,9 +141,9 @@ public class SignupService {
         String html = EmailDesing.createDesign(link);
         helper.setText(html, true);
 
-        System.out.println(link);
+        System.out.println("TEST: LINK para confirmacion!" + link);
         //TODO: Descomentar linea
-        mailSender.send(message);
+        //mailSender.send(message);
     }
 
     public UnconfirmedUser saveUnconfirmedUser(UnconfirmedUser user) {
@@ -167,6 +165,17 @@ public class SignupService {
 
     public String encryptPassword(String password) {
         return passwordEncoder.encode(password);
+    }
+
+    public String asignRoleByMail(String mail){
+        String correoLower = mail.toLowerCase();
+        String role = "";
+        if (correoLower.endsWith("@ufrontera.cl")) {
+            role = "professor"; //Report: Cambiado de TEACHER a professor
+        } else if (correoLower.endsWith("@ufromail.cl")) {
+            role = "student"; //Report: Cambiado de STUDENT a student
+        }
+        return role;
     }
 
     private final UnconfirmedUserRepo unconfirmedUserRepo;

@@ -109,3 +109,19 @@ Session/sign_up/SignupService.java
 5. Aplica únicamente los cambios necesarios.
 6. Verifica que las consultas JPA y relaciones entre entidades sean coherentes con la nueva estructura.
 7. Entrega el código actualizado junto con una explicación resumida de cada modificación.
+
+
+
+blockId : 2
+blockState : "NO_PROJECTIONS"
+calendarId : 1
+code : "ICC705"
+
+weekDay : "TUE"
+startHour : "10:00:00"
+endHour : "11:30:00"
+
+moduleId : 2
+moduleNum : 2
+subjectId : 1
+subjectName : "Bases de Datos"

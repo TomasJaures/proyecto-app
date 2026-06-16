@@ -4,13 +4,16 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
+
   return (
 
     <div className="dashboard-layout">
 
       <Navbar
-        rol="Docente"
-        nombre="Hola,"
+        rol="Alumno"
+        nombre={user?.name || "NoName"}
       />
 
       <main className="pagina-dashboard">
@@ -18,7 +21,7 @@ function Dashboard() {
         <div className="bienvenida">
 
           <h1>
-            Hola,
+            Hola, {user?.name || "NoName"}
           </h1>
 
           <p>
@@ -50,7 +53,7 @@ function Dashboard() {
 
             </button>
 
-            <button className="boton-dashboard">
+            <button className="boton-dashboard" onClick={() => navigate("/alumnohorario")}>
 
               <img
                 src="/assets/asistencia-icon.svg"

@@ -20,5 +20,5 @@ public class Classes {
     public Integer blockId;
 
     @Column(name = "is_anulled")
-    public Boolean isAnulled;
+    public Boolean isAnulled = false;
 }
