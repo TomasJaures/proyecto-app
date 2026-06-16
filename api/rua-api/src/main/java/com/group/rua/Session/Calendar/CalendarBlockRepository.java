@@ -44,4 +44,11 @@ public interface CalendarBlockRepository extends JpaRepository<CalendarBlock, Ca
         WHERE cb.id.calendarId = :calendarId
     """)
     List<CalendarBlockDTO> findBlocksByCalendarId(@Param("calendarId") Integer calendarId);
+    //blocks.block_id
+    //blocks.block_state
+    //classes.class_id
+    //classes.is_anulled
+    //modules.num
+    //subjects.subject_name
+    //subjects.code
 }

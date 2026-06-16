@@ -9,6 +9,8 @@ import java.util.Optional;
 
 public interface AttendanceRepo extends JpaRepository<Attendance, AttendanceId> {
 
+
+    
     // para listar alumnos presentes
     List<Attendance> findByClassIdAndStatus(Integer classId, String status);
 

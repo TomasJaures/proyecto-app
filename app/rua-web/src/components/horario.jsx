@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"; // <-- Asegúrate de importar useEffect
 import BloqueClase from "./BloqueClase";
+import { useNavigate } from "react-router-dom";
 
 function Horario({
   modo,
@@ -8,6 +9,7 @@ function Horario({
   codigoClase,
   bloques // 1. Recibimos los bloques de la API aquí
 }) {
+  const navigate = useNavigate();
 
   const horas = [
     "8:30", "9:40", "10:50", "12:00", "13:20", 
@@ -22,27 +24,27 @@ function Horario({
   const [claseSeleccionada, setClaseSeleccionada] = useState(null);
 
   const obtenerFilaPorHora = (horaString, horasDisponibles) => {
-  // Tomamos solo la hora y minutos (ej: "10:00:00" -> "10:00")
-  const [hora, minutos] = horaString.split(":");
-  const horaClase = parseInt(hora) * 60 + parseInt(minutos);
+    // Tomamos solo la hora y minutos (ej: "10:00:00" -> "10:00")
+    const [hora, minutos] = horaString.split(":");
+    const horaClase = parseInt(hora) * 60 + parseInt(minutos);
 
-  let filaEncontrada = 0;
-  let diferenciaMinima = Infinity;
+    let filaEncontrada = 0;
+    let diferenciaMinima = Infinity;
 
-  // Buscamos cuál es el bloque oficial que más se aproxima
-  horasDisponibles.forEach((h, index) => {
-    const [hOficial, mOficial] = h.split(":");
-    const horaOficial = parseInt(hOficial) * 60 + parseInt(mOficial);
-    const dif = Math.abs(horaClase - horaOficial);
+    // Buscamos cuál es el bloque oficial que más se aproxima
+    horasDisponibles.forEach((h, index) => {
+      const [hOficial, mOficial] = h.split(":");
+      const horaOficial = parseInt(hOficial) * 60 + parseInt(mOficial);
+      const dif = Math.abs(horaClase - horaOficial);
 
-    if (dif < diferenciaMinima) {
-      diferenciaMinima = dif;
-      filaEncontrada = index;
-    }
-  });
+      if (dif < diferenciaMinima) {
+        diferenciaMinima = dif;
+        filaEncontrada = index;
+      }
+    });
 
-  return filaEncontrada;
-};
+    return filaEncontrada;
+  };
 
   // Función para calcular cuántos bloques de ~50-70 min ocupa la clase
   const calcularLongitudBloque = (inicio, fin) => {
@@ -77,24 +79,19 @@ function Horario({
       const clasesMapeadas = [];
 
       bloques.forEach((bloque) => {
-        // 1. Encontrar la columna según el día de la semana
         const columna = mapeoDias[bloque.weekDay];
-        
-        // 2. Encontrar la fila base según la hora de inicio (ej: "10:00:00")
         const filaBase = obtenerFilaPorHora(bloque.startHour, horas);
-        
-        // 3. Calcular cuántos bloques de duración se deben pintar
         const bloquesDeDuracion = calcularLongitudBloque(bloque.startHour, bloque.endHour);
 
-        // Agregamos la clase a la fila correspondiente, y si dura más de un bloque, 
-        // la duplicamos en las filas consecutivas para que se renderice completa en la tabla
+        //La ultima classe vinculada con el bloque
         for (let i = 0; i < bloquesDeDuracion; i++) {
           clasesMapeadas.push({
+            id: bloque.blockId,
             fila: filaBase + i,
             columna: columna,
             codigo: bloque.code ? `INF-${bloque.code}` : "S/C",
             nombre: bloque.subjectName || "Clase Cargada",
-            estado: "pendiente" // Mantiene el estilo gris que mencionaste
+            estado: "pendiente"
           });
         }
       });
@@ -171,6 +168,17 @@ function Horario({
       setModo(null);
       return;
     }
+
+    if (modo === "editar") {
+      const clase = clases.find(
+        c =>
+            c.fila === fila &&
+            c.columna === columna
+      );
+
+      //TODO: AQUI
+      navigate(`/editarclase/${clase.id}`);
+    };
 
     if (modo === "mover") {
 

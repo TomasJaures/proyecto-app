@@ -12,6 +12,8 @@ import EmailSended from "./pages/EmailSended.jsx";
 import DocenteHub from "./pages/DocenteHub.jsx";
 import DocenteAdmin from "./pages/DocenteAdmin.jsx";
 import DocenteHorario from "./pages/DocenteHorario.jsx";
+import AsistenciaClase from "./pages/AsistenciaClase.jsx";
+import EditarClase from "./pages/EditarClase.jsx";
 
 function App() {
 
@@ -43,6 +45,12 @@ function App() {
         <Route path="/generadorqr" element={<GeneradorQR />} />
 
         <Route path="/error" element={<FatalError />} />
+
+        
+
+        {/* CORRECCIÓN AQUÍ: Todo en minúsculas y con el parámetro dinámico :blockId */}
+        <Route path="/editarclase/:blockId" element={<EditarClase />} />
+        <Route path="/asistenciaclase/:classId" element={<AsistenciaClase />} />
 
       </Routes>
 
