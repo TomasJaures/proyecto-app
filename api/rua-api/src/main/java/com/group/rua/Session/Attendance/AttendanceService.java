@@ -2,8 +2,10 @@ package com.group.rua.Session.Attendance;
 
 import com.group.rua.Entities_Classes.Attendance;
 import com.group.rua.Entities_Classes.Classes;
+import com.group.rua.Entities_Classes.User;
 import com.group.rua.Repositories.AttendanceRepo;
 import com.group.rua.Repositories.ClassesRepo;
+import com.group.rua.Repositories.UserRepo;
 
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ public class AttendanceService {
     // listar alumnos presentes
     public List<Attendance> getPresentStudents(Integer classId) {
         return attendanceRepo.findByClassIdAndStatus(classId, "PRESENT");
+        
     }
 
     public ClassInfoDTO getClassInfoWithDetails(Integer blockId) {
@@ -41,6 +44,10 @@ public class AttendanceService {
         } else {
             throw new RuntimeException("No hay clase con esa ID"); //FIXME: agregar expection personalizada
         }
+    }
+
+    public List<PresentStudentDTO> getPresentStudentsWithDetails(Integer classId) {
+        return attendanceRepo.findPresentStudentsWithDetails(classId, "PRESENT");
     }
 
     // recopilar datos de asistencia manual

@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import Card from "../components/card.jsx";
 import RuaAside from "../components/rua-aside.jsx";
 import "../Styles/AsistenciaClase.css";
+import axios from "axios";
+import { BACKEND_URL } from "../config.js";
 
 // ─── Modal inline ────────────────────────────────────────────────────────────
 function Modal({ open, onClose, title, children }) {
@@ -59,28 +61,36 @@ function AsistenciaClase() {
   const { classId } = useParams();
   const navigate = useNavigate();
 
-  // Datos mock de la clase — TODO: GET /class/:classId
   const [cls] = useState({
     id: classId,
     courseId: "INF-301",
     name: "Ingeniería de Software",
   });
 
-  // Datos mock de alumnos — TODO: GET /class/:classId/students
-  const [savedStudents] = useState([
-    { id: "1", name: "Ana Torres",   email: "ana.torres@ufromail.cl",   date: "10 jun 2025" },
-    { id: "2", name: "Carlos Muñoz", email: "carlos.munoz@ufromail.cl", date: "10 jun 2025" },
-  ]);
-
-  // Lista de alumnos pendiente de guardar (copia de trabajo)
-  const [pendingStudents, setPendingStudents] = useState(savedStudents);
-
-  // true cuando pendingStudents difiere de savedStudents
+  const [savedStudents, setSavedStudents] = useState([]);
+  const [pendingStudents, setPendingStudents] = useState([]);
   const [hasPendingChanges, setHasPendingChanges] = useState(false);
-
   const [showAddStudent, setShowAddStudent] = useState(false);
 
-  // Detecta cambios pendientes comparando longitudes (la única operación posible aquí es añadir)
+  // ✅ Llamada correcta: useEffect + async/await + setState
+  useEffect(() => {
+    const fetchPresentStudents = async () => {
+      try {
+        const respuesta = await axios.get(
+          `${BACKEND_URL}/api/attendance/class/${classId}/present2`
+        );
+        console.log("RESPUESTA:", respuesta.data);
+        setSavedStudents(respuesta.data);
+        setPendingStudents(respuesta.data);
+      } catch (error) {
+        console.error("Error al obtener alumnos presentes:", error);
+      }
+    };
+
+    fetchPresentStudents();
+  }, [classId]);
+
+  // Detecta cambios pendientes comparando longitudes
   useEffect(() => {
     setHasPendingChanges(pendingStudents.length !== savedStudents.length);
   }, [pendingStudents, savedStudents]);
@@ -103,8 +113,6 @@ function AsistenciaClase() {
 
   // Confirma los cambios — TODO: POST /class/:classId/students por cada alumno nuevo
   const handleGuardar = () => {
-    // savedStudents aquí se actualizaría desde el backend; por ahora simulamos con estado local
-    // savedStudents = pendingStudents  ← esto ocurrirá al recargar desde el backend
     setHasPendingChanges(false);
     alert("Cambios guardados (mock). Aquí irá la llamada al backend.");
   };
@@ -152,13 +160,13 @@ function AsistenciaClase() {
           ) : (
             <ul className="lista-alumnos">
               {pendingStudents.map((student) => (
-                <li key={student.id} className="alumno-item">
+                <li key={student.userId} className="alumno-item">
                   <div className="alumno-avatar">
                     <span>👤</span>
                   </div>
                   <div className="alumno-info">
-                    <p className="alumno-nombre">{student.name}</p>
-                    <p className="alumno-email">{student.email}</p>
+                    <p className="alumno-nombre">{student.userName} {student.lastName1} {student.lastName2}</p>
+                    <p className="alumno-email">{student.mail}</p>
                   </div>
                   {student.date && (
                     <div className="alumno-fecha">
