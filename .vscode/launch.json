@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "UserRepoTest",
+            "request": "launch",
+            "mainClass": "com.group.rua.Session.Integration_Tests.Repositories.UserRepoTest",
+            "projectName": "rua"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-RuaApplication<rua>",
             "request": "launch",
             "cwd": "${workspaceFolder}",

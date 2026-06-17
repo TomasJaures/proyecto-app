@@ -1,12 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { useNavigate } from "react-router-dom";
-import { FRONTEND_URL, BACKEND_URL } from "../config.js";
-
-
 import axios from "axios";
 
-import Navbar from "../components/Navbar.jsx";
+import Navbar from "../components/navbar.jsx";
 
 function QrAttempt() {
 
@@ -44,14 +41,14 @@ function QrAttempt() {
 
               // enviar token al backend
               await axios.post(
-                BACKEND_URL + "/scanqr",
+                "http://localhost:3000/scanqr",
                 {
                   token: textoQR
                 }
               );
 
               // redireccion futura
-              navigate("/alumnohub");
+              navigate("/login");
 
             } catch (error) {
 

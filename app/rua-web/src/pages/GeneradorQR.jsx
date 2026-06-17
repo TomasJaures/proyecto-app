@@ -9,7 +9,6 @@ function GeneradorQR() {
   const [tiempo, setTiempo] = useState(180);
 
   function generarQR() {
-    
     const codigo = crypto.randomUUID();
 
     setQrValue(codigo);

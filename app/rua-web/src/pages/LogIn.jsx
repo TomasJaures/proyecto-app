@@ -1,45 +1,46 @@
 import RuaAside from "../components/rua-aside.jsx";
 import Card from "../components/card.jsx";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { BACKEND_URL, FRONTEND_URL } from "../config.js";
 import axios from "axios";
+import { BACKEND_URL, FRONTEND_URL } from "../config.js";
 
 function LogIn() {
-
-  const [rol, setRol] = useState("docente");
-  const [correo, setCorreo] = useState("");
-  const [contrasena, setContrasena] = useState("");
+  
   const navigate = useNavigate();
+  const [role, setRole] = useState("docente");
+  const [mail, setMail] = useState("");
+  const [hashedPassword, setClave] = useState("");
 
   async function onConfirmarClick() {
 
-  try {
+    try {
 
-    const respuesta = await axios.post(
-      BACKEND_URL + "/account/login",
-      {
-        //rol: rol,
-        correo: correo,
-        contrasena: contrasena
+      const respuesta = await axios.post(
+        BACKEND_URL + "/account/login",
+        {
+          mail: mail,
+          hashedPassword: hashedPassword
+        }
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(respuesta.data)
+      );
+
+      const user = respuesta.data;
+
+      if (user.role === "student") {
+        navigate("/alumnohub");
+      } else {
+        navigate("/docentehub");
       }
-    );
 
-    //Usuario esta verificado ()
-    console.log("RESPUESTA DEL SERVIDOR:", respuesta.data);
-    navigate("/alumnohub");
-
-  } catch (error) {
-    if (error.response?.status === 401){
-      console.log("Correo no verificado... Error:", error);
-    } else {
-      console.log("ERROR externo:", error);
+    } catch (error) {
+      console.log("ERROR:", error);
     }
-    
-
   }
-}
 
   return (
     <div className="pagina">
@@ -67,15 +68,15 @@ function LogIn() {
           <div className="grupo-botones">
 
             <button
-              onClick={() => setRol("estudiante")}
-              className={ rol === "estudiante" ? "activo" : "inactivo" }
+              onClick={() => setRole("estudiante")}
+              className={ role === "estudiante" ? "activo" : "inactivo" }
             >
               Soy Alumno
             </button>
 
             <button
-              onClick={() => setRol("docente")}
-              className={ rol === "docente" ? "activo" : "inactivo" }
+              onClick={() => setRole("docente")}
+              className={ role === "docente" ? "activo" : "inactivo" }
             >
               Soy Docente
             </button>
@@ -83,22 +84,22 @@ function LogIn() {
           </div>
 
           {/* INPUTS */}
-          <label>CORREO INSTITUCIONAL</label>
+          <label>mail INSTITUCIONAL</label>
 
           <input
             type="text"
-            placeholder={ rol === "estudiante" ? "ejemplo@ufromail.cl" : "ejemplo@ufrontera.cl" }
-            value={correo}
+            placeholder={ role === "estudiante" ? "ejemplo@ufromail.cl" : "ejemplo@ufrontera.cl" }
+            value={mail}
 
-            onChange={(e) => setCorreo(e.target.value)}
+            onChange={(e) => setMail(e.target.value)}
           />
 
           <label>CLAVE RUA</label>
 
           <input type="password" placeholder="••••••••"
-          value={contrasena}
+          value={hashedPassword}
 
-          onChange={(e) => setContrasena(e.target.value)}
+          onChange={(e) => setClave(e.target.value)}
           />
 
           <button className="confirmar" onClick={onConfirmarClick}>Confirmar</button>

@@ -14,9 +14,10 @@ function FatalError() {
       {/* CONTENIDO */}
       <div className="error-contenido">
 
-        <div className="error-icono">
-          ❌
-        </div>
+        <img
+              src="/assets/error.icon.svg"
+              alt="Error"
+            />
 
         <h2>Ha ocurrido un error</h2>
 

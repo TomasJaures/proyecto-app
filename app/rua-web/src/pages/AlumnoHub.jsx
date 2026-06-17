@@ -1,64 +1,80 @@
 import Navbar from "../components/navbar";
 import Card from "../components/card";
 import { useNavigate } from "react-router-dom";
-import HelpButton from "../components/helpButton";
-
 
 function Dashboard() {
 
   const navigate = useNavigate();
-  function scanQR(){
-    navigate("/qrattempt")
-  }
-  function seeAsistance(){
-    navigate("/alumno_asistance")
-  }
-
+  const user = JSON.parse(localStorage.getItem("user"));
 
   return (
-        
-    <div className="pagina-dashboard">
-      <HelpButton helpText="Elige la opcion que desees" />
-      <Card>
 
-        <h1 className="titulo-dashboard">
-          Selecciona una opción
-        </h1>
+    <div className="dashboard-layout">
 
-        <div className="contenedor-botones">
+      <Navbar
+        rol="Alumno"
+        nombre={user?.name || "NoName"}
+      />
 
-          <button 
-          className="boton-dashboard"
-          onClick={scanQR}
-          >
+      <main className="pagina-dashboard">
 
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/6380/6380112.png"
-              alt="Asistencia"
-            />
+        <div className="bienvenida">
 
-            <span>
-              Escanear QR
-            </span>
+          <h1>
+            Hola, {user?.name || "NoName"}
+          </h1>
 
-          </button>
-
-          <button className="boton-dashboard">
-
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/3567/3567769.png"
-              alt="Cursos"
-            />
-
-            <span>
-              Ver asistencia
-            </span>
-
-          </button>
+          <p>
+            Estás registrado como Alumno.
+          </p>
 
         </div>
 
-      </Card>
+        <Card>
+
+          <h2 className="titulo-dashboard">
+            Selecciona la opción que necesitas:
+          </h2>
+            {/* BOTONES */}
+          <div className="contenedor-botones">
+
+            <button className="boton-dashboard activo"
+            onClick={() => navigate("/qrattempt")}
+            >
+
+              <img
+                src="/assets/qr-icon.svg"
+                alt="Escaner"
+              />
+
+              <span>
+                Escanear QR
+              </span>
+
+            </button>
+
+            <button className="boton-dashboard" onClick={() => navigate("/alumnohorario")}>
+
+              <img
+                src="/assets/asistencia-icon.svg"
+                alt="Cursos"
+              />
+
+              <span>
+                Ver Asistencia
+              </span>
+
+            </button>
+
+          </div>
+
+        </Card>
+
+      </main>
+
+      <footer className="footer">
+        Sitio web no afiliado con la UFRO
+      </footer>
 
     </div>
   );
