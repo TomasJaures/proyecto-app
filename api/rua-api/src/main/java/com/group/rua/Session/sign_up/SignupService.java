@@ -143,7 +143,7 @@ public class SignupService {
 
         System.out.println("TEST: LINK para confirmacion!" + link);
         //TODO: Descomentar linea
-        //mailSender.send(message);
+        mailSender.send(message);
     }
 
     public UnconfirmedUser saveUnconfirmedUser(UnconfirmedUser user) {

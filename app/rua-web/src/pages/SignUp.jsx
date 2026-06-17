@@ -1,14 +1,17 @@
 import { useState } from "react";
 import RuaAside from "../components/rua-aside.jsx";
 import Card from "../components/card.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "../config.js";
+import { Navigate } from "react-router-dom";
 
 function SignUp() {
 
-  const [aceptado, setAceptado] = useState(false);
+  const navigate = useNavigate();
 
+  const [aceptado, setAceptado] = useState(false);
+  
   const [userName, setNombre] = useState("");
   const [lastName1, setApellido1] = useState("");
   const [lastName2, setApellido2] = useState("");
@@ -29,12 +32,14 @@ function SignUp() {
           hashedPassword: hashedPassword
         }
       );
-
-      console.log("RESPUESTA:", respuesta.data);
+      
+      // Redirigir al componente de confirmación
+      navigate("/emailsended");
 
     } catch (error) {
 
       console.log("ERROR:", error);
+      navigate("/error");
 
     }
   }

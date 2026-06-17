@@ -71,6 +71,7 @@ function AsistenciaClase() {
   const [pendingStudents, setPendingStudents] = useState([]);
   const [hasPendingChanges, setHasPendingChanges] = useState(false);
   const [showAddStudent, setShowAddStudent] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // ✅ Llamada correcta: useEffect + async/await + setState
   useEffect(() => {
@@ -102,19 +103,58 @@ function AsistenciaClase() {
     setPendingStudents((prev) => [
       ...prev,
       {
-        id: Date.now().toString(),
-        name,
-        email,
+        userId: Date.now().toString(),
+        userName: name,
+        mail: email,
+        lastName1: "",
+        lastName2: "",
         date: new Date().toLocaleDateString("es-CL", { day: "numeric", month: "short", year: "numeric" }),
+        isNew: true, // Marca para identificar alumnos nuevos
       },
     ]);
     setShowAddStudent(false);
   };
 
-  // Confirma los cambios — TODO: POST /class/:classId/students por cada alumno nuevo
-  const handleGuardar = () => {
-    setHasPendingChanges(false);
-    alert("Cambios guardados (mock). Aquí irá la llamada al backend.");
+  // Confirma los cambios — Obtiene alumnos nuevos y envía al backend
+  const handleGuardar = async () => {
+    setIsSaving(true);
+    try {
+      // Obtener solo los alumnos nuevos (que no están en savedStudents)
+      const newStudents = pendingStudents.filter(
+        (pStudent) => !savedStudents.some(
+          (sStudent) => sStudent.mail === pStudent.mail
+        )
+      );
+
+      console.log("Alumnos nuevos a guardar:", newStudents);
+
+      // Enviar cada alumno nuevo al backend
+      if (newStudents.length > 0) {
+        for (const student of newStudents) {
+          await axios.post(
+            `${BACKEND_URL}/api/attendance/class/${classId}/students`,
+            {
+              mail: student.mail,
+              userName: student.userName,
+              lastName1: student.lastName1,
+              lastName2: student.lastName2,
+            }
+          );
+        }
+        alert(`✓ ${newStudents.length} alumno(s) guardado(s) correctamente.`);
+      } else {
+        alert("No hay alumnos nuevos para guardar.");
+      }
+
+      // Actualizar el estado guardado
+      setSavedStudents(pendingStudents);
+      setHasPendingChanges(false);
+    } catch (error) {
+      console.error("Error al guardar alumnos:", error);
+      alert("Error al guardar los alumnos. Intenta de nuevo.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Descarta los cambios pendientes y vuelve al estado guardado
@@ -139,8 +179,12 @@ function AsistenciaClase() {
             <div className="barra-pendiente">
               <span>⚠ Tienes cambios sin guardar</span>
               <div className="barra-pendiente-acciones">
-                <button className="secundario" onClick={handleCancelar}>Cancelar</button>
-                <button className="confirmar" onClick={handleGuardar}>Guardar</button>
+                <button className="secundario" onClick={handleCancelar} disabled={isSaving}>
+                  Cancelar
+                </button>
+                <button className="confirmar" onClick={handleGuardar} disabled={isSaving}>
+                  {isSaving ? "Guardando..." : "Guardar"}
+                </button>
               </div>
             </div>
           )}
@@ -181,10 +225,10 @@ function AsistenciaClase() {
 
           {/* Acciones */}
           <div className="acciones-row">
-            <button className="confirmar boton-icono" onClick={() => setShowAddStudent(true)}>
+            <button className="confirmar boton-icono" onClick={() => setShowAddStudent(true)} disabled={isSaving}>
               ＋ Añadir alumno
             </button>
-            <button className="secundario" onClick={() => navigate(`/docente/clase/${cls.id}`)}>
+            <button className="secundario" onClick={() => navigate(`/docente/clase/${cls.id}`)} disabled={isSaving}>
               Volver
             </button>
           </div>

@@ -38,7 +38,7 @@ class LoginIntegrationTest {
         usuario.mail = "docente@ufrontera.cl";
         usuario.hashedPassword = passwordEncoder.encode("secreta123");
         // Si tienes más atributos requeridos en tu BD, agrégalos aquí
-        usuario.userRole = "PROFESSOR";
+        usuario.userRole = "professor";
         userRepo.save(usuario);
 
         String loginJson = """
