@@ -13,7 +13,7 @@ public interface ClassesRepo extends JpaRepository<Classes, Integer> {
 
     Optional<Classes> findByBlockId(Integer id);
 
-    
+
     @Query("SELECT new com.group.rua.Session.Attendance.ClassInfoDTO(" +
            "b.blockId, b.blockState, c.classId, c.isAnulled, m.num, s.subjectName, s.code) " +
            "FROM Classes c " +

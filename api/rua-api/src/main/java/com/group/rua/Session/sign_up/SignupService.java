@@ -17,7 +17,7 @@ import com.group.rua.Entities_Classes.UnconfirmedUser;
 import com.group.rua.Entities_Classes.User;
 import com.group.rua.Exceptions.DuplicatedInUnconfirmedUsers;
 import com.group.rua.Exceptions.DuplicatedInUsers;
-import com.group.rua.General.EmailDesing;
+import com.group.rua.General.EmailDesign;
 import com.group.rua.Repositories.ConfirmationTokenRepo;
 import com.group.rua.Repositories.UnconfirmedUserRepo;
 import com.group.rua.Repositories.UserRepo;
@@ -138,7 +138,7 @@ public class SignupService {
         helper.setTo(destinationEmail);
         helper.setSubject("Verificación de cuenta");
 
-        String html = EmailDesing.createDesign(link);
+        String html = EmailDesign.createDesign(link);
         helper.setText(html, true);
 
         System.out.println("TEST: LINK para confirmacion!" + link);
