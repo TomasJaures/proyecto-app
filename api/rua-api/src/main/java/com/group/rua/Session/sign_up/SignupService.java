@@ -142,7 +142,6 @@ public class SignupService {
         helper.setText(html, true);
 
         System.out.println("TEST: LINK para confirmacion!" + link);
-        //TODO: Descomentar linea
         mailSender.send(message);
     }
 
