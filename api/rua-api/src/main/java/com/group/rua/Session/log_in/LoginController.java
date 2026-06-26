@@ -36,7 +36,10 @@ public ResponseEntity<?> loginUser(@RequestBody User loginData) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas o correo no verificado.");
     }
     Optional<User> userOpt = userRepo.findByMail(loginData.mail);
-    User user = userOpt.get();
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Usuario inexistente");
+        }
+        User user = userOpt.get();
     
     Map<String, Object> response = new HashMap<>();
 

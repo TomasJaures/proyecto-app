@@ -43,10 +43,11 @@ class ManualAttendanceIntegrationTest {
                 .andExpect(jsonPath("$.userId").value(userIdTest))
                 .andExpect(jsonPath("$.status").value(statusTest));
 
-        boolean existsInDb = attendanceRepo.findByUserIdAndClassId(userIdTest, classIdTest).isPresent();
-        assertTrue(existsInDb, "The attendance record should exist in the database");
+        var attendanceOpt = attendanceRepo.findByUserIdAndClassId(userIdTest, classIdTest);
 
-        Attendance savedAttendance = attendanceRepo.findByUserIdAndClassId(userIdTest, classIdTest).get();
+        assertTrue(attendanceOpt.isPresent(), "The attendance record should exist in the database");
+
+        Attendance savedAttendance = attendanceOpt.get();
         assertEquals("PRESENT", savedAttendance.status);
     }
 }

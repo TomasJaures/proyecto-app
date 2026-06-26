@@ -16,7 +16,8 @@ class AttendanceIdTest {
         assertNotEquals(id1, id3);
         assertEquals(id1.hashCode(), id2.hashCode());
 
-        assertFalse(id1.equals(null));
+        assertNotEquals(null, id1);
+
         assertFalse(id1.equals(new Object()));
         assertNotNull(emptyId);
     }
