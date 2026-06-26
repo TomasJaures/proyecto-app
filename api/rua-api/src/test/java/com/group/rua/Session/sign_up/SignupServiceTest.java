@@ -61,6 +61,7 @@ class SignupServiceTest {
         ConfirmationToken token = new ConfirmationToken();
         token.content = "abcd";
         token.unconfirmedUser = user;
+        user.mail = "alumno@ufrontera.cl";
 
         when(confirmationTokenRepo.findByContent(token.content))
             .thenReturn(Optional.of(token));

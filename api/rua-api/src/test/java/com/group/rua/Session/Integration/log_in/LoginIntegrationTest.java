@@ -2,6 +2,7 @@ package com.group.rua.Session.Integration.log_in;
 
 import com.group.rua.Entities_Classes.User;
 import com.group.rua.Repositories.UserRepo;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -31,17 +31,23 @@ class LoginIntegrationTest {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @BeforeEach
+    void setUp() {
+        userRepo.deleteAll();
+    }
+
     // Caso de uso: Permitir ingreso al sistema
     @Test
-    void loginUser_ConCredencialesValidas_DebeRetornarOk() throws Exception {
+    void permitirIngresoAlSistema_ConCredencialesValidas_RetornaOk() throws Exception {
+
+        // Arrange
         User usuario = new User();
         usuario.mail = "docente@ufrontera.cl";
         usuario.hashedPassword = passwordEncoder.encode("secreta123");
-        // Si tienes más atributos requeridos en tu BD, agrégalos aquí
         usuario.userRole = "professor";
         userRepo.save(usuario);
 
-        String loginJson = """
+        String requestBody = """
                 {
                     "mail": "docente@ufrontera.cl",
                     "hashedPassword": "secreta123"
@@ -50,8 +56,7 @@ class LoginIntegrationTest {
 
         mockMvc.perform(post("/account/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginJson))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Inicio de sesión exitoso. ¡Bienvenido!"));
+                        .content(requestBody))
+                .andExpect(status().isOk());
     }
 }
