@@ -17,9 +17,11 @@ import java.util.List;
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
+    private final AttendanceAlertService attendanceAlertService;
 
-    public AttendanceController(AttendanceService attendanceService) {
+    public AttendanceController(AttendanceService attendanceService, AttendanceAlertService attendanceAlertService) {
         this.attendanceService = attendanceService;
+        this.attendanceAlertService = attendanceAlertService;
     }
 
     @GetMapping("/class/{blockId}/getInfo")
@@ -52,5 +54,20 @@ public class AttendanceController {
 
         Attendance registeredAttendance = attendanceService.registerManualAttendance(userId, classId, status);
         return ResponseEntity.ok(registeredAttendance);
+    }
+
+    @PostMapping("/class/{classId}/alert-low-attendance")
+    public ResponseEntity<String> sendLowAttendanceAlert(
+            @PathVariable Integer classId,
+            @RequestParam Integer userId,
+            @RequestParam Double percentage) {
+
+        try {
+            // Requerirá instanciar AttendanceAlertService en el constructor del controlador
+            attendanceAlertService.generateAndSendAlert(userId, classId, percentage);
+            return ResponseEntity.ok("Alerta generada con IA y enviada correctamente al alumno.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
