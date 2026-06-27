@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: rua-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: rua_v2
+      MYSQL_USER: springboot
+      MYSQL_PASSWORD: mouse-higado-saturno
+      MYSQL_ROOT_PASSWORD: root_password_segura
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  backend-api:
+    build: .
+    container_name: rua-backend
+    restart: always
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    ports:
+      - "1428:1428"
+    environment:
+      - DB_URL=jdbc:mysql://mysql-db:3306/rua_v2?allowPublicKeyRetrieval=true&useSSL=false
+      - DB_USER=springboot
+      - DBPASS=mouse-higado-saturno
+      - MAILKEY=${MAILKEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+    env_file:
+      - .env
+
+volumes:
+  mysql_data:

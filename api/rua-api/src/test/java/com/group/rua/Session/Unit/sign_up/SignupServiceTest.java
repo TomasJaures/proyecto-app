@@ -122,7 +122,7 @@ class SignupServiceTest {
     }
 
     @Test
-    void promoteToConfirmedUser_TeacherRole_Test() {
+    void promoteToConfirmedUser_ProfessorRole_Test() {
         // Obliga a pasar por la línea verde/roja del if de "@ufrontera.cl"
         UnconfirmedUser unconfirmedUser = createUnconfirmedUser();
         unconfirmedUser.mail = "docente@ufrontera.cl"; // Correo de profe
@@ -131,7 +131,7 @@ class SignupServiceTest {
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepo, atLeastOnce()).save(captor.capture());
-        assertEquals("TEACHER", captor.getValue().userRole);
+        assertEquals("professor", captor.getValue().userRole);
     }
 
     @Test

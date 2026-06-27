@@ -1,5 +1,7 @@
 package com.group.rua.Session.Integration.log_in;
 
+import com.group.rua.Entities_Classes.Calendar;
+import com.group.rua.Entities_Classes.Program;
 import com.group.rua.Entities_Classes.User;
 import com.group.rua.Repositories.UserRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -45,6 +47,14 @@ class LoginIntegrationTest {
         usuario.mail = "docente@ufrontera.cl";
         usuario.hashedPassword = passwordEncoder.encode("secreta123");
         usuario.userRole = "professor";
+
+        // Crear Program y Calendar SIN asignar IDs (Hibernate los generará)
+        Program program = new Program();
+        Calendar calendar = new Calendar();
+
+        usuario.program = program;
+        usuario.calendar = calendar;
+
         userRepo.save(usuario);
 
         String requestBody = """
@@ -57,6 +67,8 @@ class LoginIntegrationTest {
         mockMvc.perform(post("/account/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.role").value("professor"))
+                .andExpect(jsonPath("$.id").exists());
     }
 }

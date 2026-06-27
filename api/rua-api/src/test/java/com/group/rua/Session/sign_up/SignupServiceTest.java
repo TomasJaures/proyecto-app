@@ -59,7 +59,7 @@ class SignupServiceTest {
         //Arrange
         UnconfirmedUser user = new UnconfirmedUser();
         ConfirmationToken token = new ConfirmationToken();
-        token.content = "abcd";
+        token.content = "abc ord";
         token.unconfirmedUser = user;
         user.mail = "alumno@ufrontera.cl";
 
