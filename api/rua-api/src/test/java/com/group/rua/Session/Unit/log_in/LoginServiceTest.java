@@ -77,8 +77,6 @@ class LoginServiceTest {
         assertFalse(resultado);
     }
 
-    //[!!!] Test "authenticate_FallaPorCorreoNoVerificado" ya no existe debido al cambio de la BD
-
     @Test
     void authenticate_FallaUsuarioNoExiste() {
         //Arrange
