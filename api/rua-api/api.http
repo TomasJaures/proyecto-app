@@ -12,3 +12,20 @@ Content-Type: application/json
 
 ### Confirmar identidad (Cambiar el token)
 GET http://localhost:1428/account/verify_email?token_verificacion=2c632766-622b-46fa-85c1-81995923649f
+
+### Ver todos los bloques (Suponiendo que el calendario ID es 1)
+GET http://localhost:1428/api/calendars/1/blocks
+Accept: application/json
+
+### Mover una clase (Suponiendo que el bloque ID es 1)
+PATCH http://localhost:1428/api/calendars/blocks/1/move
+Content-Type: application/json
+
+{
+  "weekDay": "TUE",
+  "startHour": "10:00:00",
+  "endHour": "11:30:00"
+}
+
+### Remover una clase
+PATCH http://localhost:1428/api/calendars/blocks/1/remove

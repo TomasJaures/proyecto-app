@@ -1,7 +1,5 @@
 package com.group.rua.Repositories;
 
-
-
 import com.group.rua.Session.Calendar.CalendarBlockDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +15,7 @@ public interface CalendarBlockRepository extends JpaRepository<CalendarBlock, Ca
     /**
      * Devuelve todos los bloques asociados a un calendario,
      * enriquecidos con datos de módulo y asignatura.
+     * * [RESUELTO]: Se excluyen los bloques con estado REMOVED.
      *
      * La query replica la consulta SQL de referencia usando JPQL
      * sobre los @Column mapeados como Integer (sin relaciones JPA).
@@ -43,8 +42,10 @@ public interface CalendarBlockRepository extends JpaRepository<CalendarBlock, Ca
         JOIN Module m ON b.moduleId   = m.moduleId
         JOIN Subject s ON m.subjectId = s.subjectId
         WHERE cb.id.calendarId = :calendarId
+        AND b.blockState != com.group.rua.Entities_Classes.Block$BlockState.REMOVED
     """)
     List<CalendarBlockDTO> findBlocksByCalendarId(@Param("calendarId") Integer calendarId);
+
     //blocks.block_id
     //blocks.block_state
     //classes.class_id

@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import com.group.rua.RuaConfig;
 
 import java.util.List;
+import com.group.rua.Entities_Classes.Block.WeekDay;
+import java.time.LocalTime;
 
 @RestController
 @RequestMapping("/api/calendars")
@@ -42,11 +44,48 @@ public class CalendarBlockController {
      *   }
      * ]
      */
-    @GetMapping("/{calendarId}/blocks") //@RequestMapping("/api/calendars")
+    @GetMapping("/{calendarId}/blocks")
     public ResponseEntity<List<CalendarBlockDTO>> getBlocks(@PathVariable Integer calendarId) {
-        System.out.println("test");
         List<CalendarBlockDTO> blocks = calendarBlockService.getBlocksByCalendar(calendarId);
-        System.out.println("test");
         return ResponseEntity.ok(blocks);
+    }
+
+    // Endpoint para Remover
+    @PatchMapping("/blocks/{blockId}/remove")
+    public ResponseEntity<String> removeBlock(@PathVariable Integer blockId) {
+        calendarBlockService.removeBlock(blockId);
+        return ResponseEntity.ok("Clase removida exitosamente");
+    }
+
+    // Endpoint para Mover
+    @PatchMapping("/blocks/{blockId}/move")
+    public ResponseEntity<String> moveBlock(@PathVariable Integer blockId, @RequestBody MoveBlockDTO dto) {
+        calendarBlockService.moveBlock(blockId, dto.weekDay, dto.startHour, dto.endHour);
+        return ResponseEntity.ok("Clase movida exitosamente");
+    }
+
+    // Endpoint para Añadir
+    @PostMapping("/{calendarId}/blocks")
+    public ResponseEntity<String> addBlock(@PathVariable Integer calendarId, @RequestBody AddBlockDTO dto) {
+        calendarBlockService.addBlockToCalendar(calendarId, dto);
+        return ResponseEntity.ok("Clase añadida exitosamente al calendario");
+    }
+
+    // Endpoint para Clonar
+    @PostMapping("/{calendarId}/blocks/{blockId}/clone")
+    public ResponseEntity<String> cloneBlock(
+            @PathVariable Integer calendarId,
+            @PathVariable Integer blockId,
+            @RequestBody CloneBlockDTO dto) {
+
+        calendarBlockService.cloneBlock(calendarId, blockId, dto);
+        return ResponseEntity.ok("Clase clonada exitosamente");
+    }
+
+    // Endpoint para Editar
+    @PutMapping("/blocks/{blockId}")
+    public ResponseEntity<String> editBlock(@PathVariable Integer blockId, @RequestBody EditBlockDTO dto) {
+        calendarBlockService.editBlock(blockId, dto);
+        return ResponseEntity.ok("Clase editada exitosamente");
     }
 }
