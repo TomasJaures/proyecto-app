@@ -1,18 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Horario from "../components/horario";
 import Navbar from "../components/navbar";
 import Card from "../components/card";
-import { BACKEND_URL } from "../config.js";
-
-// ID del calendario del docente autenticado.
-// Ajusta esto según cómo manejes la sesión en tu proyecto.
-// (ej. desde contexto de auth, localStorage, JWT, etc.)
 
 function DocenteHorario() {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const CALENDAR_ID = user.calendarId;
     const navigate = useNavigate();
 
     const [abierto, setAbierto] = useState(false);
@@ -23,45 +16,6 @@ function DocenteHorario() {
     const [mostrarModalClase, setMostrarModalClase] = useState(false);
     const [nombreClase, setNombreClase] = useState("");
     const [codigoClase, setCodigoClase] = useState("");
-
-    // ── NUEVO: estado para bloques del calendario ──────────────────
-    const [bloques, setBloques] = useState([]);
-    const [cargando, setCargando] = useState(true);
-    const [errorBloques, setErrorBloques] = useState(null);
-
-    // Carga los bloques al montar el componente
-    useEffect(() => {
-        const fetchBloques = async () => {
-            try {
-                
-                setCargando(true);
-                
-                setErrorBloques(null);
-                console.log("Calendar ID: " + CALENDAR_ID);
-                
-                const response = await fetch(
-                    BACKEND_URL + `/api/calendars/${CALENDAR_ID}/blocks`
-                );
-                
-                if (!response.ok) {
-                    throw new Error(
-                        `Error al cargar el horario (${response.status})`
-                    );
-                }
-                const data = await response.json();
-                console.log(data);
-                setBloques(data);
-            } catch (err) {
-                console.log(err.message);
-                setErrorBloques(err.message);
-            } finally {
-                setCargando(false);
-            }
-        };
-
-        fetchBloques();
-    }, []);
-    // ───────────────────────────────────────────────────────────────
 
     const seleccionarModo = (texto, nuevoModo) => {
         setSeleccion(texto);
@@ -99,7 +53,10 @@ function DocenteHorario() {
         {
             texto: "Editar Clase",
             accion: () =>
-                seleccionarModo("Seleccione clase a editar", "editar")
+                seleccionarModo(
+                    "Seleccione clase a editar",
+                    "editar"
+                )
         },
         {
             texto: "Mover Clase",
@@ -124,7 +81,7 @@ function DocenteHorario() {
             <Navbar />
 
             <div className="docente-contenido">
-                <h1>Hola, {user?.name || "NoName"}</h1>
+                <h1>Hola,</h1>
                 <p>Estás registrado como Docente.</p>
 
                 <Card>
@@ -158,7 +115,9 @@ function DocenteHorario() {
                             )}
                         </div>
 
-                        <span className="texto-seleccion">{seleccion}</span>
+                        <span className="texto-seleccion">
+                            {seleccion}
+                        </span>
 
                         <button
                             className="btn-ayuda"
@@ -168,17 +127,6 @@ function DocenteHorario() {
                         </button>
                     </div>
                 </Card>
-
-                {/* ── NUEVO: indicadores de carga / error ── */}
-                {cargando && (
-                    <p className="horario-estado">Cargando horario...</p>
-                )}
-                {errorBloques && (
-                    <p className="horario-estado horario-error">
-                        {errorBloques}
-                    </p>
-                )}
-                {/* ─────────────────────────────────────────── */}
             </div>
 
             {mostrarAyuda && (
@@ -201,8 +149,8 @@ function DocenteHorario() {
 
                         <h3>Generar QR</h3>
                         <p>
-                            Haz clic en el botón QR y selecciona una clase
-                            para generar su código.
+                            Haz clic en el botón QR y selecciona una clase para
+                            generar su código.
                         </p>
 
                         <h3>Añadir clase</h3>
@@ -254,7 +202,9 @@ function DocenteHorario() {
                         <input
                             type="text"
                             value={codigoClase}
-                            onChange={(e) => setCodigoClase(e.target.value)}
+                            onChange={(e) =>
+                                setCodigoClase(e.target.value)
+                            }
                             placeholder="Ej: INF221"
                         />
 
@@ -262,7 +212,9 @@ function DocenteHorario() {
                         <input
                             type="text"
                             value={nombreClase}
-                            onChange={(e) => setNombreClase(e.target.value)}
+                            onChange={(e) =>
+                                setNombreClase(e.target.value)
+                            }
                             placeholder="Ej: Programación"
                         />
 
@@ -276,16 +228,14 @@ function DocenteHorario() {
                 </div>
             )}
 
-            {/* ── NUEVO: se pasan bloques al componente Horario ── */}
             <Horario
                 modo={modo}
                 setModo={setModo}
                 nombreClase={nombreClase}
                 codigoClase={codigoClase}
-                bloques={bloques}
             />
         </div>
     );
 }
 
-export default DocenteHorario;
+export default DocenteHorario; 

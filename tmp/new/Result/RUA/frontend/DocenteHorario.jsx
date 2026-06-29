@@ -4,15 +4,13 @@ import { useNavigate } from "react-router-dom";
 import Horario from "../components/horario";
 import Navbar from "../components/navbar";
 import Card from "../components/card";
-import { BACKEND_URL } from "../config.js";
 
 // ID del calendario del docente autenticado.
-// Ajusta esto según cómo manejes la sesión en tu proyecto.
+// Ajusta esto según cómo manejes la sesión en tu proyecto
 // (ej. desde contexto de auth, localStorage, JWT, etc.)
+const CALENDAR_ID = 1;
 
 function DocenteHorario() {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const CALENDAR_ID = user.calendarId;
     const navigate = useNavigate();
 
     const [abierto, setAbierto] = useState(false);
@@ -33,26 +31,22 @@ function DocenteHorario() {
     useEffect(() => {
         const fetchBloques = async () => {
             try {
-                
                 setCargando(true);
-                
                 setErrorBloques(null);
-                console.log("Calendar ID: " + CALENDAR_ID);
-                
+
                 const response = await fetch(
-                    BACKEND_URL + `/api/calendars/${CALENDAR_ID}/blocks`
+                    `/api/calendars/${CALENDAR_ID}/blocks`
                 );
-                
+
                 if (!response.ok) {
                     throw new Error(
                         `Error al cargar el horario (${response.status})`
                     );
                 }
+
                 const data = await response.json();
-                console.log(data);
                 setBloques(data);
             } catch (err) {
-                console.log(err.message);
                 setErrorBloques(err.message);
             } finally {
                 setCargando(false);
@@ -124,7 +118,7 @@ function DocenteHorario() {
             <Navbar />
 
             <div className="docente-contenido">
-                <h1>Hola, {user?.name || "NoName"}</h1>
+                <h1>Hola,</h1>
                 <p>Estás registrado como Docente.</p>
 
                 <Card>
@@ -282,7 +276,7 @@ function DocenteHorario() {
                 setModo={setModo}
                 nombreClase={nombreClase}
                 codigoClase={codigoClase}
-                bloques={bloques}
+                bloques={bloques}          {/* lista de CalendarBlockDTO */}
             />
         </div>
     );

@@ -284,15 +284,9 @@ function PopupAsignatura({cerrar,agregar}){
                 >
                     Cancelar
                 </button>
-
-
             </div>
-
-
         </div>
-
     )
-
 }
 
 

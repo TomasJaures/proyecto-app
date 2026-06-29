@@ -1,39 +1,45 @@
 import { useState } from "react";
 import RuaAside from "../components/rua-aside.jsx";
 import Card from "../components/card.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { BACKEND_URL } from "../config.js";
+import { Navigate } from "react-router-dom";
 
 function SignUp() {
 
-  const [aceptado, setAceptado] = useState(false);
+  const navigate = useNavigate();
 
-  const [nombre, setNombre] = useState("");
-  const [apellido1, setApellido1] = useState("");
-  const [apellido2, setApellido2] = useState("");
-  const [correo, setCorreo] = useState("");
-  const [clave, setClave] = useState("");
+  const [aceptado, setAceptado] = useState(false);
+  
+  const [userName, setNombre] = useState("");
+  const [lastName1, setApellido1] = useState("");
+  const [lastName2, setApellido2] = useState("");
+  const [mail, setCorreo] = useState("");
+  const [hashedPassword, setClave] = useState("");
 
   async function onConfirmarClick() {
 
     try {
 
       const respuesta = await axios.post(
-        "http://localhost:3000/signup",
+        BACKEND_URL + "/account/create",
         {
-          nombre: nombre,
-          apellido1: apellido1,
-          apellido2: apellido2,
-          correo: correo,
-          clave: clave
+          userName: userName,
+          lastName1: lastName1,
+          lastName2: lastName2,
+          mail: mail,
+          hashedPassword: hashedPassword
         }
       );
-
-      console.log("RESPUESTA:", respuesta.data);
+      
+      // Redirigir al componente de confirmación
+      navigate("/emailsended");
 
     } catch (error) {
 
       console.log("ERROR:", error);
+      navigate("/error");
 
     }
   }
@@ -65,7 +71,7 @@ function SignUp() {
           <input
             type="text"
             placeholder="Alonso"
-            value={nombre}
+            value={userName}
             onChange={(e) => setNombre(e.target.value)}
           />
 
@@ -74,7 +80,7 @@ function SignUp() {
           <input
             type="text"
             placeholder="Farías"
-            value={apellido1}
+            value={lastName1}
             onChange={(e) => setApellido1(e.target.value)}
           />
 
@@ -83,7 +89,7 @@ function SignUp() {
           <input
             type="text"
             placeholder="Ravanal"
-            value={apellido2}
+            value={lastName2}
             onChange={(e) => setApellido2(e.target.value)}
           />
 
@@ -92,7 +98,7 @@ function SignUp() {
           <input
             type="text"
             placeholder="ejemplo@ufromail.cl"
-            value={correo}
+            value={mail}
             onChange={(e) => setCorreo(e.target.value)}
           />
 
@@ -101,7 +107,7 @@ function SignUp() {
           <input
             type="password"
             placeholder="Minimo 8 Caracteres"
-            value={clave}
+            value={hashedPassword}
             onChange={(e) => setClave(e.target.value)}
           />
 
