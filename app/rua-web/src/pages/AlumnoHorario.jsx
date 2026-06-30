@@ -1,75 +1,41 @@
 import { useState } from "react";
-import Horario from "../components/horario";
-import Navbar from "../components/navbar";
 import { useNavigate } from "react-router-dom";
-import Card from "../components/card";
+import Navbar from "../components/Navbar.jsx";
+import Card from "../components/Card.jsx";
+import Schedule from "../components/Schedule.jsx";
+import { useAuth } from "../hooks/useAuth.js";
 
 function AlumnoHorario() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
-    const navigate = useNavigate();
+  const [mode, setMode] = useState(null);
+  const [courseName, setCourseName] = useState("");
+  const [courseCode, setCourseCode] = useState("");
 
-    const [abierto, setAbierto] = useState(false);
-    const [seleccion, setSeleccion] = useState("Seleccione acción");
-    const [mostrarAyuda, setMostrarAyuda] = useState(false);
-    const [modo, setModo] = useState(null);
+  return (
+    <div>
+      <Navbar role="Alumno" name={user?.name || "NoName"} />
 
-    const [mostrarModalClase, setMostrarModalClase] = useState(false);
+      <div className="alumno-contenido">
+        <Card>
+          <h1>Hola,</h1>
+          <p>Estás registrado como Alumno.</p>
+        </Card>
+      </div>
 
-    const [nombreClase, setNombreClase] = useState("");
-    const [codigoClase, setCodigoClase] = useState("");
+      <Schedule
+        mode={mode}
+        setMode={setMode}
+        className={courseName}
+        courseCode={courseCode}
+      />
 
-    
-
-    return (
-        <div>
-
-            <Navbar />
-
-            <div className="alumno-contenido">
-                <Card>
-
-                <h1>
-                    Hola,
-                </h1>
-
-                <p>
-                    Estás registrado como Alumno.
-                </p>
-
-                
-
-  
-
-                   
-
-                </Card>
-
-            </div>
-
-
-            <Horario
-                modo={modo}
-                setModo={setModo}
-                nombreClase={nombreClase}
-                codigoClase={codigoClase}
-            />
-
-            <button
-          className="boton-hub"
-          onClick={() => navigate("/alumnohub")}
-        >
-          Volver al Hub
-        </button>
-
-
-        
-
-        </div>
-
-    );
-
-
-
+      <button className="boton-hub" onClick={() => navigate("/alumnohub")}>
+        Volver al Hub
+      </button>
+    </div>
+  );
 }
 
 export default AlumnoHorario;

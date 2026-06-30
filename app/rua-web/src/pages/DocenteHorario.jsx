@@ -1,291 +1,163 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar.jsx";
+import Card from "../components/Card.jsx";
+import Schedule from "../components/Schedule.jsx";
+import HelpButton from "../components/HelpButton.jsx";
+import Modal from "../components/Modal.jsx";
+import { useAuth } from "../hooks/useAuth.js";
+import { calendarApi } from "../services/apiService.js";
 
-import Horario from "../components/horario";
-import Navbar from "../components/navbar";
-import Card from "../components/card";
-import { BACKEND_URL } from "../config.js";
-
-// ID del calendario del docente autenticado.
-// Ajusta esto según cómo manejes la sesión en tu proyecto.
-// (ej. desde contexto de auth, localStorage, JWT, etc.)
+const SCHEDULE_OPTIONS = [
+  { label: "Añadir Clase", mode: null, isAddClass: true },
+  { label: "Clonar Clase", mode: "clonar", hint: "Seleccione la clase que desea clonar" },
+  { label: "Editar Clase", mode: "editar", hint: "Seleccione clase a editar" },
+  { label: "Mover Clase", mode: "mover", hint: "Seleccione la clase que desea mover" },
+  { label: "Remover Clase", mode: "remover", hint: "Seleccione la clase que quiere remover" },
+];
 
 function DocenteHorario() {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const CALENDAR_ID = user.calendarId;
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const calendarId = user?.calendarId;
 
-    const [abierto, setAbierto] = useState(false);
-    const [seleccion, setSeleccion] = useState("Seleccione acción");
-    const [mostrarAyuda, setMostrarAyuda] = useState(false);
-    const [modo, setModo] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [statusText, setStatusText] = useState("Seleccione acción");
+  const [mode, setMode] = useState(null);
 
-    const [mostrarModalClase, setMostrarModalClase] = useState(false);
-    const [nombreClase, setNombreClase] = useState("");
-    const [codigoClase, setCodigoClase] = useState("");
+  const [showHelp, setShowHelp] = useState(false);
+  const [showClassForm, setShowClassForm] = useState(false);
+  const [courseName, setCourseName] = useState("");
+  const [courseCode, setCourseCode] = useState("");
 
-    // ── NUEVO: estado para bloques del calendario ──────────────────
-    const [bloques, setBloques] = useState([]);
-    const [cargando, setCargando] = useState(true);
-    const [errorBloques, setErrorBloques] = useState(null);
+  const [blocks, setBlocks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
 
-    // Carga los bloques al montar el componente
-    useEffect(() => {
-        const fetchBloques = async () => {
-            try {
-                
-                setCargando(true);
-                
-                setErrorBloques(null);
-                console.log("Calendar ID: " + CALENDAR_ID);
-                
-                const response = await fetch(
-                    BACKEND_URL + `/api/calendars/${CALENDAR_ID}/blocks`
-                );
-                
-                if (!response.ok) {
-                    throw new Error(
-                        `Error al cargar el horario (${response.status})`
-                    );
-                }
-                const data = await response.json();
-                console.log(data);
-                setBloques(data);
-            } catch (err) {
-                console.log(err.message);
-                setErrorBloques(err.message);
-            } finally {
-                setCargando(false);
-            }
-        };
-
-        fetchBloques();
-    }, []);
-    // ───────────────────────────────────────────────────────────────
-
-    const seleccionarModo = (texto, nuevoModo) => {
-        setSeleccion(texto);
-        setModo(nuevoModo);
-        setAbierto(false);
+  useEffect(() => {
+    const fetchBlocks = async () => {
+      try {
+        setIsLoading(true);
+        setLoadError(null);
+        const { data } = await calendarApi.getBlocks(calendarId);
+        setBlocks(data);
+      } catch (err) {
+        setLoadError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    const continuarAgregarClase = () => {
-        if (!nombreClase.trim() || !codigoClase.trim()) {
-            alert("Complete todos los campos");
-            return;
-        }
+    if (calendarId) fetchBlocks();
+  }, [calendarId]);
 
-        setMostrarModalClase(false);
-        setSeleccion("Seleccione un bloque vacío para añadir la clase");
-        setModo("añadir");
-    };
+  const selectMode = (text, newMode) => {
+    setStatusText(text);
+    setMode(newMode);
+    setDropdownOpen(false);
+  };
 
-    const opciones = [
-        {
-            texto: "Añadir Clase",
-            accion: () => {
-                setAbierto(false);
-                setMostrarModalClase(true);
-            }
-        },
-        {
-            texto: "Clonar Clase",
-            accion: () =>
-                seleccionarModo(
-                    "Seleccione la clase que desea clonar",
-                    "clonar"
-                )
-        },
-        {
-            texto: "Editar Clase",
-            accion: () =>
-                seleccionarModo("Seleccione clase a editar", "editar")
-        },
-        {
-            texto: "Mover Clase",
-            accion: () =>
-                seleccionarModo(
-                    "Seleccione la clase que desea mover",
-                    "mover"
-                )
-        },
-        {
-            texto: "Remover Clase",
-            accion: () =>
-                seleccionarModo(
-                    "Seleccione la clase que quiere remover",
-                    "remover"
-                )
-        }
-    ];
+  const handleOptionClick = (option) => {
+    setDropdownOpen(false);
+    if (option.isAddClass) {
+      setShowClassForm(true);
+      return;
+    }
+    selectMode(option.hint, option.mode);
+  };
 
-    return (
-        <div>
-            <Navbar />
+  const handleContinueAddClass = () => {
+    if (!courseName.trim() || !courseCode.trim()) {
+      alert("Complete todos los campos");
+      return;
+    }
+    setShowClassForm(false);
+    setStatusText("Seleccione un bloque vacío para añadir la clase");
+    setMode("añadir");
+  };
 
-            <div className="docente-contenido">
-                <h1>Hola, {user?.name || "NoName"}</h1>
-                <p>Estás registrado como Docente.</p>
+  return (
+    <div>
+      <Navbar role="Docente" name={user?.name || "NoName"} />
 
-                <Card>
-                    <div className="acciones-docente">
-                        <button
-                            className="btn-qr"
-                            onClick={() => navigate("/generadorqr")}
-                        >
-                            Generar QR
-                        </button>
+      <div className="docente-contenido">
+        <h1>Hola, {user?.name || "NoName"}</h1>
+        <p>Estás registrado como Docente.</p>
 
-                        <div className="dropdown">
-                            <button
-                                className="btn-opciones"
-                                onClick={() => setAbierto(!abierto)}
-                            >
-                                Opciones ▼
-                            </button>
+        <Card>
+          <div className="acciones-docente">
+            <button className="btn-qr" onClick={() => navigate("/generadorqr")}>
+              Generar QR
+            </button>
 
-                            {abierto && (
-                                <div className="dropdown-menu">
-                                    {opciones.map((opcion) => (
-                                        <div
-                                            key={opcion.texto}
-                                            onClick={opcion.accion}
-                                        >
-                                            {opcion.texto}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        <span className="texto-seleccion">{seleccion}</span>
-
-                        <button
-                            className="btn-ayuda"
-                            onClick={() => setMostrarAyuda(true)}
-                        >
-                            ?
-                        </button>
+            <div className="dropdown">
+              <button className="btn-opciones" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                Opciones ▼
+              </button>
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  {SCHEDULE_OPTIONS.map((option) => (
+                    <div key={option.label} onClick={() => handleOptionClick(option)}>
+                      {option.label}
                     </div>
-                </Card>
-
-                {/* ── NUEVO: indicadores de carga / error ── */}
-                {cargando && (
-                    <p className="horario-estado">Cargando horario...</p>
-                )}
-                {errorBloques && (
-                    <p className="horario-estado horario-error">
-                        {errorBloques}
-                    </p>
-                )}
-                {/* ─────────────────────────────────────────── */}
+                  ))}
+                </div>
+              )}
             </div>
 
-            {mostrarAyuda && (
-                <div
-                    className="modal-overlay"
-                    onClick={() => setMostrarAyuda(false)}
-                >
-                    <div
-                        className="modal-ayuda"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <button
-                            className="cerrar-modal"
-                            onClick={() => setMostrarAyuda(false)}
-                        >
-                            ✕
-                        </button>
+            <span className="texto-seleccion">{statusText}</span>
+            <HelpButton onClick={() => setShowHelp(true)} />
+          </div>
+        </Card>
 
-                        <h2>¿Cómo usar RUA?</h2>
+        {isLoading && <p className="horario-estado">Cargando horario...</p>}
+        {loadError && <p className="horario-estado horario-error">{loadError}</p>}
+      </div>
 
-                        <h3>Generar QR</h3>
-                        <p>
-                            Haz clic en el botón QR y selecciona una clase
-                            para generar su código.
-                        </p>
+      <Modal open={showHelp} onClose={() => setShowHelp(false)} title="¿Cómo usar RUA?">
+        <h3>Generar QR</h3>
+        <p>Haz clic en el botón QR y selecciona una clase para generar su código.</p>
+        <h3>Añadir clase</h3>
+        <p>Usa el menú Opciones → Añadir clase, completa los datos y selecciona posición.</p>
+        <h3>Clonar clase</h3>
+        <p>Opciones → Clonar: selecciona la clase origen y luego la posición destino.</p>
+        <h3>Editar clase</h3>
+        <p>Doble clic en cualquier clase del calendario, o Opciones → Editar.</p>
+        <h3>Mover clase</h3>
+        <p>Opciones → Mover: selecciona la clase y luego la nueva posición.</p>
+        <h3>Eliminar clase</h3>
+        <p>Opciones → Remover: selecciona la clase y confirma la eliminación.</p>
+      </Modal>
 
-                        <h3>Añadir clase</h3>
-                        <p>
-                            Usa el menú Opciones → Añadir clase, completa los
-                            datos y selecciona posición.
-                        </p>
+      <Modal open={showClassForm} onClose={() => setShowClassForm(false)} title="Crear Clase">
+        <label>Código de la clase</label>
+        <input
+          type="text"
+          value={courseCode}
+          onChange={(e) => setCourseCode(e.target.value)}
+          placeholder="Ej: INF221"
+        />
+        <label>Nombre de la clase</label>
+        <input
+          type="text"
+          value={courseName}
+          onChange={(e) => setCourseName(e.target.value)}
+          placeholder="Ej: Programación"
+        />
+        <button className="btn-qr" onClick={handleContinueAddClass}>
+          Continuar
+        </button>
+      </Modal>
 
-                        <h3>Clonar clase</h3>
-                        <p>
-                            Opciones → Clonar: selecciona la clase origen y
-                            luego la posición destino.
-                        </p>
-
-                        <h3>Editar clase</h3>
-                        <p>
-                            Doble clic en cualquier clase del calendario, o
-                            Opciones → Editar.
-                        </p>
-
-                        <h3>Mover clase</h3>
-                        <p>
-                            Opciones → Mover: selecciona la clase y luego la
-                            nueva posición.
-                        </p>
-
-                        <h3>Eliminar clase</h3>
-                        <p>
-                            Opciones → Remover: selecciona la clase y confirma
-                            la eliminación.
-                        </p>
-                    </div>
-                </div>
-            )}
-
-            {mostrarModalClase && (
-                <div className="modal-overlay">
-                    <div className="modal-ayuda">
-                        <button
-                            className="cerrar-modal"
-                            onClick={() => setMostrarModalClase(false)}
-                        >
-                            ✕
-                        </button>
-
-                        <h2>Crear Clase</h2>
-
-                        <label>Código de la clase</label>
-                        <input
-                            type="text"
-                            value={codigoClase}
-                            onChange={(e) => setCodigoClase(e.target.value)}
-                            placeholder="Ej: INF221"
-                        />
-
-                        <label>Nombre de la clase</label>
-                        <input
-                            type="text"
-                            value={nombreClase}
-                            onChange={(e) => setNombreClase(e.target.value)}
-                            placeholder="Ej: Programación"
-                        />
-
-                        <button
-                            className="btn-qr"
-                            onClick={continuarAgregarClase}
-                        >
-                            Continuar
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* ── NUEVO: se pasan bloques al componente Horario ── */}
-            <Horario
-                modo={modo}
-                setModo={setModo}
-                nombreClase={nombreClase}
-                codigoClase={codigoClase}
-                bloques={bloques}
-            />
-        </div>
-    );
+      <Schedule
+        mode={mode}
+        setMode={setMode}
+        className={courseName}
+        courseCode={courseCode}
+        blocks={blocks}
+      />
+    </div>
+  );
 }
 
 export default DocenteHorario;

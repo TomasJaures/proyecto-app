@@ -1,15 +1,9 @@
-function HelpButton({ helpText }) {
-
-  function mostrarAyuda() {
-    alert(helpText);
-  }
-
+function HelpButton({ onClick }) {
   return (
-    <button onClick={mostrarAyuda}>
+    <button className="btn-ayuda" onClick={onClick} aria-label="Ayuda">
       ?
     </button>
   );
-
 }
 
 export default HelpButton;

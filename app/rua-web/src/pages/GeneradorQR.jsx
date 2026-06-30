@@ -1,100 +1,61 @@
-import { useEffect, useState } from "react";
-import Navbar from "../components/navbar";
-import Card from "../components/card";
-import {QRCode} from "react-qr-code";
+import { useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { QRCode } from "react-qr-code";
+import Navbar from "../components/Navbar.jsx";
+import Card from "../components/Card.jsx";
+import { useAuth } from "../hooks/useAuth.js";
+import { useCountdown } from "../hooks/useCountdown.js";
+
+const QR_DURATION_SECONDS = 180;
 
 function GeneradorQR() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { minutes, seconds, isExpired, reset } = useCountdown(QR_DURATION_SECONDS);
 
-  const [qrValue, setQrValue] = useState("");
-  const [tiempo, setTiempo] = useState(180);
-
-  function generarQR() {
-    const codigo = crypto.randomUUID();
-
-    setQrValue(codigo);
-    setTiempo(180);
-
-  }
+  const generateQrValue = useCallback(() => crypto.randomUUID(), []);
 
   useEffect(() => {
+    generateQrValue();
+  }, [generateQrValue]);
 
-    generarQR();
+  const handleRegenerate = () => {
+    generateQrValue();
+    reset();
+  };
 
-  }, []);
-
-  useEffect(() => {
-
-    if (tiempo <= 0) return;
-
-    const intervalo = setInterval(() => {
-
-      setTiempo((prev) => prev - 1);
-
-    }, 1000);
-
-    return () => clearInterval(intervalo);
-
-  }, [tiempo]);
-
-  const minutos = String(Math.floor(tiempo / 60)).padStart(2, "0");
-  const segundos = String(tiempo % 60).padStart(2, "0");
+  const qrValue = generateQrValue();
 
   return (
     <div className="pagina-qr">
-
-      <Navbar
-        rol="Docente"
-        nombre="Juan Pérez"
-      />
+      <Navbar role="Docente" name={user?.name || "NoName"} />
 
       <div className="contenedor-central">
-
         <Card className="card-qr">
-
-          <h1 className="titulo-clase">
-            Programación Avanzada
-          </h1>
-
+          <h1 className="titulo-clase">Programación Avanzada</h1>
           <p className="texto-qr">
             Muestre este QR a los alumnos para registrar asistencia
           </p>
 
           <div className="zona-qr">
-
-            {
-              tiempo > 0 ? (
-
-                <QRCode
-                  value={qrValue}
-                  size={220}
-                />
-
-              ) : (
-
-                <button
-                  className="boton-regenerar"
-                  onClick={generarQR}
-                >
-                  Regenerar QR
-                </button>
-
-              )
-            }
-
+            {!isExpired ? (
+              <QRCode value={qrValue} size={220} />
+            ) : (
+              <button className="boton-regenerar" onClick={handleRegenerate}>
+                Regenerar QR
+              </button>
+            )}
           </div>
 
           <p className="temporizador">
-            {minutos}:{segundos}
+            {minutes}:{seconds}
           </p>
 
-          <button className="boton-volver">
+          <button className="boton-volver" onClick={() => navigate("/docentehorario")}>
             Volver
           </button>
-
         </Card>
-
       </div>
-
     </div>
   );
 }

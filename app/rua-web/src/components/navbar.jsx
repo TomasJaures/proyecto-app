@@ -1,33 +1,27 @@
-function Navbar({ rol, nombre }) {
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth.js";
+
+function Navbar({ role, name }) {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <header className="navbar">
+      <h1 className="logo">RUA</h1>
 
-      {/* IZQUIERDA */}
-      <h1 className="logo">
-        RUA
-      </h1>
-
-      {/* CENTRO */}
       <div className="usuario">
-
-        <span className="rol">
-          {rol}
-        </span>
-
-        <span className="nombre">
-          {nombre}
-        </span>
-
+        <span className="rol">{role}</span>
+        <span className="nombre">{name}</span>
       </div>
 
-      {/* DERECHA */}
-      <button className="salir"
-      onClick={() => navigate("/login")}
-      >
+      <button className="salir" onClick={handleLogout}>
         Salir
       </button>
-
     </header>
   );
 }

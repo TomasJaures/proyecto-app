@@ -1,12 +1,5 @@
-//función que retorna un div con la className="card" para luego reutilizar
-
-function Card({ children })
-{
-
-    return <div className="card">
-        {children}
-    </div>
-
+function Card({ children, className = "" }) {
+  return <div className={`card ${className}`.trim()}>{children}</div>;
 }
 
 export default Card;

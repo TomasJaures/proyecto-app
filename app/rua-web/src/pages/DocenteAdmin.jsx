@@ -1,293 +1,118 @@
 import { useState } from "react";
-import Navbar from "../components/navbar";
-import AsignaturaCard from "../components/AsignaturaCard";
+import Navbar from "../components/Navbar.jsx";
+import SubjectCard from "../components/SubjectCard.jsx";
+import Modal from "../components/Modal.jsx";
+import { useAuth } from "../hooks/useAuth.js";
 
+const INITIAL_SUBJECTS = [
+  { id: 1, nombre: "Programación", codigo: "INF221", modulos: ["Introducción", "Estructuras de datos"] },
+  { id: 2, nombre: "Bases de Datos", codigo: "INF310", modulos: ["Modelo entidad relación"] },
+];
 
-function DocenteAdmin(){
+function AddSubjectModal({ open, onClose, onAdd }) {
+  const [name, setName] = useState("");
+  const [code, setCode] = useState("");
 
-    const [asignaturas, setAsignaturas] = useState([
-        {
-            id:1,
-            nombre:"Programación",
-            codigo:"INF221",
-            modulos:[
-                "Introducción",
-                "Estructuras de datos"
-            ]
-        },
+  const handleAdd = () => {
+    onAdd(name, code);
+    setName("");
+    setCode("");
+  };
 
-        {
-            id:2,
-            nombre:"Bases de Datos",
-            codigo:"INF310",
-            modulos:[
-                "Modelo entidad relación"
-            ]
-        }
+  return (
+    <Modal open={open} onClose={onClose} title="Añadir asignatura">
+      <input
+        placeholder="Nombre"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <input
+        placeholder="Código"
+        value={code}
+        onChange={(e) => setCode(e.target.value)}
+      />
+      <button className="confirmar" onClick={handleAdd}>
+        Añadir
+      </button>
+      <button className="secundario" onClick={onClose}>
+        Cancelar
+      </button>
+    </Modal>
+  );
+}
+
+function DocenteAdmin() {
+  const { user } = useAuth();
+  const [subjects, setSubjects] = useState(INITIAL_SUBJECTS);
+  const [showPopup, setShowPopup] = useState(false);
+  const [deleteMode, setDeleteMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  const handleAddSubject = (name, code) => {
+    setSubjects((prev) => [
+      ...prev,
+      { id: Date.now(), nombre: name, codigo: code, modulos: [] },
     ]);
-
-
-    const [mostrarPopup,setMostrarPopup] = useState(false);
-
-    const [modoEliminar,setModoEliminar] = useState(false);
-
-    const [seleccionadas,setSeleccionadas] = useState([]);
-
-
-    const [pendiente,setPendiente] = useState(false);
-
-
-
-    function agregarAsignatura(nombre,codigo){
-
-        setAsignaturas([
-            ...asignaturas,
-            {
-                id:Date.now(),
-                nombre,
-                codigo,
-                modulos:[]
-            }
-        ]);
-
-        setMostrarPopup(false);
-        setPendiente(true);
-    }
-
-
-
-    function eliminarSeleccionadas(){
-
-        if(
-            !window.confirm(
-                "¿Eliminar asignaturas seleccionadas?"
-            )
-        ){
-            return;
-        }
-
-
-        setAsignaturas(
-            asignaturas.filter(
-                a =>
-                !seleccionadas.includes(a.id)
-            )
-        );
-
-
-        setSeleccionadas([]);
-        setModoEliminar(false);
-        setPendiente(true);
-    }
-
-
-
-    return(
-
-        <div className="pagina-asignaturas">
-
-
-            <Navbar/>
-
-
-            <div className="titulo-asignaturas">
-
-                <h1>
-                    Gestionar asignaturas
-                </h1>
-
-            </div>
-
-
-
-            <div className="toolbar">
-
-
-                <button
-                    onClick={()=>
-                        setMostrarPopup(true)
-                    }
-                >
-                    + Añadir
-                </button>
-
-
-
-                <button
-                    onClick={()=>
-                        setModoEliminar(true)
-                    }
-                >
-                    Eliminar
-                </button>
-
-
-            </div>
-
-
-
-            <div className="contenedor-asignaturas">
-
-
-                {asignaturas.map(asignatura=>(
-
-
-                    <AsignaturaCard
-
-                        key={asignatura.id}
-
-                        asignatura={asignatura}
-
-                        modoEliminar={modoEliminar}
-
-                        seleccionadas={seleccionadas}
-
-                        setSeleccionadas={setSeleccionadas}
-
-                        setAsignaturas={setAsignaturas}
-
-                        setPendiente={setPendiente}
-
-                    />
-
-
-                ))}
-
-
-            </div>
-
-
-
-            {
-                modoEliminar && (
-
-                    <button
-
-                        className="confirmar-eliminar"
-
-                        onClick={eliminarSeleccionadas}
-
-                    >
-                        Confirmar eliminación
-                    </button>
-
-                )
-            }
-
-
-
-            {
-                pendiente && (
-
-                    <div className="acciones-cambios">
-
-                        <button>
-                            Guardar
-                        </button>
-
-
-                        <button
-                            onClick={()=>
-                                setPendiente(false)
-                            }
-                        >
-                            Cancelar
-                        </button>
-
-
-                    </div>
-
-                )
-            }
-
-
-
-
-
-            {
-                mostrarPopup && (
-
-                <PopupAsignatura
-
-                    cerrar={()=>
-                        setMostrarPopup(false)
-                    }
-
-                    agregar={agregarAsignatura}
-
-                />
-
-                )
-            }
-
-
-
+    setShowPopup(false);
+    setHasChanges(true);
+  };
+
+  const handleDeleteSelected = () => {
+    if (!window.confirm("¿Eliminar asignaturas seleccionadas?")) return;
+    setSubjects((prev) => prev.filter((s) => !selectedIds.includes(s.id)));
+    setSelectedIds([]);
+    setDeleteMode(false);
+    setHasChanges(true);
+  };
+
+  return (
+    <div className="pagina-asignaturas">
+      <Navbar role="Docente" name={user?.name || "NoName"} />
+
+      <div className="titulo-asignaturas">
+        <h1>Gestionar asignaturas</h1>
+      </div>
+
+      <div className="toolbar">
+        <button onClick={() => setShowPopup(true)}>+ Añadir</button>
+        <button onClick={() => setDeleteMode(true)}>Eliminar</button>
+      </div>
+
+      <div className="contenedor-asignaturas">
+        {subjects.map((subject) => (
+          <SubjectCard
+            key={subject.id}
+            subject={subject}
+            deleteMode={deleteMode}
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+            setSubjects={setSubjects}
+            setHasChanges={setHasChanges}
+          />
+        ))}
+      </div>
+
+      {deleteMode && (
+        <button className="confirmar-eliminar" onClick={handleDeleteSelected}>
+          Confirmar eliminación
+        </button>
+      )}
+
+      {hasChanges && (
+        <div className="acciones-cambios">
+          <button>Guardar</button>
+          <button onClick={() => setHasChanges(false)}>Cancelar</button>
         </div>
+      )}
 
-    )
-
+      <AddSubjectModal
+        open={showPopup}
+        onClose={() => setShowPopup(false)}
+        onAdd={handleAddSubject}
+      />
+    </div>
+  );
 }
-
-
-function PopupAsignatura({cerrar,agregar}){
-
-
-    const [nombre,setNombre]=useState("");
-    const [codigo,setCodigo]=useState("");
-
-
-
-    return(
-
-        <div className="modal-overlay">
-
-
-            <div className="popup">
-
-
-                <h2>
-                    Añadir asignatura
-                </h2>
-
-
-
-                <input
-                    placeholder="Nombre"
-                    value={nombre}
-                    onChange={
-                        e=>setNombre(e.target.value)
-                    }
-                />
-
-
-                <input
-                    placeholder="Código"
-                    value={codigo}
-                    onChange={
-                        e=>setCodigo(e.target.value)
-                    }
-                />
-
-
-
-                <button
-                    onClick={()=>
-                        agregar(nombre,codigo)
-                    }
-                >
-                    Añadir
-                </button>
-
-
-                <button
-                    onClick={cerrar}
-                >
-                    Cancelar
-                </button>
-            </div>
-        </div>
-    )
-}
-
 
 export default DocenteAdmin;
