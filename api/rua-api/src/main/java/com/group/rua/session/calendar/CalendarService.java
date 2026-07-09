@@ -1,14 +1,15 @@
 package com.group.rua.session.calendar;
 
-import com.group.rua.entities.Block.WeekDay;
 import com.group.rua.repositories.ClassesRepo;
 import com.group.rua.session.attendance.ClassInfoDTO;
 import com.group.rua.session.attendance.CurrentCalendarClassesDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Locale;
@@ -24,39 +25,42 @@ public class CalendarService {
 
     public CurrentCalendarClassesDTO getStudentCalendar(Integer calendarId) {
 
-        // Obtener la semana del año actual
         LocalDateTime now = LocalDateTime.now();
+        LocalDate today = now.toLocalDate();
+
+        // en qué semana del año estamos
         int currentWeekNumber = now.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 
-        List<ClassInfoDTO> studentClasses = classesRepo.findAllClassesByCalendarId(calendarId);
+        // fechas límite de esta semana (Lunes a Domingo)
+        LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate endOfWeek = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
 
-        // Evaluar dinámicamente el estado temporal de cada clase
+        // traer solo las clases de este calendario y de esta semana específica
+        List<ClassInfoDTO> studentClasses = classesRepo.findAllClassesByCalendarIdAndWeek(calendarId, startOfWeek, endOfWeek);
+
         for (ClassInfoDTO classInfo : studentClasses) {
-            String state = calculateTimeState(classInfo.getWeekDay(), classInfo.getStartHour(), classInfo.getEndHour(), now);
-            classInfo.setTimeState(state); // Inyectamos el estado en el DTO
+            String state = calculateTimeState(classInfo.getClassDate(), classInfo.getStartHour(), classInfo.getEndHour(), now);
+            classInfo.setTimeState(state);
         }
 
         return new CurrentCalendarClassesDTO(currentWeekNumber, studentClasses);
     }
 
-    private String calculateTimeState(WeekDay blockDay, LocalTime startHour, LocalTime endHour, LocalDateTime now) {
-        DayOfWeek currentDay = now.getDayOfWeek();
+    private String calculateTimeState(LocalDate classDate, LocalTime startHour, LocalTime endHour, LocalDateTime now) {
+        LocalDate currentDate = now.toLocalDate();
         LocalTime currentTime = now.toLocalTime();
 
-        // Convertir Enum al formato numérico de Java (Lunes=1, Martes=2...) --> el mapeo esta al final de esta clase
-        int blockDayNumber = getDayNumber(blockDay);
-        int currentDayNumber = currentDay.getValue();
-
-        // Si el día del bloque ya pasó en la semana actual
-        if (blockDayNumber < currentDayNumber) {
+        // si la fecha de la clase ya pasó (Ayer o antes)
+        if (classDate.isBefore(currentDate)) {
             return "PAST";
         }
-        // Si el bloque es para un día futuro en la semana actual
-        if (blockDayNumber > currentDayNumber) {
+
+        // si la fecha de la clase es a futuro (Mañana o después)
+        if (classDate.isAfter(currentDate)) {
             return "FUTURE";
         }
 
-        // Comparar las horas.
+        // la clase es HOY. Comparamos las horas exactas.
         if (currentTime.isBefore(startHour)) {
             return "FUTURE"; // Aún no empieza
         } else if (currentTime.isAfter(endHour)) {
@@ -64,18 +68,5 @@ public class CalendarService {
         } else {
             return "PRESENT"; // Está ocurriendo en este momento
         }
-    }
-
-    // para mapear el Enum personalizado al estándar numérico
-    private int getDayNumber(WeekDay day) {
-        return switch (day) {
-            case MON -> 1;
-            case TUE -> 2;
-            case WED -> 3;
-            case THU -> 4;
-            case FRI -> 5;
-            case SAT -> 6;
-            case SUN -> 7;
-        };
     }
 }

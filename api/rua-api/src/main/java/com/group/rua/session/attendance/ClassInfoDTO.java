@@ -1,8 +1,9 @@
 package com.group.rua.session.attendance;
 
-// Importa el Enum de tu entidad Block para que coincida el tipo de dato
 import com.group.rua.entities.Block.BlockState;
 import com.group.rua.entities.Block.WeekDay;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ClassInfoDTO {
@@ -17,6 +18,16 @@ public class ClassInfoDTO {
     private WeekDay weekDay;
     private LocalTime startHour;
     private LocalTime endHour;
+
+    public LocalDate getClassDate() {
+        return classDate;
+    }
+
+    public void setClassDate(LocalDate classDate) {
+        this.classDate = classDate;
+    }
+
+    private LocalDate classDate;
 
     public LocalTime getEndHour() {
         return endHour;
@@ -43,7 +54,7 @@ public class ClassInfoDTO {
     }
 
     // EL CONSTRUCTOR EXIGIDO POR SPRING:
-    public ClassInfoDTO(Integer blockId, BlockState blockState, Integer classId, Boolean isAnulled, Integer num, String subjectName, String code, WeekDay weekDay, LocalTime startHour, LocalTime endHour) {
+    public ClassInfoDTO(Integer blockId, BlockState blockState, Integer classId, Boolean isAnulled, Integer num, String subjectName, String code, WeekDay weekDay, LocalTime startHour, LocalTime endHour, LocalDate classDate) {
         this.blockId = blockId;
         this.blockState = blockState;
         this.classId = classId;
@@ -54,6 +65,7 @@ public class ClassInfoDTO {
         this.weekDay = weekDay;
         this.startHour = startHour;
         this.endHour = endHour;
+        this.classDate = classDate;
     }
 
     // Getters y Setters...

@@ -1,6 +1,7 @@
 package com.group.rua.entities;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "classes")
@@ -16,4 +17,7 @@ public class Classes {
 
     @Column(name = "is_anulled")
     public Boolean isAnulled = false;
+
+    @Column(name = "class_date")
+    public LocalDate classDate;
 }
