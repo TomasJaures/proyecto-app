@@ -1,8 +1,10 @@
 package com.group.rua.session.unit.attendance;
 
 import com.group.rua.entities.Attendance;
+import com.group.rua.entities.User;
 import com.group.rua.repositories.AttendanceRepo;
 import com.group.rua.repositories.ClassesRepo;
+import com.group.rua.repositories.UserRepo;
 import com.group.rua.session.attendance.AttendanceService;
 import com.group.rua.session.attendance.ClassInfoDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,6 +26,9 @@ class AttendanceServiceTest {
     @Mock
     private ClassesRepo classesRepo;
 
+    @Mock
+    private UserRepo userRepo;
+
     @InjectMocks
     private AttendanceService attendanceService;
 
@@ -35,47 +38,28 @@ class AttendanceServiceTest {
     }
 
     @Test
-    void getPresentStudents_ShouldReturnAttendanceList() {
-        // Arrange
-        Integer classId = 1;
-        Attendance student1 = new Attendance();
-        student1.userId = 100;
-        student1.classId = classId;
-        student1.status = "PRESENT";
-
-        Attendance student2 = new Attendance();
-        student2.userId = 101;
-        student2.classId = classId;
-        student2.status = "PRESENT";
-
-        when(attendanceRepo.findByClassIdAndStatus(classId, "PRESENT")).thenReturn(Arrays.asList(student1, student2));
-
-        // Act
-        List<Attendance> result = attendanceService.getPresentStudents(classId);
-
-        // Assert
-        assertEquals(2, result.size());
-        assertEquals("PRESENT", result.get(0).status);
-        verify(attendanceRepo, times(1)).findByClassIdAndStatus(classId, "PRESENT");
-    }
-
-    @Test
     void registerManualAttendance_ShouldSaveAttendance() {
         // Arrange
+        String email = "alumno@ufromail.cl";
         Integer userId = 100;
         Integer classId = 1;
         String status = "PRESENT";
+
+        User mockUser = new User();
+        mockUser.userId = userId;
 
         Attendance attendance = new Attendance();
         attendance.userId = userId;
         attendance.classId = classId;
         attendance.status = status;
 
+        // Simulamos que encuentra al usuario por correo
+        when(userRepo.findByMail(email)).thenReturn(Optional.of(mockUser));
         when(attendanceRepo.findByUserIdAndClassId(userId, classId)).thenReturn(Optional.empty());
         when(attendanceRepo.save(any(Attendance.class))).thenReturn(attendance);
 
         // Act
-        Attendance result = attendanceService.registerManualAttendance(userId, classId, status);
+        Attendance result = attendanceService.registerManualAttendance(email, classId, status);
 
         // Assert
         assertNotNull(result);
@@ -87,17 +71,22 @@ class AttendanceServiceTest {
     @Test
     void registerManualAttendance_ShouldCreateNewRecord_WhenNoneExists() {
         // Arrange
+        String emailTest = "test@ufromail.cl";
         Integer userIdTest = 50;
         Integer classIdTest = 101;
         String statusTest = "LATE";
 
+        User mockUser = new User();
+        mockUser.userId = userIdTest;
+
+        when(userRepo.findByMail(emailTest)).thenReturn(Optional.of(mockUser));
         when(attendanceRepo.findByUserIdAndClassId(userIdTest, classIdTest))
                 .thenReturn(Optional.empty());
 
         when(attendanceRepo.save(any(Attendance.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        Attendance result = attendanceService.registerManualAttendance(userIdTest, classIdTest, statusTest);
+        Attendance result = attendanceService.registerManualAttendance(emailTest, classIdTest, statusTest);
 
         // Assert
         assertNotNull(result, "El registro de asistencia no debe ser nulo");
@@ -116,7 +105,7 @@ class AttendanceServiceTest {
         when(classesRepo.findClassInfoByBlockId(invalidBlockId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 attendanceService.getClassInfoWithDetails(invalidBlockId)
         );
 

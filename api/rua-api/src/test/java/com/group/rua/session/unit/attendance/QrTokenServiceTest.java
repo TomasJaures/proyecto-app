@@ -70,9 +70,9 @@ public class QrTokenServiceTest {
         mockAttendance.status = "PRESENT";
 
         when(qrTokenRepo.findByContent("valid-qr")).thenReturn(Optional.of(validToken));
-        when(attendanceService.registerManualAttendance(5, 10, "PRESENT")).thenReturn(mockAttendance);
+        when(attendanceService.registerManualAttendance("alumno@ufromail.cl", 10, "PRESENT")).thenReturn(mockAttendance);
 
-        Attendance result = qrTokenService.decodeQrAndRegisterAttendance("valid-qr", 5);
+        Attendance result = qrTokenService.decodeQrAndRegisterAttendance("valid-qr", "alumno@ufromail.cl");
 
         assertNotNull(result);
         assertEquals("PRESENT", result.status);
@@ -87,11 +87,11 @@ public class QrTokenServiceTest {
 
         when(qrTokenRepo.findByContent("expired-qr")).thenReturn(Optional.of(expiredToken));
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                qrTokenService.decodeQrAndRegisterAttendance("expired-qr", 5)
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                qrTokenService.decodeQrAndRegisterAttendance("expired-qr", "alumno@ufromail.cl")
         );
 
         assertEquals("El código QR ha expirado.", exception.getMessage());
-        verify(attendanceService, never()).registerManualAttendance(anyInt(), anyInt(), anyString());
+        verify(attendanceService, never()).registerManualAttendance(anyString(), anyInt(), anyString());
     }
 }

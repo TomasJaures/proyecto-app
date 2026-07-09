@@ -31,17 +31,9 @@ public class AttendanceController {
         ClassInfoDTO classInfo = attendanceService.getClassInfoWithDetails(blockId);
         return ResponseEntity.ok(classInfo);
     }
-    
+
 
     @GetMapping("/class/{classId}/present")
-    public ResponseEntity<List<Attendance>> getPresentStudents(@PathVariable Integer classId) {
-        logger.info("------- without students");
-        List<Attendance> presentStudents = attendanceService.getPresentStudents(classId);
-        logger.info("without students {}", presentStudents);
-        return ResponseEntity.ok(presentStudents);
-    }
-
-    @GetMapping("/class/{classId}/present2")
     public ResponseEntity<List<PresentStudentDTO>> getPresentStudentsWithDetails(@PathVariable Integer classId) {
         List<PresentStudentDTO> presentStudents = attendanceService.getPresentStudentsWithDetails(classId);
         return ResponseEntity.ok(presentStudents);
@@ -49,11 +41,11 @@ public class AttendanceController {
 
     @PostMapping("/manual")
     public ResponseEntity<Attendance> registerManualAttendance(
-            @RequestParam Integer userId,
+            @RequestParam String email,
             @RequestParam Integer classId,
             @RequestParam String status) {
 
-        Attendance registeredAttendance = attendanceService.registerManualAttendance(userId, classId, status);
+        Attendance registeredAttendance = attendanceService.registerManualAttendance(email, classId, status);
         return ResponseEntity.ok(registeredAttendance);
     }
 

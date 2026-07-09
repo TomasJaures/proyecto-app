@@ -22,17 +22,17 @@ public class QrTokenController {
         try {
             QrToken generatedToken = qrTokenService.generateQrForClass(classId);
             return ResponseEntity.ok(generatedToken.content);
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/decode")
-    public ResponseEntity<?> decodeQr(@RequestParam String content, @RequestParam Integer userId) {
+    public ResponseEntity<?> decodeQr(@RequestParam String content, @RequestParam String email) {
         try {
-            Attendance registeredAttendance = qrTokenService.decodeQrAndRegisterAttendance(content, userId);
+            Attendance registeredAttendance = qrTokenService.decodeQrAndRegisterAttendance(content, email);
             return ResponseEntity.ok(registeredAttendance);
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

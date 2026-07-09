@@ -25,8 +25,6 @@ public interface AttendanceRepo extends JpaRepository<Attendance, AttendanceId> 
         @Param("classId") Integer classId,
         @Param("status") String status
     );
-    // para listar alumnos presentes
-    List<Attendance> findByClassIdAndStatus(Integer classId, String status);
 
     // para recopilar datos de asistencia manual (buscar si ya existe)
     Optional<Attendance> findByUserIdAndClassId(Integer userId, Integer classId);

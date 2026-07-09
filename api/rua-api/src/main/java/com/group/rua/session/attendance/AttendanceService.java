@@ -2,9 +2,11 @@ package com.group.rua.session.attendance;
 
 import com.group.rua.entities.Attendance;
 import com.group.rua.entities.Classes;
+import com.group.rua.entities.User;
 import com.group.rua.repositories.AttendanceRepo;
 import com.group.rua.repositories.ClassesRepo;
 
+import com.group.rua.repositories.UserRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,20 +19,17 @@ public class AttendanceService {
 
     private final AttendanceRepo attendanceRepo;
 
-    public AttendanceService(AttendanceRepo attendanceRepo, ClassesRepo classesRepo) {
+    private final UserRepo userRepo;
+
+    public AttendanceService(AttendanceRepo attendanceRepo, ClassesRepo classesRepo, UserRepo userRepo) {
         this.attendanceRepo = attendanceRepo;
         this.classesRepo = classesRepo;
-    }
-
-    // listar alumnos presentes
-    public List<Attendance> getPresentStudents(Integer classId) {
-        return attendanceRepo.findByClassIdAndStatus(classId, "PRESENT");
-        
+        this.userRepo = userRepo;
     }
 
     public ClassInfoDTO getClassInfoWithDetails(Integer blockId) {
         return classesRepo.findClassInfoByBlockId(blockId)
-            .orElseThrow(() -> new RuntimeException("No se encontró información detallada para el bloque: " + blockId));
+            .orElseThrow(() -> new IllegalArgumentException("No se encontró información detallada para el bloque: " + blockId));
     }
 
     public Classes getLastClassAsignedToBlock(Integer BlockId){
@@ -49,7 +48,13 @@ public class AttendanceService {
     }
 
     // recopilar datos de asistencia manual
-    public Attendance registerManualAttendance(Integer userId, Integer classId, String status) {
+    public Attendance registerManualAttendance(String email, Integer classId, String status) {
+
+        // Buscamos al usuario por su correo para obtener su ID
+        User user = userRepo.findByMail(email)
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró un usuario con el correo: " + email));
+
+        Integer userId = user.userId;
 
         // Buscamos si el docente ya había registrado al alumno antes (para actualizarlo)
         Attendance attendance = attendanceRepo.findByUserIdAndClassId(userId, classId)

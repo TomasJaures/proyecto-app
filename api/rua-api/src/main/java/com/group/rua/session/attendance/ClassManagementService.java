@@ -20,7 +20,7 @@ public class ClassManagementService {
     // Permitir anulación de clase
     public Classes anullClass(Integer classId) {
         Classes targetClass = classesRepo.findById(classId)
-                .orElseThrow(() -> new RuntimeException("La clase especificada no existe."));
+                .orElseThrow(() -> new IllegalArgumentException("La clase especificada no existe."));
 
         targetClass.isAnulled = true;
         return classesRepo.save(targetClass);
@@ -29,14 +29,14 @@ public class ClassManagementService {
     // Permitir configuración de clase
     public Block configureClassBlockState(Integer blockId, String newStateStr) {
         Block targetBlock = blockRepo.findById(blockId)
-                .orElseThrow(() -> new RuntimeException("El bloque especificado no existe."));
+                .orElseThrow(() -> new IllegalArgumentException("El bloque especificado no existe."));
 
         try {
             Block.BlockState newState = Block.BlockState.valueOf(newStateStr.toUpperCase());
             targetBlock.blockState = newState;
             return blockRepo.save(targetBlock);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Estado de bloque inválido. Usa: NORMAL, NO_PROJECTIONS, COMPLETE_ANULED o REMOVED");
+            throw new IllegalArgumentException("Estado de bloque inválido. Usa: NORMAL, NO_PROJECTIONS, COMPLETE_ANULED o REMOVED");
         }
     }
 }

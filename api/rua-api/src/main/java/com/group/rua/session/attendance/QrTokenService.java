@@ -44,14 +44,14 @@ public class QrTokenService {
 
     //Decodificar código QR (Alumno)
 
-    public Attendance decodeQrAndRegisterAttendance(String content, Integer userId) {
+    public Attendance decodeQrAndRegisterAttendance(String content, String email) {
         QrToken qrToken = qrTokenRepo.findByContent(content)
-                .orElseThrow(() -> new RuntimeException("Código QR inválido o no encontrado."));
+                .orElseThrow(() -> new IllegalArgumentException("Código QR inválido o no encontrado."));
 
         if (LocalDateTime.now().isAfter(qrToken.expirationAt)) {
-            throw new RuntimeException("El código QR ha expirado.");
+            throw new IllegalArgumentException("El código QR ha expirado.");
         }
 
-        return attendanceService.registerManualAttendance(userId, qrToken.classEntity.classId, "PRESENT");
+        return attendanceService.registerManualAttendance(email, qrToken.classEntity.classId, "PRESENT");
     }
 }
