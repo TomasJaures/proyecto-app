@@ -29,3 +29,32 @@ Content-Type: application/json
 
 ### Remover una clase
 PATCH http://localhost:1428/api/calendars/blocks/1/remove
+
+### Ver clases de la semana actual (Suponiendo calendario ID 1)
+GET http://localhost:1428/api/calendar/1/classes
+Accept: application/json
+
+### Ver clases de una semana específica (Suponiendo semana 28)
+GET http://localhost:1428/api/calendar/1/classes/week/28
+Accept: application/json
+
+### Generar las clases de la semana actual
+POST http://localhost:1428/api/calendar/1/classes/generate
+
+### Guardar el historial de cambios del calendario (Batch)
+POST http://localhost:1428/api/calendar/1/changes
+Content-Type: application/json
+
+[
+  {
+    "action": "Add",
+    "day": "MON",
+    "startHour": "08:30:00",
+    "endHour": "09:40:00",
+    "moduleId": 5
+  },
+  {
+    "action": "Remove",
+    "blockId": 12
+  }
+]

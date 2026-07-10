@@ -1,5 +1,9 @@
 package com.group.rua.session.calendar;
 
+import com.group.rua.repositories.CalendarBlockRepository;
+import com.group.rua.entities.CalendarBlock;
+import com.group.rua.entities.CalendarBlockId;
+import java.util.Optional;
 import com.group.rua.repositories.BlockRepo;
 import com.group.rua.repositories.ClassesRepo;
 import com.group.rua.session.attendance.ClassInfoDTO;
@@ -23,10 +27,12 @@ public class CalendarService {
 
     private final ClassesRepo classesRepo;
     private final BlockRepo blockRepo;
+    private final CalendarBlockRepository calendarBlockRepo;
 
-    public CalendarService(ClassesRepo classesRepo, BlockRepo blockRepo) {
+    public CalendarService(ClassesRepo classesRepo, BlockRepo blockRepo,  CalendarBlockRepository calendarBlockRepo) {
         this.classesRepo = classesRepo;
         this.blockRepo = blockRepo;
+        this.calendarBlockRepo = calendarBlockRepo;
     }
 
     public CurrentCalendarClassesDTO getStudentCalendar(Integer calendarId) {
@@ -120,5 +126,67 @@ public class CalendarService {
             case SAT -> 6;
             case SUN -> 7;
         };
+    }
+
+    @Transactional
+    public void processScheduleChanges(Integer calendarId, List<ScheduleChangeDTO> changes) {
+        for (ScheduleChangeDTO change : changes) {
+            switch (change.getAction()) {
+                case "Add":
+                case "Clone":
+                    createNewBlock(calendarId, change);
+                    break;
+                case "Move":
+                    updateBlock(change);
+                    break;
+                case "Remove":
+                    removeBlock(calendarId, change.getBlockId());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Acción no reconocida: " + change.getAction());
+            }
+        }
+    }
+
+    private void createNewBlock(Integer calendarId, ScheduleChangeDTO change) {
+        Block newBlock = new Block();
+        newBlock.weekDay = Block.WeekDay.valueOf(change.getDay());
+        newBlock.startHour = LocalTime.parse(change.getStartHour());
+        newBlock.endHour = LocalTime.parse(change.getEndHour());
+        newBlock.moduleId = change.getModuleId();
+        newBlock.blockState = Block.BlockState.NORMAL;
+
+        Block savedBlock = blockRepo.save(newBlock);
+
+        CalendarBlockId cbId = new CalendarBlockId();
+        cbId.calendarId = calendarId;
+        cbId.blockId = savedBlock.blockId;
+
+        CalendarBlock cb = new CalendarBlock();
+        cb.id = cbId;
+        calendarBlockRepo.save(cb);
+    }
+
+    private void updateBlock(ScheduleChangeDTO change) {
+        Optional<Block> blockOpt = blockRepo.findById(change.getBlockId());
+        if (blockOpt.isPresent()) {
+            Block block = blockOpt.get();
+            block.weekDay = Block.WeekDay.valueOf(change.getDay());
+            block.startHour = LocalTime.parse(change.getStartHour());
+            block.endHour = LocalTime.parse(change.getEndHour());
+            block.moduleId = change.getModuleId();
+            block.blockState = Block.BlockState.NORMAL;
+
+            blockRepo.save(block);
+        }
+    }
+
+    private void removeBlock(Integer calendarId, Integer blockId) {
+        CalendarBlockId cbId = new CalendarBlockId();
+        cbId.calendarId = calendarId;
+        cbId.blockId = blockId;
+        calendarBlockRepo.deleteById(cbId);
+
+        blockRepo.deleteById(blockId);
     }
 }

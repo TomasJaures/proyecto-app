@@ -4,6 +4,8 @@ import com.group.rua.RuaConfig;
 import com.group.rua.session.attendance.CurrentCalendarClassesDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import com.group.rua.session.calendar.ScheduleChangeDTO;
 
 @RestController
 @RequestMapping("/api/calendar")
@@ -44,6 +46,19 @@ public class CalendarController {
             CurrentCalendarClassesDTO calendarData = calendarService.generateClassesForCurrentWeek(calendarId);
             return ResponseEntity.ok(calendarData);
         } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/{calendarId}/changes")
+    public ResponseEntity<Void> applyScheduleChanges(
+            @PathVariable Integer calendarId,
+            @RequestBody List<ScheduleChangeDTO> changes) {
+        try {
+            calendarService.processScheduleChanges(calendarId, changes);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            // por si el front envía un día mal escrito, una hora inválida o falla la base de datos
             return ResponseEntity.badRequest().build();
         }
     }
