@@ -46,4 +46,7 @@ public interface ClassesRepo extends JpaRepository<Classes, Integer> {
             @Param("calendarId") Integer calendarId,
             @Param("startOfWeek") LocalDate startOfWeek,
             @Param("endOfWeek") LocalDate endOfWeek);
+
+    boolean existsByBlockIdAndClassDate(Integer blockId, LocalDate classDate);
+
 }
