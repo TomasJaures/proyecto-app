@@ -1,9 +1,11 @@
 package com.group.rua.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+@JsonIgnoreProperties(ignoreUnknown = true, value = {"unconfirmedUserId"})
 @Entity
 @Table(name = "unconfirmed_user")
 public class UnconfirmedUser {

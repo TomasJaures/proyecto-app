@@ -15,7 +15,7 @@ public class AttendanceAlertService {
     private final JavaMailSender mailSender;
     private final UserRepo userRepo;
     private final ClassesRepo classesRepo;
-    private final String hostEmail = "ruaaplicacion@gmail.com";
+    private static final String HOST_EMAIL = "ruaaplicacion@gmail.com";
 
     public AttendanceAlertService(OpenRouterService openRouterService, JavaMailSender mailSender, UserRepo userRepo, ClassesRepo classesRepo) {
         this.openRouterService = openRouterService;
@@ -41,7 +41,7 @@ public class AttendanceAlertService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
 
-            helper.setFrom(hostEmail);
+            helper.setFrom(HOST_EMAIL);
             helper.setTo(student.mail);
             helper.setSubject("RUA - Alerta Temprana de Asistencia: " + classInfo.getSubjectName());
 

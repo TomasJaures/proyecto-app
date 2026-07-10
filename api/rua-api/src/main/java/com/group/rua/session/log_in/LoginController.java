@@ -26,17 +26,19 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-public ResponseEntity<Object> loginUser(@RequestBody User loginData) {
+    public ResponseEntity<Object> loginUser(@RequestBody LoginDTO loginData) {
 
-    boolean isAuthenticated = loginService.authenticate(loginData.mail, loginData.hashedPassword);
+        boolean isAuthenticated = loginService.authenticate(loginData.mail, loginData.hashedPassword);
 
-    if (!isAuthenticated) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas o correo no verificado.");
-    }
-    Optional<User> userOpt = userRepo.findByMail(loginData.mail);
+        if (!isAuthenticated) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas o correo no verificado.");
+        }
+
+        Optional<User> userOpt = userRepo.findByMail(loginData.mail);
         if (userOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Usuario inexistente");
         }
+
         User user = userOpt.get();
     
     Map<String, Object> response = new HashMap<>();

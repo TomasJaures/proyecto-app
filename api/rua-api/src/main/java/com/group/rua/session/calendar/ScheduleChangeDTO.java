@@ -9,7 +9,9 @@ public class ScheduleChangeDTO {
     private Integer blockId;
 
     // Constructores
-    public ScheduleChangeDTO() {}
+    public ScheduleChangeDTO() {
+        // Constructor vacío requerido para la deserialización de JSON por Spring Boot
+    }
 
     // Getters y Setters
     public String getAction() {

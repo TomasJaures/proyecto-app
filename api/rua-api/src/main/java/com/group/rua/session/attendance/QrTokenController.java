@@ -28,7 +28,7 @@ public class QrTokenController {
     }
 
     @PostMapping("/decode")
-    public ResponseEntity<?> decodeQr(@RequestParam String content, @RequestParam String email) {
+    public ResponseEntity<Object> decodeQr(@RequestParam String content, @RequestParam String email) {
         try {
             Attendance registeredAttendance = qrTokenService.decodeQrAndRegisterAttendance(content, email);
             return ResponseEntity.ok(registeredAttendance);

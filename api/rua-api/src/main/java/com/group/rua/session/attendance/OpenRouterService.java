@@ -19,7 +19,7 @@ public class OpenRouterService {
     private String apiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String API_URL = "https://openrouter.ai/api/v1/chat/completions";
+    private static final String API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
     public String generateAttendanceWarning(String studentName, String subjectName, double percentage) {
         HttpHeaders headers = new HttpHeaders();
@@ -56,7 +56,7 @@ public class OpenRouterService {
 
             return (String) messageContent.get("content");
         } catch (Exception e) {
-            throw new RuntimeException("Error al comunicarse con OpenRouter: " + e.getMessage());
+            throw new IllegalArgumentException("Error al comunicarse con OpenRouter: " + e.getMessage());
         }
     }
 }

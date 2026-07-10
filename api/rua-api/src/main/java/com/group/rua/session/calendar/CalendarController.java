@@ -5,7 +5,6 @@ import com.group.rua.session.attendance.CurrentCalendarClassesDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import com.group.rua.session.calendar.ScheduleChangeDTO;
 
 @RestController
 @RequestMapping("/api/calendar")

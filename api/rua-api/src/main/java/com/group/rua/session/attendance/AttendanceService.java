@@ -1,7 +1,6 @@
 package com.group.rua.session.attendance;
 
 import com.group.rua.entities.Attendance;
-import com.group.rua.entities.Classes;
 import com.group.rua.entities.User;
 import com.group.rua.repositories.AttendanceRepo;
 import com.group.rua.repositories.ClassesRepo;
@@ -10,7 +9,6 @@ import com.group.rua.repositories.UserRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AttendanceService {
@@ -30,17 +28,6 @@ public class AttendanceService {
     public ClassInfoDTO getClassInfoWithDetails(Integer blockId) {
         return classesRepo.findClassInfoByBlockId(blockId)
             .orElseThrow(() -> new IllegalArgumentException("No se encontró información detallada para el bloque: " + blockId));
-    }
-
-    public Classes getLastClassAsignedToBlock(Integer BlockId){
-        Optional<Classes> classesOpt = classesRepo.findByBlockId(BlockId);
-
-        if(classesOpt.isPresent()){
-            Classes c = classesOpt.get();
-            return c;
-        } else {
-            throw new RuntimeException("No hay clase con esa ID"); //FIXME: agregar expection personalizada
-        }
     }
 
     public List<PresentStudentDTO> getPresentStudentsWithDetails(Integer classId) {

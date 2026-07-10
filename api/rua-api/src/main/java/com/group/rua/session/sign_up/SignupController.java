@@ -1,5 +1,6 @@
 package com.group.rua.session.sign_up;
 
+
 import com.group.rua.RuaConfig;
 import com.group.rua.entities.UnconfirmedUser;
 import org.springframework.http.HttpStatus;
@@ -23,11 +24,19 @@ public class SignupController {
      * Registra un nuevo usuario (pendiente de verificación de correo).
      * Guarda en 'unconfirmed_user' hasta que el correo sea confirmado.
      *
-     * @param user : JSON con los datos del usuario (userName, lastName1, mail, hashedPassword, etc.)
+     * @param dto : JSON con los datos del usuario (userName, lastName1, mail, hashedPassword, etc.)
      * @return Redirección a email_sended
      */
     @PostMapping("/create")
-    public ResponseEntity<Void> createUser(@RequestBody UnconfirmedUser user) {
+    public ResponseEntity<Void> createUser(@RequestBody SignupDTO dto) {
+
+        UnconfirmedUser user = new UnconfirmedUser();
+        user.userName = dto.userName;
+        user.lastName1 = dto.lastName1;
+        user.lastName2 = dto.lastName2;
+        user.mail = dto.mail;
+        user.hashedPassword = dto.hashedPassword;
+
         signupService.createUser(user);
 
         URI uri = URI.create(RuaConfig.BACKEND_URL + "/account/email_sended");
@@ -62,18 +71,15 @@ public class SignupController {
     @GetMapping("/email_sended")
     public ResponseEntity<String> notifyEmailSended() {
         return ResponseEntity.ok("Te hemos enviado un EMAIL!! Revisa tu correo de SPAM");
-        //TODO: Añadir interfaz de FrontEnd.
     }
 
     @GetMapping("/confirmation_success")
     public ResponseEntity<String> confirmationSuccess() {
         return ResponseEntity.ok("Correo verificado correctamente! Puedes volver al Log In");
-        //TODO: Añadir interfaz de FrontEnd.
     }
 
     @GetMapping("/confirmation_fail")
     public ResponseEntity<String> confirmationFail() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hubo un problema con tu correo :(");
-        //TODO: Añadir interfaz de FrontEnd.
     }
 }
