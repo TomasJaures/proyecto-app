@@ -104,7 +104,10 @@ function EditarClase() {
     if (blockId) fetchClassInfo();
   }, [blockId]);
 
-  const hasPendingChanges = pendingAction !== null;
+  const hasPendingChanges =
+    savedClass.isCancelled !== pendingClass.isCancelled ||
+    savedClass.students.length !== pendingClass.students.length ||
+    pendingAction === "eliminacion";
 
   const handleAddStudent = (email) => {
     const namePart = email.split("@")[0];
@@ -133,11 +136,17 @@ function EditarClase() {
   };
 
   const handleToggleCancelClass = () => {
+    const newValue = !pendingClass.isCancelled;
+
     setPendingClass((prev) => ({
       ...prev,
-      isCancelled: !prev.isCancelled,
+      isCancelled: newValue,
     }));
-    setPendingAction("anulacion");
+
+    setPendingAction(
+      newValue === savedClass.isCancelled ? null : "anulacion"
+    );
+
     setShowCancelModal(false);
   };
 
@@ -186,7 +195,17 @@ function EditarClase() {
   };
 
   const menuItems = [
-    { emoji: "📋", label: "Generar código QR", action: () => navigate(`/docente/qr/${pendingClass.id}`), variant: "normal" },
+    {
+  emoji: "📋",
+  label: "Generar código QR",
+  action: () =>
+    navigate("/generadorqr", {
+      state: {
+        classId: pendingClass.id,
+      },
+    }),
+  variant: "normal",
+},
     { emoji: "➕", label: "Añadir alumno", action: () => setShowAddStudent(true), variant: "normal" },
     { emoji: pendingClass.isCancelled ? "▶" : "⊘", label: pendingClass.isCancelled ? "Des-anular clase" : "Anular clase", action: () => setShowCancelModal(true), variant: "normal" },
     { emoji: "👁", label: "Ver asistencia", action: () => navigate(`/asistenciaclase/${pendingClass.id}`), variant: "normal" },

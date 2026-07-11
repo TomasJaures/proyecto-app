@@ -5,6 +5,8 @@ import Navbar from "../components/Navbar.jsx";
 import Card from "../components/Card.jsx";
 import { useAuth } from "../hooks/useAuth.js";
 import { useCountdown } from "../hooks/useCountdown.js";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const QR_DURATION_SECONDS = 180;
 
@@ -13,18 +15,24 @@ function GeneradorQR() {
   const { user } = useAuth();
   const { minutes, seconds, isExpired, reset } = useCountdown(QR_DURATION_SECONDS);
 
-  const generateQrValue = useCallback(() => crypto.randomUUID(), []);
+  const [qrValue, setQrValue] = useState("");
+  const location = useLocation();
+  const { classId } = location.state || {};
+
+  useEffect(() => {
+    setQrValue(crypto.randomUUID());
+  }, []);
 
   useEffect(() => {
     generateQrValue();
   }, [generateQrValue]);
 
   const handleRegenerate = () => {
-    generateQrValue();
+    setQrValue(crypto.randomUUID());
     reset();
   };
 
-  const qrValue = generateQrValue();
+  
 
   return (
     <div className="pagina-qr">
