@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import Card from "../components/Card.jsx";
@@ -10,7 +10,7 @@ function AlumnoHorario() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const calendarId = user?.calendarId;
-
+  const [classInfo, setClassInfo] = useState([]);
   const [mode, setMode] = useState(null);
   const [courseName, setCourseName] = useState("");
   const [courseCode, setCourseCode] = useState("");
@@ -18,13 +18,45 @@ function AlumnoHorario() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
   useEffect(() => {
-    const fetchBlocks = async () => {
+    const fetchData = async () => {
       try {
         setIsLoading(true);
         setLoadError(null);
 
-        const { data } = await calendarApi.getBlocks(calendarId);
-        setBlocks(data);
+        const [blocksResponse, classesResponse] = await Promise.all([
+          calendarApi.getBlocks(calendarId),
+          calendarApi.getActualClasses(calendarId),
+        ]);
+
+        const blocks = blocksResponse.data;
+
+        const {
+          currentWeek,
+          classInfoDTOs,
+        } = classesResponse.data;
+
+        sessionStorage.setItem("currentWeek", currentWeek);
+
+        const updatedBlocks = blocks.map((block) => {
+          const info = classInfoDTOs.find(
+            (c) => c.blockId === block.id
+          );
+
+          if (!info) {
+            return block;
+          }
+
+          return {
+            ...block,
+            classId: info.classId,
+            isAnulled: info.isAnulled,
+            timeState: info.timeState,
+          };
+        });
+
+        setBlocks(updatedBlocks);
+        setClassInfo(classInfoDTOs);
+
       } catch (err) {
         setLoadError(err.message);
       } finally {
@@ -33,7 +65,7 @@ function AlumnoHorario() {
     };
 
     if (calendarId) {
-      fetchBlocks();
+      fetchData();
     }
   }, [calendarId]);
 
@@ -65,6 +97,7 @@ function AlumnoHorario() {
         setMode={setMode}
         className={courseName}
         courseCode={courseCode}
+        blocks={blocks}
       />
 
       <button className="boton-hub" onClick={() => navigate("/alumnohub")}>

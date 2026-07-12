@@ -11,7 +11,7 @@ const DAYS = [
   "Viernes", "Sábado", "Domingo",
 ];
 
-function Schedule({ mode, setMode, className: courseName, courseCode }) {
+function Schedule({ mode, setMode, className: courseName, courseCode, blocks, }) {
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
 

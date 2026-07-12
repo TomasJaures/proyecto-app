@@ -53,6 +53,14 @@ export const calendarApi = {
   getBlocks(calendarId) {
     return apiClient.get(`/api/calendars/${calendarId}/blocks`);
   },
+
+  getActualClasses(calendarId) {
+    return apiClient.get("/api/calendars/actualClasses", {
+      params: {
+        calendarId,
+      },
+    });
+  },
 };
 
 export const qrApi = {
