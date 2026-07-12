@@ -1,0 +1,59 @@
+{
+  "docenteHorario": {
+    "title": "Horario docente",
+    "sections": [
+      {
+        "title": "Generar QR",
+        "description": "Haz clic en el botón QR y selecciona una clase para generar su código."
+      },
+      {
+        "title": "Añadir clase",
+        "description": "Usa el menú Opciones → Añadir clase, completa los datos y selecciona una posición."
+      },
+      {
+        "title": "Clonar clase",
+        "description": "Selecciona la clase origen y luego el bloque destino."
+      },
+      {
+        "title": "Editar clase",
+        "description": "Haz doble clic sobre una clase o utiliza la opción Editar."
+      },
+      {
+        "title": "Mover clase",
+        "description": "Selecciona una clase y luego el nuevo bloque."
+      },
+      {
+        "title": "Eliminar clase",
+        "description": "Selecciona la clase y confirma la eliminación."
+      }
+    ]
+  },
+
+  "alumnoHorario": {
+    "title": "Horario alumno",
+    "sections": [
+      {
+        "title": "Visualizar horario",
+        "description": "Aquí puedes revisar todas tus clases."
+      },
+      {
+        "title": "Asistencia",
+        "description": "Los colores indican el estado de asistencia."
+      }
+    ]
+  },
+
+  "generadorQR": {
+    "title": "Generador QR",
+    "sections": [
+      {
+        "title": "Generar QR",
+        "description": "Selecciona una clase para generar un código QR temporal."
+      },
+      {
+        "title": "Validez",
+        "description": "El QR tiene una duración limitada."
+      }
+    ]
+  }
+}

@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import Card from "../components/Card.jsx";
 import Schedule from "../components/Schedule.jsx";
-import HelpButton from "../components/HelpButton.jsx";
-import Modal from "../components/Modal.jsx";
+
 import { useAuth } from "../hooks/useAuth.js";
 import { calendarApi } from "../services/apiService.js";
 
@@ -25,7 +24,7 @@ function DocenteHorario() {
   const [statusText, setStatusText] = useState("Seleccione acción");
   const [mode, setMode] = useState(null);
 
-  const [showHelp, setShowHelp] = useState(false);
+ 
   const [showClassForm, setShowClassForm] = useState(false);
   const [courseName, setCourseName] = useState("");
   const [courseCode, setCourseCode] = useState("");
@@ -78,7 +77,11 @@ function DocenteHorario() {
 
   return (
     <div>
-      <Navbar role="Docente" name={user?.name || "NoName"} />
+      <Navbar
+          role="Docente"
+          name={user?.name || "NoName"}
+          tutorial="docenteHorario"
+      />
 
       <div className="docente-contenido">
         <h1>Hola, {user?.name || "NoName"}</h1>
@@ -106,7 +109,7 @@ function DocenteHorario() {
             </div>
 
             <span className="texto-seleccion">{statusText}</span>
-            <HelpButton onClick={() => setShowHelp(true)} />
+            
           </div>
         </Card>
 
@@ -114,40 +117,7 @@ function DocenteHorario() {
         {loadError && <p className="horario-estado horario-error">{loadError}</p>}
       </div>
 
-      <Modal open={showHelp} onClose={() => setShowHelp(false)} title="¿Cómo usar RUA?">
-        <h3>Generar QR</h3>
-        <p>Haz clic en el botón QR y selecciona una clase para generar su código.</p>
-        <h3>Añadir clase</h3>
-        <p>Usa el menú Opciones → Añadir clase, completa los datos y selecciona posición.</p>
-        <h3>Clonar clase</h3>
-        <p>Opciones → Clonar: selecciona la clase origen y luego la posición destino.</p>
-        <h3>Editar clase</h3>
-        <p>Doble clic en cualquier clase del calendario, o Opciones → Editar.</p>
-        <h3>Mover clase</h3>
-        <p>Opciones → Mover: selecciona la clase y luego la nueva posición.</p>
-        <h3>Eliminar clase</h3>
-        <p>Opciones → Remover: selecciona la clase y confirma la eliminación.</p>
-      </Modal>
 
-      <Modal open={showClassForm} onClose={() => setShowClassForm(false)} title="Crear Clase">
-        <label>Código de la clase</label>
-        <input
-          type="text"
-          value={courseCode}
-          onChange={(e) => setCourseCode(e.target.value)}
-          placeholder="Ej: INF221"
-        />
-        <label>Nombre de la clase</label>
-        <input
-          type="text"
-          value={courseName}
-          onChange={(e) => setCourseName(e.target.value)}
-          placeholder="Ej: Programación"
-        />
-        <button className="btn-qr" onClick={handleContinueAddClass}>
-          Continuar
-        </button>
-      </Modal>
 
       <Schedule
         mode={mode}

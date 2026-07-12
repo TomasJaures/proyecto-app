@@ -72,7 +72,11 @@ function AlumnoHorario() {
 
   return (
     <div>
-      <Navbar role="Alumno" name={user?.name || "NoName"} />
+      <Navbar
+          role="Alumno"
+          name={user?.name}
+          tutorial="alumnoHorario"
+      />
 
       <div className="alumno-contenido">
         <Card>
