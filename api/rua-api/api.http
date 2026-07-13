@@ -78,3 +78,12 @@ Accept: application/json
 ### 400 Bad Request. Si ocurre un error al procesar la petición en la base de datos.
 GET http://localhost:1428/api/program/1/subjectsInfo
 Accept: application/json
+
+# EJ3: Persistir las modificaciones realizadas sobre el programa
+## ProgramController.applyProgramChanges()
+### guarda el historial de cambios (añadir, editar, eliminar) de asignaturas y módulos
+## Puede retornar:
+### 200 OK: Si todos los cambios se aplicaron exitosamente en la base de datos.
+### 400 Bad Request: Si falla la transacción o hay datos inconsistentes.
+POST http://localhost:1428/api/program/1/changes
+Accept: application/json

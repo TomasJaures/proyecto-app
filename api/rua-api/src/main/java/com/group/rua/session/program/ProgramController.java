@@ -26,4 +26,16 @@ public class ProgramController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PostMapping("/{programId}/changes")
+    public ResponseEntity<Void> applyProgramChanges(
+            @PathVariable Integer programId,
+            @RequestBody List<ProgramChangeDTO> changes) {
+        try {
+            programService.processProgramChanges(programId, changes);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

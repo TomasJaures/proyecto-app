@@ -53,4 +53,70 @@ public class ProgramService {
 
         return response;
     }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void processProgramChanges(Integer programId, List<ProgramChangeDTO> changes) {
+        for (ProgramChangeDTO change : changes) {
+            if ("Subject".equals(change.field)) {
+                handleSubjectChange(programId, change);
+            } else if ("Module".equals(change.field)) {
+                handleModuleChange(change);
+            }
+        }
+    }
+
+    private void handleSubjectChange(Integer programId, ProgramChangeDTO change) {
+        switch (change.action) {
+            case "Add":
+                Subject newSubject = new Subject();
+                newSubject.subjectName = change.newSubjectName;
+                newSubject.code = change.code;
+                Subject savedSubject = subjectRepo.save(newSubject);
+
+                com.group.rua.entities.ProgramSubjectId psId = new com.group.rua.entities.ProgramSubjectId();
+                psId.programId = programId;
+                psId.subjectId = savedSubject.subjectId;
+
+                ProgramSubject ps = new ProgramSubject();
+                ps.id = psId;
+                programSubjectRepo.save(ps);
+                break;
+
+            case "Edit":
+                subjectRepo.findById(change.subjectId).ifPresent(subject -> {
+                    subject.subjectName = change.newName;
+                    if (change.code != null) {
+                        subject.code = change.code;
+                    }
+                    subjectRepo.save(subject);
+                });
+                break;
+
+            case "Remove":
+                com.group.rua.entities.ProgramSubjectId deletePsId = new com.group.rua.entities.ProgramSubjectId();
+                deletePsId.programId = programId;
+                deletePsId.subjectId = change.subjectId;
+                programSubjectRepo.deleteById(deletePsId);
+                List<Module> modulesToDelete = moduleRepo.findBySubjectId(change.subjectId);
+                moduleRepo.deleteAll(modulesToDelete);
+
+                subjectRepo.deleteById(change.subjectId);
+                break;
+        }
+    }
+
+    private void handleModuleChange(ProgramChangeDTO change) {
+        switch (change.action) {
+            case "Add":
+                Module newModule = new Module();
+                newModule.subjectId = change.subjectId;
+                newModule.num = change.num;
+                moduleRepo.save(newModule);
+                break;
+
+            case "Remove":
+                moduleRepo.deleteById(change.moduleId);
+                break;
+        }
+    }
 }
