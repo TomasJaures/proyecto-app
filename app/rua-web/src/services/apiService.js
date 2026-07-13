@@ -67,6 +67,12 @@ export const qrApi = {
   scanQr(token) {
     return apiClient.post("/scanqr", { token });
   },
+
+  //DONE: QR debe recibir información del Backend para el UUID
+  getQr(classId){
+    console.log("DEBUG: Peticion realizada al Backend");
+    return apiClient.post("/api/qr/generate", null, { params: { classId: classId }});
+  }
 };
 
 export default apiClient;

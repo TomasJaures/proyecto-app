@@ -5,6 +5,8 @@ import Card from "../components/Card.jsx";
 import { useAuth } from "../hooks/useAuth.js";
 import { useCountdown } from "../hooks/useCountdown.js";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { authApi, qrApi } from "../services/apiService.js";
 
 const QR_DURATION_SECONDS = 180;
 
@@ -12,25 +14,27 @@ function GeneradorQR() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { minutes, seconds, isExpired, reset } = useCountdown(QR_DURATION_SECONDS);
+  const {classId} = useParams() || {};
+  const placeholderQR = "Cargando QR...";
 
   const [qrValue, setQrValue] = useState("");
   const location = useLocation();
-  const { classId } = location.state || {};
 
+  //Obtener UUID del QR apenas se abra la pagina
   useEffect(() => {
-    setQrValue(crypto.randomUUID());
-  }, []);
-
-  useEffect(() => {
-    generateQrValue();
-  }, [generateQrValue]);
-
-  const handleRegenerate = () => {
-    setQrValue(crypto.randomUUID());
-    reset();
-  };
-
-  
+    async function recieveQrUUID() {
+      try {
+        const response = await qrApi.getQr(classId);
+        setQrValue(response.data);
+        console.log("Se ha cargado el QR del backend correctamente: " + response.data)
+      } catch (error) {
+        console.log("No se ha recibido la informacion del backend")
+        setQrValue("CONTENIDO DE QR CAYO EN EL TRY CATCH!")
+      }
+      
+    }
+    recieveQrUUID();
+  }, [])
 
   return (
     <div className="pagina-qr">
@@ -38,18 +42,23 @@ function GeneradorQR() {
 
       <div className="contenedor-central">
         <Card className="card-qr">
-          <h1 className="titulo-clase">Programación Avanzada</h1>
+          
+          <h1 className="titulo-clase"> QR </h1> 
           <p className="texto-qr">
             Muestre este QR a los alumnos para registrar asistencia
           </p>
 
           <div className="zona-qr">
             {!isExpired ? (
-              <QRCode value={qrValue} size={220} />
+              qrValue ? (
+                <QRCode value={qrValue} size={220} />
+              ) : (
+                <h1 className="titulo-clase" > Cargando QR...</h1>
+              )
             ) : (
-              <button className="boton-regenerar" onClick={handleRegenerate}>
-                Regenerar QR
-              </button>
+              <h1>
+                  ...
+              </h1>
             )}
           </div>
 
