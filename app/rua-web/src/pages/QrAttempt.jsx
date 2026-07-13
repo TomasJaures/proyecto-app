@@ -1,171 +1,79 @@
 import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-
-import Navbar from "../components/navbar.jsx";
+import Navbar from "../components/Navbar.jsx";
+import { qrApi } from "../services/apiService.js";
 
 function QrAttempt() {
-
   const navigate = useNavigate();
-
   const scannerRef = useRef(null);
-
-  const [permisoDenegado, setPermisoDenegado] = useState(false);
+  const [permissionDenied, setPermissionDenied] = useState(false);
 
   useEffect(() => {
-
     const scanner = new Html5Qrcode("reader");
-
     scannerRef.current = scanner;
 
-    async function iniciarCamara() {
-
+    const startCamera = async () => {
       try {
-
         await scanner.start(
           { facingMode: "environment" },
-
-          {
-            fps: 10,
-            qrbox: 250
-          },
-
-          async (textoQR) => {
-
-            console.log("QR DETECTADO:", textoQR);
-
+          { fps: 10, qrbox: 250 },
+          async (qrText) => {
             try {
-
               await scanner.stop();
-
-              // enviar token al backend
-              await axios.post(
-                "http://localhost:3000/scanqr",
-                {
-                  token: textoQR
-                }
-              );
-
-              // redireccion futura
+              await qrApi.scanQr(qrText);
               navigate("/login");
-
             } catch (error) {
-
-              console.log(error);
-
+              console.error("QR processing error:", error);
             }
           },
-
-          () => {
-            // errores de lectura se ignoran
-          }
+          () => {}
         );
-
-      } catch (error) {
-
-        console.log(error);
-
-        setPermisoDenegado(true);
-
-      }
-    }
-
-    iniciarCamara();
-
-    return () => {
-
-      if (
-        scannerRef.current &&
-        scannerRef.current.isScanning
-      ) {
-
-        scannerRef.current
-          .stop()
-          .catch(() => {});
-
+      } catch {
+        setPermissionDenied(true);
       }
     };
 
-  }, []);
+    startCamera();
 
-  // ======== QR FAIL ========
+    return () => {
+      if (scannerRef.current?.isScanning) {
+        scannerRef.current.stop().catch(() => {});
+      }
+    };
+  }, [navigate]);
 
-  if (permisoDenegado) {
-
+  if (permissionDenied) {
     return (
-
       <div className="qr-page">
-
-        <Navbar
-          rol="Alumno"
-          nombre="Usuario"
-        />
-
+        <Navbar role="Alumno" name="Usuario" />
         <div className="qr-container">
-
           <div className="card qr-card">
-
-            <div className="qr-error-icon">
-              ❌
-            </div>
-
+            <div className="qr-error-icon">❌</div>
             <h1>Permiso denegado</h1>
-
-            <p>
-              Debes permitir acceso a la cámara
-              para escanear el QR.
-            </p>
-
-            <button
-              className="confirmar"
-              onClick={() => navigate("/alumnohub")}
-            >
+            <p>Debes permitir acceso a la cámara para escanear el QR.</p>
+            <button className="confirmar" onClick={() => navigate("/alumnohub")}>
               Volver al Hub
             </button>
-
           </div>
-
         </div>
-
       </div>
     );
   }
 
-  // ======== QR SUCCESS / ESCANEO ========
-
   return (
-
     <div className="qr-page">
-
-      <Navbar
-        rol="Alumno"
-        nombre="Usuario"
-      />
-
+      <Navbar role="Alumno" name="Usuario" />
       <div className="qr-container">
-
         <div className="card qr-card">
-
           <h1>Escanea el QR</h1>
-
-          <p>
-            Apunta tu cámara al código QR
-          </p>
-
-          <div id="reader"></div>
-
-          <button
-            className="confirmar cancelar"
-            onClick={() => navigate("/alumnohub")}
-          >
+          <p>Apunta tu cámara al código QR</p>
+          <div id="reader" />
+          <button className="confirmar cancelar" onClick={() => navigate("/alumnohub")}>
             Cancelar
           </button>
-
         </div>
-
       </div>
-
     </div>
   );
 }

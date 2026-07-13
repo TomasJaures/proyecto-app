@@ -1,66 +1,21 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Card from "../components/card.jsx";
-import RuaAside from "../components/rua-aside.jsx";
-import { useLocation } from "react-router-dom";
-import "../Styles/EditarClase.css";
-import axios from "axios";
-import { BACKEND_URL } from "../config.js";
+import Card from "../components/Card.jsx";
+import SidePanel from "../components/SidePanel.jsx";
+import MobileHeader from "../components/MobileHeader.jsx";
+import Modal from "../components/Modal.jsx";
+import AddStudentModal from "../components/AddStudentModal.jsx";
+import PendingChangesBar from "../components/PendingChangesBar.jsx";
+import "../styles/EditarClase.css";
+import { classApi } from "../services/apiService.js";
 
-
-// ─── Modal inline ─────────────────────────────────────────────────────────────
-function Modal({ open, onClose, title, children }) {
-  if (!open) return null;
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-caja" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2 className="modal-titulo">{title}</h2>
-          <button className="modal-cerrar" onClick={onClose}>✕</button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-// ─── Modal añadir alumno ──────────────────────────────────────────────────────
-function AddStudentModal({ open, onClose, onAdd }) {
-  const [email, setEmail] = useState("");
-  const [err, setErr] = useState("");
-
-  const handleClose = () => { setEmail(""); setErr(""); onClose(); };
-
-  const handleAdd = () => {
-    if (!email.trim()) { setErr("Ingresa un correo"); return; }
-    if (!email.includes("@")) { setErr("Correo inválido"); return; }
-    onAdd(email.trim());
-    setEmail(""); setErr("");
-  };
-
-  return (
-    <Modal open={open} onClose={handleClose} title="Añadir alumno">
-      <p className="modal-descripcion">
-        Ingresa el correo institucional del alumno a añadir.
-      </p>
-      <label>CORREO INSTITUCIONAL</label>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => { setEmail(e.target.value); setErr(""); }}
-        placeholder="alumno@ufromail.cl"
-      />
-      {err && <p className="error-texto">{err}</p>}
-      {/* Confirmar encola el cambio, no lo persiste aún */}
-      <button className="confirmar" onClick={handleAdd}>Confirmar</button>
-    </Modal>
-  );
-}
-
-// ─── Modal anular / des-anular clase ─────────────────────────────────────────
 function CancelClassModal({ open, onClose, onConfirm, isCancelled }) {
   return (
-    <Modal open={open} onClose={onClose} title={isCancelled ? "Des-anular clase" : "Anular clase"}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={isCancelled ? "Des-anular clase" : "Anular clase"}
+    >
       <p className="modal-descripcion">
         {isCancelled
           ? "¿Deseas reactivar esta clase? Se restaurará en el calendario normalmente."
@@ -68,19 +23,24 @@ function CancelClassModal({ open, onClose, onConfirm, isCancelled }) {
       </p>
       {!isCancelled && (
         <div className="alerta-info">
-          <p>La clase seguirá visible con indicador de anulada. Puedes reactivarla cuando quieras.</p>
+          <p>
+            La clase seguirá visible con indicador de anulada. Puedes
+            reactivarla cuando quieras.
+          </p>
         </div>
       )}
       <div className="acciones-row">
-        <button className="secundario" onClick={onClose}>Cancelar</button>
-        {/* Confirmar aquí encola el cambio de estado; el modal cierra y aparece la barra pendiente */}
-        <button className="confirmar" onClick={onConfirm}>Confirmar</button>
+        <button className="secundario" onClick={onClose}>
+          Cancelar
+        </button>
+        <button className="confirmar" onClick={onConfirm}>
+          Confirmar
+        </button>
       </div>
     </Modal>
   );
 }
 
-// ─── Modal eliminar clase ────────────────────────────────────────────────────
 function DeleteClassModal({ open, onClose, onConfirm, courseId }) {
   return (
     <Modal open={open} onClose={onClose} title="Eliminar clase">
@@ -92,87 +52,101 @@ function DeleteClassModal({ open, onClose, onConfirm, courseId }) {
         </p>
       </div>
       <div className="acciones-row">
-        <button className="secundario" onClick={onClose}>Cancelar</button>
-        {/* Confirmar encola la eliminación; se aplica solo al guardar */}
-        <button className="confirmar peligro" onClick={onConfirm}>Eliminar</button>
+        <button className="secundario" onClick={onClose}>
+          Cancelar
+        </button>
+        <button className="confirmar peligro" onClick={onConfirm}>
+          Eliminar
+        </button>
       </div>
     </Modal>
   );
 }
 
-// ─── Página principal ─────────────────────────────────────────────────────────
-// ─── Página principal Adaptada ─────────────────────────────────────────────────────────
+const EMPTY_CLASS = {
+  id: null,
+  courseId: "Cargando...",
+  name: "Buscando información de la clase...",
+  isCancelled: false,
+  students: [],
+};
+
 function EditarClase() {
   const { blockId } = useParams();
   const navigate = useNavigate();
 
-  // Estado que almacena la información oficial del Backend
-  const [savedCls, setSavedCls] = useState({
-    id: null,
-    courseId: "Cargando...",
-    name: "Buscando información de la clase...",
-    isCancelled: false,
-    students: [],
-  });
-
-  // Estado de trabajo local (cambios temporales)
-  const [pendingCls, setPendingCls] = useState(savedCls);
-  // Tipo de cambio pendiente para la barra: null | "alumno" | "anulacion" | "eliminacion"
+  const [savedClass, setSavedClass] = useState(EMPTY_CLASS);
+  const [pendingClass, setPendingClass] = useState(EMPTY_CLASS);
   const [pendingAction, setPendingAction] = useState(null);
 
-  const [showAddStudent, setShowAddStudent]   = useState(false);
+  const [showAddStudent, setShowAddStudent] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Petición al Backend con la nueva estructura del DTO
   useEffect(() => {
-    const obtenerInfoClase = async () => {
+    const fetchClassInfo = async () => {
       try {
-        const respuesta = await axios.get(`${BACKEND_URL}/api/attendance/class/${blockId}/getInfo`);
-        console.log("RESPUESTA DETALLADA:", respuesta.data);
-        
-        // Mapeamos los datos que llegan del DTO del backend a tu estructura del Front
-        const dataMapeada = {
-          id: respuesta.data.classId,          // classes.class_id
-          courseId: respuesta.data.code,       // subjects.code
-          name: respuesta.data.subjectName,    // subjects.subject_name
-          isCancelled: respuesta.data.isAnulled, // classes.is_anulled
-          students: [] // Inicialmente vacío o maneja su propia petición
+        const { data } = await classApi.getClassInfo(blockId);
+        const mapped = {
+          id: data.classId,
+          courseId: data.code,
+          name: data.subjectName,
+          isCancelled: data.isAnulled,
+          students: [],
         };
-
-        setSavedCls(dataMapeada);
-        setPendingCls(dataMapeada);
+        setSavedClass(mapped);
+        setPendingClass(mapped);
       } catch (error) {
-        console.log("ERROR AL OBTENER LA CLASE:", error);
-        // Opcional: redirigir a /error si no encuentra la clase o el bloque
+        console.error("Error fetching class info:", error);
       }
     };
 
-    if (blockId) {
-      obtenerInfoClase();
-    }
+    if (blockId) fetchClassInfo();
   }, [blockId]);
 
-  const hasPendingChanges = pendingAction !== null;
+  const hasPendingChanges =
+    savedClass.isCancelled !== pendingClass.isCancelled ||
+    savedClass.students.length !== pendingClass.students.length ||
+    pendingAction === "eliminacion";
 
-  // ── Handlers que encolan cambios locales ──────────────────────────────────────────
   const handleAddStudent = (email) => {
     const namePart = email.split("@")[0];
-    const name = namePart.split(".").map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(" ");
-    const nuevoAlumno = {
+    const formattedName = namePart
+      .split(".")
+      .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+      .join(" ");
+
+    const newStudent = {
       id: Date.now().toString(),
-      name,
+      name: formattedName,
       email,
-      date: new Date().toLocaleDateString("es-CL", { day: "numeric", month: "short", year: "numeric" }),
+      date: new Date().toLocaleDateString("es-CL", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }),
     };
-    setPendingCls((prev) => ({ ...prev, students: [...prev.students, nuevoAlumno] }));
+
+    setPendingClass((prev) => ({
+      ...prev,
+      students: [...prev.students, newStudent],
+    }));
     setPendingAction("alumno");
     setShowAddStudent(false);
   };
 
   const handleToggleCancelClass = () => {
-    setPendingCls((prev) => ({ ...prev, isCancelled: !prev.isCancelled }));
-    setPendingAction("anulacion");
+    const newValue = !pendingClass.isCancelled;
+
+    setPendingClass((prev) => ({
+      ...prev,
+      isCancelled: newValue,
+    }));
+
+    setPendingAction(
+      newValue === savedClass.isCancelled ? null : "anulacion"
+    );
+
     setShowCancelModal(false);
   };
 
@@ -181,116 +155,85 @@ function EditarClase() {
     setShowDeleteModal(false);
   };
 
-  // ── Guardar: Aplica los cambios de forma real en el backend ────────────────────────
-  const handleGuardar = async () => {
+  const handleSave = async () => {
     try {
       if (pendingAction === "eliminacion") {
-        // Ejemplo de petición DELETE real usando el id de clase obtenido
-        await axios.delete(`${BACKEND_URL}/api/classes/${pendingCls.id}`);
+        await classApi.deleteClass(pendingClass.id);
         alert("Clase eliminada exitosamente.");
         navigate("/docente");
         return;
       }
-      
+
       if (pendingAction === "anulacion") {
-        // Petición PATCH real para cambiar el estado de anulación
-        await axios.patch(`${BACKEND_URL}/api/classes/${pendingCls.id}/toggle-anular`, {
-          isAnulled: pendingCls.isCancelled
-        });
+        await classApi.toggleCancelClass(pendingClass.id, pendingClass.isCancelled);
         alert("El estado de la clase ha sido actualizado.");
       }
-      
+
       if (pendingAction === "alumno") {
-        // Enviar los alumnos encolados (tomamos el último añadido para el ejemplo)
-        const ultimoAlumno = pendingCls.students[pendingCls.students.length - 1];
-        await axios.post(`${BACKEND_URL}/api/classes/${pendingCls.id}/students`, {
-          email: ultimoAlumno.email
-        });
+        const lastStudent = pendingClass.students[pendingClass.students.length - 1];
+        await classApi.addStudentToClassById(pendingClass.id, lastStudent.email);
         alert("Alumno registrado en la clase.");
       }
 
-      // Sincronizamos el estado guardado con los cambios aceptados
-      setSavedCls(pendingCls);
+      setSavedClass(pendingClass);
       setPendingAction(null);
     } catch (error) {
-      console.error("Error al guardar los cambios:", error);
+      console.error("Error saving changes:", error);
       alert("Hubo un problema al conectar con el servidor al intentar guardar.");
     }
   };
 
-  // ── Cancelar: descarta el cambio y restaura el estado original del backend ────────────
-  const handleCancelar = () => {
-    setPendingCls(savedCls);
+  const handleCancel = () => {
+    setPendingClass(savedClass);
     setPendingAction(null);
   };
 
-  const mensajePendiente = {
-    alumno:      "⚠ Alumno encolado. Guarda para confirmar.",
-    anulacion:   `⚠ Clase marcada como ${pendingCls.isCancelled ? "anulada" : "activa"}. Guarda para confirmar.`,
+  const pendingMessages = {
+    alumno: "⚠ Alumno encolado. Guarda para confirmar.",
+    anulacion: `⚠ Clase marcada como ${pendingClass.isCancelled ? "anulada" : "activa"}. Guarda para confirmar.`,
     eliminacion: "⚠ Clase marcada para eliminar. Guarda para confirmar.",
-  }[pendingAction] ?? "";
+  };
 
   const menuItems = [
     {
-      emoji: "📋",
-      label: "Generar código QR",
-      action: () => navigate(`/docente/qr/${pendingCls.id}`),
-      variante: "normal",
-    },
-    {
-      emoji: "➕",
-      label: "Añadir alumno",
-      action: () => setShowAddStudent(true),
-      variante: "normal",
-    },
-    {
-      emoji: pendingCls.isCancelled ? "▶" : "⊘",
-      label: pendingCls.isCancelled ? "Des-anular clase" : "Anular clase",
-      action: () => setShowCancelModal(true),
-      variante: "normal",
-    },
-    {
-      emoji: "👁",
-      label: "Ver asistencia",
-      action: () => navigate(`/asistenciaclase/${pendingCls.id}`),
-      variante: "normal",
-    },
-    {
-      emoji: "✕",
-      label: "Eliminar clase",
-      action: () => setShowDeleteModal(true),
-      variante: "peligro",
-    },
+  emoji: "📋",
+  label: "Generar código QR",
+  action: () =>
+    navigate("/generadorqr", {
+      state: {
+        classId: pendingClass.id,
+      },
+    }),
+  variant: "normal",
+},
+    { emoji: "➕", label: "Añadir alumno", action: () => setShowAddStudent(true), variant: "normal" },
+    { emoji: pendingClass.isCancelled ? "▶" : "⊘", label: pendingClass.isCancelled ? "Des-anular clase" : "Anular clase", action: () => setShowCancelModal(true), variant: "normal" },
+    { emoji: "👁", label: "Ver asistencia", action: () => navigate(`/asistenciaclase/${pendingClass.id}`), variant: "normal" },
+    { emoji: "✕", label: "Eliminar clase", action: () => setShowDeleteModal(true), variant: "peligro" },
   ];
 
   return (
     <div className="pagina">
-      <RuaAside>Registro de asistencia universitaria</RuaAside>
+      <SidePanel>Registro de asistencia universitaria</SidePanel>
 
       <main className="derecha">
-        <div className="barra-mobile"><h1>RUA</h1></div>
+        <MobileHeader />
 
         <Card>
-          <h1>{pendingCls.courseId}</h1>
-          <p>{pendingCls.name}</p>
+          <h1>{pendingClass.courseId}</h1>
+          <p>{pendingClass.name}</p>
 
-          {pendingCls.isCancelled && (
+          {pendingClass.isCancelled && (
             <span className="badge-anulada">CLASE ANULADA</span>
           )}
 
           {hasPendingChanges && (
-            <div className={`barra-pendiente ${pendingAction === "eliminacion" ? "barra-pendiente-peligro" : ""}`}>
-              <span>{mensajePendiente}</span>
-              <div className="barra-pendiente-acciones">
-                <button className="secundario" onClick={handleCancelar}>Cancelar</button>
-                <button
-                  className={`confirmar ${pendingAction === "eliminacion" ? "peligro" : ""}`}
-                  onClick={handleGuardar}
-                >
-                  Guardar
-                </button>
-              </div>
-            </div>
+            <PendingChangesBar
+              message={pendingMessages[pendingAction] ?? ""}
+              onSave={handleSave}
+              onCancel={handleCancel}
+              variant={pendingAction === "eliminacion" ? "danger" : "warning"}
+            />
           )}
 
           <nav className="menu-clase">
@@ -298,9 +241,9 @@ function EditarClase() {
               <button
                 key={i}
                 onClick={item.action}
-                className={`menu-item ${item.variante === "peligro" ? "menu-item-peligro" : ""}`}
+                className={`menu-item ${item.variant === "peligro" ? "menu-item-peligro" : ""}`}
               >
-                <div className={`menu-item-icono ${item.variante === "peligro" ? "menu-item-icono-peligro" : ""}`}>
+                <div className={`menu-item-icono ${item.variant === "peligro" ? "menu-item-icono-peligro" : ""}`}>
                   {item.emoji}
                 </div>
                 <span className="menu-item-label">{item.label}</span>
@@ -324,13 +267,13 @@ function EditarClase() {
         open={showCancelModal}
         onClose={() => setShowCancelModal(false)}
         onConfirm={handleToggleCancelClass}
-        isCancelled={pendingCls.isCancelled}
+        isCancelled={pendingClass.isCancelled}
       />
       <DeleteClassModal
         open={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDeleteClass}
-        courseId={pendingCls.courseId}
+        courseId={pendingClass.courseId}
       />
     </div>
   );

@@ -1,111 +1,95 @@
-import RuaAside from "../components/rua-aside.jsx";
-import Card from "../components/card.jsx";
-import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
-import { BACKEND_URL, FRONTEND_URL } from "../config.js";
+import { Link, useNavigate } from "react-router-dom";
+import SidePanel from "../components/SidePanel.jsx";
+import Card from "../components/Card.jsx";
+import MobileHeader from "../components/MobileHeader.jsx";
+import { useAuth } from "../hooks/useAuth.js";
+import { authApi } from "../services/apiService.js";
+
+const ROLE_PLACEHOLDERS = {
+  estudiante: "ejemplo@ufromail.cl",
+  docente: "ejemplo@ufrontera.cl",
+};
 
 function LogIn() {
-  
   const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [role, setRole] = useState("docente");
   const [mail, setMail] = useState("");
-  const [hashedPassword, setClave] = useState("");
+  const [password, setPassword] = useState("");
 
-  async function onConfirmarClick() {
-
+  const handleSubmit = async () => {
     try {
+      const { data } = await authApi.login({ mail, hashedPassword: password });
+      login(data);
 
-      const respuesta = await axios.post(
-        BACKEND_URL + "/account/login",
-        {
-          mail: mail,
-          hashedPassword: hashedPassword
-        }
-      );
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify(respuesta.data)
-      );
-
-      const user = respuesta.data;
-
-      if (user.role === "student") {
+      if (data.role === "student") {
         navigate("/alumnohub");
       } else {
         navigate("/docentehub");
       }
-
     } catch (error) {
-      console.log("ERROR:", error);
+      console.error("Login error:", error);
     }
-  }
+  };
 
   return (
     <div className="pagina">
-      
-      <RuaAside>
-        Plataforma de registro de asistencia para la
-        Universidad de la Frontera.
+      <SidePanel>
+        Plataforma de registro de asistencia para la Universidad de la Frontera.
         Gestiona tu asistencia con facilidad.
-      </RuaAside>
+      </SidePanel>
 
-      {/* PANEL DERECHO */}
       <main className="derecha">
-
-        <div className="barra-mobile">
-          <h1>RUA</h1>
-        </div>
+        <MobileHeader />
 
         <Card>
-
           <h1>Log In</h1>
-
           <p>Ingresa con tus credenciales institucionales</p>
 
-          {/* BOTONES */}
           <div className="grupo-botones">
-
             <button
               onClick={() => setRole("estudiante")}
-              className={ role === "estudiante" ? "activo" : "inactivo" }
+              className={role === "estudiante" ? "activo" : "inactivo"}
             >
               Soy Alumno
             </button>
-
             <button
               onClick={() => setRole("docente")}
-              className={ role === "docente" ? "activo" : "inactivo" }
+              className={role === "docente" ? "activo" : "inactivo"}
             >
               Soy Docente
             </button>
-
           </div>
 
-          {/* INPUTS */}
-          <label>mail INSTITUCIONAL</label>
-
+          <label htmlFor="login-email">MAIL INSTITUCIONAL</label>
           <input
+            id="login-email"
             type="text"
-            placeholder={ role === "estudiante" ? "ejemplo@ufromail.cl" : "ejemplo@ufrontera.cl" }
+            placeholder={ROLE_PLACEHOLDERS[role]}
             value={mail}
-
             onChange={(e) => setMail(e.target.value)}
           />
 
-          <label>CLAVE RUA</label>
-
-          <input type="password" placeholder="••••••••"
-          value={hashedPassword}
-
-          onChange={(e) => setClave(e.target.value)}
+          <label htmlFor="login-password">CLAVE RUA</label>
+          <input
+            id="login-password"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button className="confirmar" onClick={onConfirmarClick}>Confirmar</button>
+          <button className="confirmar" onClick={handleSubmit}>
+            Confirmar
+          </button>
 
           <hr />
-          <p className="signup">¿No te has registrado aún?<a href="/signup"> Sign Up</a></p>
+          <p className="signup">
+            ¿No te has registrado aún?
+            <Link to="/signup"> Sign Up</Link>
+          </p>
         </Card>
       </main>
     </div>

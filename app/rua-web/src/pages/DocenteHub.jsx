@@ -1,85 +1,61 @@
-import Navbar from "../components/navbar";
-import Card from "../components/card";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar.jsx";
+import Card from "../components/Card.jsx";
+import AppFooter from "../components/AppFooter.jsx";
+import { useAuth } from "../hooks/useAuth.js";
 
-function Dashboard() {
+const DASHBOARD_ACTIONS = [
+  {
+    id: "subjects",
+    icon: "/assets/asistencia-iconwhite.svg",
+    label: "Asignaturas",
+    route: "/docenteadmin",
+    active: true,
+  },
+  {
+    id: "calendar",
+    icon: "/assets/tabla-icon.svg",
+    label: "Calendario",
+    route: "/docentehorario",
+    active: false,
+  },
+];
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  
+function DocenteHub() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const displayName = user?.name || "NoName";
 
-  
   return (
-
     <div className="dashboard-layout">
-
-      <Navbar
-        rol="Docente"
-        nombre={user?.name || "NoName"}
-      />
+      <Navbar role="Docente" name={displayName} />
 
       <main className="pagina-dashboard">
-
         <div className="bienvenida">
-
-          <h1>
-            Hola, {user?.name || "NoName"}
-          </h1>
-
-          <p>
-            Estás registrado como Docente.
-          </p>
-
+          <h1>Hola, {displayName}</h1>
+          <p>Estás registrado como Docente.</p>
         </div>
 
         <Card>
-            {/* BOTONES */}
-          <h2 className="titulo-dashboard">
-            Selecciona la opción que necesitas:
-          </h2>
-
+          <h2 className="titulo-dashboard">Selecciona la opción que necesitas:</h2>
           <div className="contenedor-botones">
-
-            <button className="boton-dashboard activo"
-            onClick={() => navigate("/docenteadmin")}
-            >
-
-              <img
-                src="/assets/asistencia-iconwhite.svg"
-                alt="Escaner"
-              />
-
-              <span>
-                Asignaturas
-              </span>
-
-            </button>
-
-            <button className="boton-dashboard" onClick={() => navigate("/docentehorario")}>
-
-              <img
-                src="/assets/tabla-icon.svg"
-                alt="Cursos"
-              />
-
-              <span>
-                Calendario
-              </span>
-
-            </button>
-
+            {DASHBOARD_ACTIONS.map((action) => (
+              <button
+                key={action.id}
+                className={`boton-dashboard ${action.active ? "activo" : ""}`}
+                onClick={() => navigate(action.route)}
+              >
+                <img src={action.icon} alt={action.label} />
+                <span>{action.label}</span>
+              </button>
+            ))}
           </div>
-
         </Card>
-
       </main>
 
-      <footer className="footer">
-        Sitio web no afiliado con la UFRO
-      </footer>
-
+      <AppFooter />
     </div>
   );
 }
 
-export default Dashboard;
+export default DocenteHub;
