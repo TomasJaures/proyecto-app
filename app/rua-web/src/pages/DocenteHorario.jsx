@@ -6,13 +6,14 @@ import Schedule from "../components/Schedule.jsx";
 
 import { useAuth } from "../hooks/useAuth.js";
 import { calendarApi } from "../services/apiService.js";
+import { calendarMockApi } from "../services/mockServices.js"
 
 const SCHEDULE_OPTIONS = [
   { label: "Añadir Clase", mode: null, isAddClass: true },
   { label: "Clonar Clase", mode: "clonar", hint: "Seleccione la clase que desea clonar" },
   { label: "Editar Clase", mode: "editar", hint: "Seleccione clase a editar" },
   { label: "Mover Clase", mode: "mover", hint: "Seleccione la clase que desea mover" },
-  { label: "Remover Clase", mode: "remover", hint: "Seleccione la clase que quiere remover" },
+  { label: "Remover Clase", mode: "remover", hint: "Seleccione la clase que quiere remover" }
 ];
 
 function DocenteHorario() {
@@ -38,7 +39,8 @@ function DocenteHorario() {
       try {
         setIsLoading(true);
         setLoadError(null);
-        const { data } = await calendarApi.getBlocks(calendarId);
+        const {data} = await calendarMockApi.getBlocks(calendarId);
+        //const { data } = await calendarApi.getBlocks(calendarId);
         setBlocks(data);
       } catch (err) {
         setLoadError(err.message);
@@ -89,7 +91,7 @@ function DocenteHorario() {
 
         <Card>
           <div className="acciones-docente">
-            <button className="btn-qr" onClick={() => navigate("/generadorqr")}>
+            <button className="btn-qr" onClick={() => handleOptionClick({mode: "qr", hint: "Seleccione la clase que quiere generar el QR"})}>
               Generar QR
             </button>
 
