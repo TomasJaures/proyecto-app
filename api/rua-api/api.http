@@ -58,3 +58,23 @@ Content-Type: application/json
     "blockId": 12
   }
 ]
+
+###
+# EJ1: Obtener asistencia de clases pasadas
+## CalendarController.getAttendanceByWeek()
+### Ver el estado de asistencia de las clases en una semana específica (Suponiendo calendario ID 1 y semana 28)
+## Puede retornar:
+### 200 OK con (List<WeekClassAttendanceInfoDTO>). Retorna el estado en el tiempo y si el alumno asistió.
+### 400 Bad Request. Si es que no se encuentra la información del calendario en la BD o los parámetros son nulos.
+GET http://localhost:1428/api/calendar/1/classesAttendance?weekId=28
+Accept: application/json
+
+###
+# EJ2: Obtener asignaturas asociadas a un programa
+## ProgramController.getProgramInfo()
+### Cargar las asignaturas y sus módulos relacionados a un usuario (según su programa)
+## Puede retornar:
+### 200 OK con (List<ProgramInfoDTO>). Retorna la lista de asignaturas y sus módulos. Si no tiene, retorna lista vacía.
+### 400 Bad Request. Si ocurre un error al procesar la petición en la base de datos.
+GET http://localhost:1428/api/program/1/subjectsInfo
+Accept: application/json
