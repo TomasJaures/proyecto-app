@@ -1,11 +1,9 @@
-import { useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useCallback, useState } from "react";
 import { QRCode } from "react-qr-code";
 import Navbar from "../components/Navbar.jsx";
 import Card from "../components/Card.jsx";
 import { useAuth } from "../hooks/useAuth.js";
 import { useCountdown } from "../hooks/useCountdown.js";
-import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const QR_DURATION_SECONDS = 180;

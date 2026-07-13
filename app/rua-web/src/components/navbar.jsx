@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
 import { useState } from "react";
-import HelpButton from "./HelpButton";
+import HelpButton from "./helpButton";
 import Modal from "./Modal";
 import tutorials from "../data/tutorials.json";
 
