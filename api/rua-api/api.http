@@ -30,6 +30,9 @@ Content-Type: application/json
 ### Remover una clase
 PATCH http://localhost:1428/api/calendars/blocks/1/remove
 
+###
+## Ejercicio 4: Obtener las clases de la semana asociadas a un calendario
+## CalendarController.getStudentCalendar
 ### Ver clases de la semana actual (Suponiendo calendario ID 1)
 GET http://localhost:1428/api/calendar/1/classes
 Accept: application/json

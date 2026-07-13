@@ -45,7 +45,8 @@ function Schedule({ mode, setMode, className: courseName, courseCode, blocks}) {
             code: block.code,
             name: block.subjectName,
             status: block.blockState === "NO_PROJECTIONS" ? "pendiente" : "confirmado",
-            blockId: block.blockId
+            blockId: block.blockId,
+            timeState: block.timeState
             //Añadir informacion que se puede ver en "mockServices.js" si se requiere mas
           };
         }
@@ -148,7 +149,7 @@ function Schedule({ mode, setMode, className: courseName, courseCode, blocks}) {
                 return (
                   <td key={colIndex} onClick={() => handleCellClick(rowIndex, colIndex)}>
                     {cls && (
-                      <ClassBlock code={cls.code} name={cls.name} status={cls.status} />
+                      <ClassBlock code={cls.code} name={cls.name} status={cls.status} timeState={cls.timeState}/>
                     )}
                   </td>
                 );

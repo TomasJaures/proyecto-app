@@ -6,6 +6,7 @@ import Schedule from "../components/Schedule.jsx";
 import { useAuth } from "../hooks/useAuth.js";
 import { calendarApi } from "../services/apiService.js";
 import { calendarMockApi } from "../services/mockServices.js";
+import { weekStorage } from "../services/storeService.js";
 
 function AlumnoHorario() {
   const navigate = useNavigate();
@@ -24,17 +25,40 @@ function AlumnoHorario() {
       try {
         setIsLoading(true);
         setLoadError(null);
-        const {data} = await calendarMockApi.getBlocks(calendarId);
-        //const { data } = await calendarApi.getBlocks(calendarId);
-        setBlocks(data);
+
+        const { mockBlocks: blocksData } = await calendarMockApi.getBlocks(calendarId);
+        const { mockClasses: classesData } = await calendarMockApi.getActualClasses(calendarId);
+        setBlocks(blocksData);
+        weekStorage.storeActualWeek(classesData.currentWeek); //Guardar semana actual
+        
+        const blocksMap = new Map();
+        blocksData.forEach(block => {
+          blocksMap.set(block.blockId, {
+            ...block,
+            color: "white"
+          });
+        });
+        
+        
+        // Colocar a los bloques un TimeState
+        const ci = classesData.classInfoDTOS;
+        for (let i = 0; i < ci.length; i++) {
+          const cb = blocksMap.get(ci[i].blockId);
+          cb.timeState = ci[i].timeState
+        }
+        
+        const blocksWithColor = Array.from(blocksMap.values());
+        setBlocks(blocksWithColor);
       } catch (err) {
-        setLoadError(err.message);
+        console.log("ERROR")
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (calendarId) fetchBlocks();
+    if (calendarId) {
+      fetchBlocks();
+    }
   }, [calendarId]);
 
 

@@ -23,11 +23,11 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/emailsended" element={<EmailSended />} />
         <Route path="/alumnohub" element={<AlumnoHub />} />
-        <Route path="/alumnohorario" element={<AlumnoHorario />} />
         <Route path="/qrattempt" element={<QrAttempt />} />
         <Route path="/docentehub" element={<DocenteHub />} />
         <Route path="/docenteadmin" element={<DocenteAdmin />} />
-        <Route path="/docentehorario" element={<DocenteHorario />} />
+        <Route path="/docentehorario/:calendarId" element={<DocenteHorario />} />
+        <Route path="/alumnohorario/:calendarId" element={<AlumnoHorario />} />
         <Route path="/generadorqr/:classId" element={<GeneradorQR />} />
         <Route path="/error" element={<FatalError />} />
         <Route path="/editarclase/:blockId" element={<EditarClase />} />

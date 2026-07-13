@@ -39,9 +39,9 @@ function DocenteHorario() {
       try {
         setIsLoading(true);
         setLoadError(null);
-        const {data} = await calendarMockApi.getBlocks(calendarId);
+        const {mockBlocks} = await calendarMockApi.getBlocks(calendarId);
         //const { data } = await calendarApi.getBlocks(calendarId);
-        setBlocks(data);
+        setBlocks(mockBlocks);
       } catch (err) {
         setLoadError(err.message);
       } finally {
