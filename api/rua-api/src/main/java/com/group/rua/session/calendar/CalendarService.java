@@ -1,5 +1,6 @@
 package com.group.rua.session.calendar;
 
+import com.group.rua.repositories.AttendanceRepo;
 import com.group.rua.repositories.CalendarBlockRepository;
 import com.group.rua.entities.CalendarBlock;
 import com.group.rua.entities.CalendarBlockId;
@@ -8,6 +9,7 @@ import com.group.rua.repositories.BlockRepo;
 import com.group.rua.repositories.ClassesRepo;
 import com.group.rua.session.attendance.ClassInfoDTO;
 import com.group.rua.session.attendance.CurrentCalendarClassesDTO;
+import com.group.rua.session.attendance.WeekClassAttendanceInfoDTO;
 import org.springframework.stereotype.Service;
 import com.group.rua.entities.Block;
 import com.group.rua.entities.Classes;
@@ -28,11 +30,13 @@ public class CalendarService {
     private final ClassesRepo classesRepo;
     private final BlockRepo blockRepo;
     private final CalendarBlockRepository calendarBlockRepo;
+    private final AttendanceRepo attendanceRepo;
 
-    public CalendarService(ClassesRepo classesRepo, BlockRepo blockRepo,  CalendarBlockRepository calendarBlockRepo) {
+    public CalendarService(ClassesRepo classesRepo, BlockRepo blockRepo,  CalendarBlockRepository calendarBlockRepo, AttendanceRepo attendanceRepo) {
         this.classesRepo = classesRepo;
         this.blockRepo = blockRepo;
         this.calendarBlockRepo = calendarBlockRepo;
+        this.attendanceRepo = attendanceRepo;
     }
 
     public CurrentCalendarClassesDTO getStudentCalendar(Integer calendarId) {
@@ -188,5 +192,35 @@ public class CalendarService {
         calendarBlockRepo.deleteById(cbId);
 
         blockRepo.deleteById(blockId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<WeekClassAttendanceInfoDTO> getWeeklyAttendanceStatus(Integer calendarId, Integer weekId) {
+
+        CurrentCalendarClassesDTO calendarData = getStudentCalendarByWeek(calendarId, weekId);
+        List<ClassInfoDTO> classesThisWeek = calendarData.getClassInfoDTOS();
+
+        List<WeekClassAttendanceInfoDTO> attendanceList = new ArrayList<>();
+
+        //asumimos que el Calendar ID es igual al User ID
+        Integer userId = calendarId;
+
+        for (ClassInfoDTO classInfo : classesThisWeek) {
+
+            // Le preguntamos a la BD si el usuario asistió a esta clase específica
+            boolean hasAssisted = attendanceRepo.existsByUserIdAndClassIdAndStatus(
+                    userId,
+                    classInfo.getClassId(),
+                    "PRESENT"
+            );
+
+            attendanceList.add(new WeekClassAttendanceInfoDTO(
+                    classInfo.getClassId(),
+                    classInfo.getTimeState(),
+                    hasAssisted
+            ));
+        }
+
+        return attendanceList;
     }
 }

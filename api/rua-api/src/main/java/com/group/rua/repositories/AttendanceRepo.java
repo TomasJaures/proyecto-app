@@ -28,4 +28,6 @@ public interface AttendanceRepo extends JpaRepository<Attendance, AttendanceId> 
 
     // para recopilar datos de asistencia manual (buscar si ya existe)
     Optional<Attendance> findByUserIdAndClassId(Integer userId, Integer classId);
+
+    boolean existsByUserIdAndClassIdAndStatus(Integer userId, Integer classId, String status);
 }
