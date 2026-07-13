@@ -1,5 +1,6 @@
 package com.group.rua.session.program;
 
+@SuppressWarnings("java:S1104")
 public class ProgramChangeDTO {
     public String field;
     public String action;

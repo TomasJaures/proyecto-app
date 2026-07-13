@@ -1,5 +1,6 @@
 package com.group.rua.session.attendance;
 
+@SuppressWarnings("java:S1104")
 public class PresentStudentDTO {
     public Integer userId;
     public String userName;

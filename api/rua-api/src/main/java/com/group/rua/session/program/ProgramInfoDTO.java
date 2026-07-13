@@ -3,6 +3,7 @@ package com.group.rua.session.program;
 import com.group.rua.entities.Module;
 import java.util.List;
 
+@SuppressWarnings("java:S1104")
 public class ProgramInfoDTO {
     public Integer subjectId;
     public String subjectName;

@@ -6,6 +6,7 @@ import com.group.rua.entities.Block.WeekDay;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@SuppressWarnings("java:S107")
 public class ClassInfoDTO {
     private Integer blockId;
     private BlockState blockState; // <-- ENUM

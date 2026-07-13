@@ -28,7 +28,7 @@ public class ProgramService {
 
         List<ProgramSubject> programSubjects = programSubjectRepo.findById_ProgramId(programId);
 
-        // i el usuario es nuevo y no tiene asignaturas, devuelve Ok con una lista vacía
+        // si el usuario es nuevo y no tiene asignaturas, devuelve Ok con una lista vacía
         if (programSubjects.isEmpty()) {
             return new ArrayList<>();
         }
@@ -102,6 +102,8 @@ public class ProgramService {
 
                 subjectRepo.deleteById(change.subjectId);
                 break;
+            default:
+                throw new IllegalArgumentException("Acción no reconocida: " + change.action);
         }
     }
 
@@ -117,6 +119,8 @@ public class ProgramService {
             case "Remove":
                 moduleRepo.deleteById(change.moduleId);
                 break;
+            default:
+                throw new IllegalArgumentException("Acción no reconocida: " + change.action);
         }
     }
 }
