@@ -64,13 +64,22 @@ export const calendarApi = {
 };
 
 export const qrApi = {
-  scanQr(token) {
-    return apiClient.post("/scanqr", { token });
+  scanQr(content, email) {
+    console.log("DEBUG: Peticion 'Escanear UUID del QR' realizada al Backend");
+    console.log("Contenido: \n\"content\": \"" + content + "\"\n\"email\": " + email + "\"");
+    return apiClient.post("/api/qr/decode", null, 
+      { params: 
+        {
+          content: content,
+          email: email //Debe llamarse email por el Backend
+        }
+      }
+    );
   },
 
   //DONE: QR debe recibir información del Backend para el UUID
   getQr(classId){
-    console.log("DEBUG: Peticion realizada al Backend");
+    console.log("DEBUG: Peticion 'Obtener UUID del QR' realizada al Backend");
     return apiClient.post("/api/qr/generate", null, { params: { classId: classId }});
   }
 };

@@ -41,22 +41,23 @@ public class LoginController {
 
         User user = userOpt.get();
     
-    Map<String, Object> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
 
-    response.put("id", user.userId);
-    response.put("name", user.userName);
-    response.put("lastName1", user.lastName1);
-    response.put("lastName2", user.lastName2);
-    response.put("programId", user.program.programId);
-    response.put("calendarId", user.calendar.calendarId);
+        response.put("id", user.userId);
+        response.put("name", user.userName);
+        response.put("mail", loginData.mail); //Añadido campo email, para su uso como localStorage en el Frontend.0¿00
+        response.put("lastName1", user.lastName1);
+        response.put("lastName2", user.lastName2);
+        response.put("programId", user.program.programId);
+        response.put("calendarId", user.calendar.calendarId);
 
-    if (loginData.mail.endsWith("@ufromail.cl")) {
-        response.put("role", "student");
-    } else {
-        response.put("role", "professor");
+        if (loginData.mail.endsWith("@ufromail.cl")) {
+            response.put("role", "student");
+        } else {
+            response.put("role", "professor");
+        }
+
+        return ResponseEntity.ok(response);
     }
-
-    return ResponseEntity.ok(response);
-}
 
 }
