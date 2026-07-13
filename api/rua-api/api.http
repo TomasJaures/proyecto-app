@@ -87,3 +87,13 @@ Accept: application/json
 ### 400 Bad Request: Si falla la transacción o hay datos inconsistentes.
 POST http://localhost:1428/api/program/1/changes
 Accept: application/json
+
+###
+# EJ4: Designar información académica a la Base de datos si un usuario escanea QR
+## QrTokenController.decodeQr()
+### Decodifica el QR, asigna asignaturas/bloques si el alumno es nuevo, y pasa asistencia.
+## Puede retornar:
+### 200 OK con Map (operated: boolean, attendance: Attendance).
+### 400 Bad Request. Si el código QR es inválido, expiró o no se encuentra el correo del usuario.
+POST http://localhost:1428/api/qr/decode?content=ingresa-uuid-del-token-aqui&email=alumno@ufromail.cl
+Accept: application/json

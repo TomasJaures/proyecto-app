@@ -3,8 +3,8 @@ package com.group.rua.session.unit.attendance;
 import com.group.rua.entities.Attendance;
 import com.group.rua.entities.Classes;
 import com.group.rua.entities.QrToken;
-import com.group.rua.repositories.ClassesRepo;
-import com.group.rua.repositories.QrTokenRepo;
+import com.group.rua.entities.User;
+import com.group.rua.repositories.*;
 import com.group.rua.session.attendance.AttendanceService;
 import com.group.rua.session.attendance.QrTokenService;
 import org.junit.jupiter.api.Test;
@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +32,22 @@ public class QrTokenServiceTest {
 
     @Mock
     private AttendanceService attendanceService;
+
+    // Nuevos repositorios inyectados para el Ejercicio 4
+    @Mock
+    private UserRepo userRepo;
+
+    @Mock
+    private CalendarBlockRepository calendarBlockRepo;
+
+    @Mock
+    private BlockRepo blockRepo;
+
+    @Mock
+    private ModuleRepo moduleRepo;
+
+    @Mock
+    private ProgramSubjectRepo programSubjectRepo;
 
     @InjectMocks
     private QrTokenService qrTokenService;
@@ -55,27 +72,37 @@ public class QrTokenServiceTest {
         verify(qrTokenRepo, times(1)).save(any(QrToken.class));
     }
 
-    // Verifica que un token válido registre la asistencia correctamente
+    // Verifica que un token válido registre la asistencia y valide la información académica
     @Test
     void decodeQrAndRegisterAttendance_Success() {
         Classes mockClass = new Classes();
         mockClass.classId = 10;
+        mockClass.blockId = 5;
 
         QrToken validToken = new QrToken();
         validToken.content = "valid-qr";
-        validToken.expirationAt = LocalDateTime.now().plusMinutes(5); // Aún vigente
+        validToken.expirationAt = LocalDateTime.now().plusMinutes(5);
         validToken.classEntity = mockClass;
 
         Attendance mockAttendance = new Attendance();
         mockAttendance.status = "PRESENT";
 
+        User mockUser = new User();
+        mockUser.userId = 1;
+
         when(qrTokenRepo.findByContent("valid-qr")).thenReturn(Optional.of(validToken));
+        when(userRepo.findByMail("alumno@ufromail.cl")).thenReturn(Optional.of(mockUser));
+
+        when(calendarBlockRepo.existsById(any())).thenReturn(true);
         when(attendanceService.registerManualAttendance("alumno@ufromail.cl", 10, "PRESENT")).thenReturn(mockAttendance);
 
-        Attendance result = qrTokenService.decodeQrAndRegisterAttendance("valid-qr", "alumno@ufromail.cl");
+        Map<String, Object> result = qrTokenService.decodeQrAndRegisterAttendance("valid-qr", "alumno@ufromail.cl");
 
         assertNotNull(result);
-        assertEquals("PRESENT", result.status);
+        assertFalse((Boolean) result.get("operated"));
+
+        Attendance returnedAttendance = (Attendance) result.get("attendance");
+        assertEquals("PRESENT", returnedAttendance.status);
     }
 
     // Verifica que el sistema rechace un token QR cuya fecha de expiración ya pasó
@@ -83,7 +110,7 @@ public class QrTokenServiceTest {
     void decodeQrAndRegisterAttendance_ExpiredToken_ThrowsException() {
         QrToken expiredToken = new QrToken();
         expiredToken.content = "expired-qr";
-        expiredToken.expirationAt = LocalDateTime.now().minusMinutes(1); // Expiró hace 1 minuto
+        expiredToken.expirationAt = LocalDateTime.now().minusMinutes(1);
 
         when(qrTokenRepo.findByContent("expired-qr")).thenReturn(Optional.of(expiredToken));
 
