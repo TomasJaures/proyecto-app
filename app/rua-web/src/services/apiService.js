@@ -75,6 +75,10 @@ export const calendarApi = {
         currentWeek
       }
     })
+  },
+
+  saveScheduleChanges(changesList) {
+    return apiClient.post("/api/calendars/save-changes", changesList);
   }
 };
 
