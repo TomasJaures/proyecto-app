@@ -71,7 +71,7 @@ function DocenteHorario() {
     try {
       setIsSaving(true);
       // Enviamos el array de cambios acumulados al Backend
-      await calendarApi.saveScheduleChanges(changesHistory);
+      await calendarApi.saveScheduleChanges(changesHistory, calendarId);
       
       alert("¡Horario guardado y sincronizado con éxito!");
       

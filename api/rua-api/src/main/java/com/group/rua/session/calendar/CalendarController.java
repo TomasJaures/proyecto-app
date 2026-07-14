@@ -28,7 +28,7 @@ public class CalendarController {
         }
     }
 
-    @GetMapping("/{calendarId}/classes")
+    @GetMapping("/{calendarId}/classesByWeek")
     public ResponseEntity<CurrentCalendarClassesDTO> getStudentCalendarByWeek(
             @PathVariable Integer calendarId,
             @RequestParam Integer weekId) {

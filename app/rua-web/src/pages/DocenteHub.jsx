@@ -4,28 +4,31 @@ import Card from "../components/Card.jsx";
 import AppFooter from "../components/AppFooter.jsx";
 import { useAuth } from "../hooks/useAuth.js";
 
-const DASHBOARD_ACTIONS = [
-  {
-    id: "subjects",
-    icon: "/assets/asistencia-iconwhite.svg",
-    label: "Asignaturas",
-    route: "/docenteadmin",
-    active: true,
-  },
-  {
-    id: "calendar",
-    icon: "/assets/tabla-icon.svg",
-    label: "Calendario",
-    route: "/docentehorario",
-    active: false,
-  },
-];
+
 
 function DocenteHub() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const displayName = user?.name || "NoName";
+  const calendarId = user?.calendarId || -1;
 
+
+  const DASHBOARD_ACTIONS = [
+    {
+      id: "subjects",
+      icon: "/assets/asistencia-iconwhite.svg",
+      label: "Asignaturas",
+      route: "/docenteadmin",
+      active: true,
+    },
+    {
+      id: "calendar",
+      icon: "/assets/tabla-icon.svg",
+      label: "Calendario",
+      route: `/docentehorario/${calendarId}`,
+      active: false,
+    },
+  ];
   return (
     <div className="dashboard-layout">
       <Navbar role="Docente" name={displayName} />

@@ -195,20 +195,10 @@ function EditarClase() {
   };
 
   const menuItems = [
-    {
-  emoji: "📋",
-  label: "Generar código QR",
-  action: () =>
-    navigate("/generadorqr", {
-      state: {
-        classId: pendingClass.id,
-      },
-    }),
-  variant: "normal",
-},
+    { emoji: "📋", label: "Generar código QR", action: () => navigate(`/generadorqr/${pendingClass.id || -1}`), variant: "normal", },
     { emoji: "➕", label: "Añadir alumno", action: () => setShowAddStudent(true), variant: "normal" },
     { emoji: pendingClass.isCancelled ? "▶" : "⊘", label: pendingClass.isCancelled ? "Des-anular clase" : "Anular clase", action: () => setShowCancelModal(true), variant: "normal" },
-    { emoji: "👁", label: "Ver asistencia", action: () => navigate(`/asistenciaclase/${pendingClass.id}`), variant: "normal" },
+    { emoji: "👁", label: "Ver asistencia", action: () => navigate(`/asistenciaclase/${pendingClass.id || -1}`), variant: "normal" },
     { emoji: "✕", label: "Eliminar clase", action: () => setShowDeleteModal(true), variant: "peligro" },
   ];
 

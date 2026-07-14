@@ -4,27 +4,30 @@ import Card from "../components/Card.jsx";
 import AppFooter from "../components/AppFooter.jsx";
 import { useAuth } from "../hooks/useAuth.js";
 
-const DASHBOARD_ACTIONS = [
-  {
-    id: "scan-qr",
-    icon: "/assets/qr-icon.svg",
-    label: "Escanear QR",
-    route: "/qrattempt",
-    active: true,
-  },
-  {
-    id: "view-attendance",
-    icon: "/assets/asistencia-icon.svg",
-    label: "Ver Asistencia",
-    route: "/alumnohorario",
-    active: false,
-  },
-];
+
 
 function AlumnoHub() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const displayName = user?.name || "NoName";
+  const calendarId = user?.calendarId || -1;
+
+  const DASHBOARD_ACTIONS = [
+    {
+      id: "scan-qr",
+      icon: "/assets/qr-icon.svg",
+      label: "Escanear QR",
+      route: "/qrattempt",
+      active: true,
+    },
+    {
+      id: "view-attendance",
+      icon: "/assets/asistencia-icon.svg",
+      label: "Ver Asistencia",
+      route: `/alumnohorario/${calendarId}`,
+      active: false,
+    },
+  ];
 
   return (
     <div className="dashboard-layout">

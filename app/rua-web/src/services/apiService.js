@@ -70,15 +70,15 @@ export const calendarApi = {
   },
 
   getCurrentClasses(calendarId, currentWeek){
-    return apiClient.get(`/api/calendar/${calendarId}/classes`, {
+    return apiClient.get(`/api/calendar/${calendarId}/classesByWeek`, {
       params: {
         currentWeek
       }
     })
   },
 
-  saveScheduleChanges(changesList) {
-    return apiClient.post("/api/calendars/save-changes", changesList);
+  saveScheduleChanges(changesList, calendarId) {
+    return apiClient.post(`/api/calendar/${calendarId}/changes`, changesList);
   }
 };
 

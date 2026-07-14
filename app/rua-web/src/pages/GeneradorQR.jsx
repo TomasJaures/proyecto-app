@@ -66,7 +66,7 @@ function GeneradorQR() {
             {minutes}:{seconds}
           </p>
 
-          <button className="boton-volver" onClick={() => navigate("/docentehorario")}>
+          <button className="confirmar" onClick={() => navigate(`/docentehorario/${user?.calendarId || -1}`)}>
             Volver
           </button>
         </Card>
