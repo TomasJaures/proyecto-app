@@ -31,15 +31,15 @@ function AlumnoHorario() {
       let attendanceData;
 
       if (isActual) {
-        const response = await calendarMockApi.getActualClasses(calendarId);
-        const attendance = await calendarMockApi.getActualAttendace(calendarId);
-        classesData = response.mockClasses;
-        attendanceData = attendance.mockAttendance;
+        const response = await calendarApi.getActualClasses(calendarId);
+        const attendance = await calendarApi.getActualAttendace(calendarId);
+        classesData = response.classes;
+        attendanceData = attendance.attendance;
       } else {
-        const response = await calendarMockApi.getCurrentClasses(calendarId, week);
-        const attendance = await calendarMockApi.getAttendanceByWeek(calendarId, week);
-        classesData = response.mockClasses;
-        attendanceData = attendance.mockAttendance;
+        const response = await calendarApi.getCurrentClasses(calendarId, week);
+        const attendance = await calendarApi.getAttendanceByWeek(calendarId, week);
+        classesData = response.classes;
+        attendanceData = attendance.attendance;
       }
 
       weekStorage.storeActualWeek(classesData.currentWeek);
@@ -103,12 +103,9 @@ function AlumnoHorario() {
       try {
         setIsLoading(true);
         setLoadError(null);
-
-        const { mockBlocks: blocksData } = await calendarMockApi.getBlocks(calendarId);
-        
+        const { blocks: blocksData } = await calendarApi.getBlocks(calendarId);
         if (weekOffset === 0) {
-          
-          const { mockClasses: classesData } = await calendarMockApi.getActualClasses(calendarId);
+          const { classes: classesData } = await calendarApi.getActualClasses(calendarId);
           await asignClassesWithBlocks(classesData.currentWeek, blocksData, true);
         } else {
           

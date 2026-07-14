@@ -51,8 +51,7 @@ export const classApi = {
 
 export const programApi = {
   getSubjects(programId){
-    //TODO: IMPLEMENTAR
-    //return apiClient.get()
+    return apiClient.get(`/api/program/${programId}/subjectsInfo`);
   }
 }
 
@@ -62,11 +61,11 @@ export const calendarApi = {
   },
 
   getActualClasses(calendarId) {
-    return apiClient.get("/api/calendars/actualClasses", {
-      params: {
-        calendarId,
-      },
-    });
+    return apiClient.get(`/api/calendars/${calendarId}/actualClasses`);
+  },
+
+  getActualAttendace(calendarId){
+    return apiClient.get(`/api/calendar/${calendarId}/classesAttendance`);
   },
 
   getCurrentClasses(calendarId, currentWeek){

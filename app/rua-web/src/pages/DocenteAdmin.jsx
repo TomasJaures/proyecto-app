@@ -4,6 +4,7 @@ import SubjectCard from "../components/SubjectCard.jsx";
 import Modal from "../components/Modal.jsx";
 import { useAuth } from "../hooks/useAuth.js";
 import { programMockApi } from "../services/mockServices.js";
+import { programApi } from "../services/apiService.js";
 
 function AddSubjectModal({ open, onClose, onAdd }) {
   const [name, setName] = useState("");
@@ -53,8 +54,8 @@ function DocenteAdmin() {
 
   async function getSubjectsInfo(programId) {
     try {
-      const { mockSubjects } = await programMockApi.getProgramInfo(programId); //TODO: Desmockear
-      return mockSubjects;
+      const { subjects: subjectDatas } = await programApi.getSubjects(programId);
+      return subjectDatas;
     } catch (error) {
       console.error(error);
       return [];
