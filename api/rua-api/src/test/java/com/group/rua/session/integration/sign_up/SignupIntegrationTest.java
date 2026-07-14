@@ -1,5 +1,6 @@
 package com.group.rua.session.integration.sign_up;
 
+import com.group.rua.RuaConfig;
 import com.group.rua.repositories.UnconfirmedUserRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ class SignupIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("http://localhost:1428/account/email_sended"));
+                .andExpect(redirectedUrl(RuaConfig.FRONTEND_URL + "/account/email_sended"));
 
         boolean existeEnBD = unconfirmedUserRepo.findByMail("jperez@ufromail.cl").isPresent();
         assertTrue(existeEnBD, "El usuario debería estar guardado en UnconfirmedUsers");

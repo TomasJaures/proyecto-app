@@ -1,6 +1,6 @@
 @RestController
 @RequestMapping("/account")
-@CrossOrigin(origins = "http://localhost:1427")
+@CrossOrigin(origins = "https://proyecto-app-sandy.vercel.app")
 public class LoginController {
 
     private final LoginService loginService;

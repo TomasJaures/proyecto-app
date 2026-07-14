@@ -13,8 +13,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class RuaConfig {
 
-    public static final String FRONTEND_URL = "http://localhost:1427";
-    public static final String BACKEND_URL = "http://localhost:1428";
+    public static final String FRONTEND_URL = "https://proyecto-app-sandy.vercel.app";
+    public static final String BACKEND_URL = "https://proyecto-app-sandy.vercel.app";
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -30,7 +30,7 @@ public class RuaConfig {
             public void addCorsMappings(CorsRegistry registry) {
 
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:1427")
+                        .allowedOrigins(FRONTEND_URL)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

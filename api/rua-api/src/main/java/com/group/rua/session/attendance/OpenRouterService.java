@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.group.rua.RuaConfig;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +27,7 @@ public class OpenRouterService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
-        headers.set("HTTP-Referer", "http://localhost:1428");
+        headers.set("HTTP-Referer", RuaConfig.BACKEND_URL);
 
         String prompt = String.format(
                 "Actúa como un coordinador académico formal, empático y proactivo. Redacta un correo electrónico breve dirigido al estudiante %s. El objetivo es informarle que su registro actual de asistencia en la clase de %s se encuentra en un %s%%, lo cual requiere su atención temprana.\n" +
