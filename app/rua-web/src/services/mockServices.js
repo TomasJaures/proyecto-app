@@ -267,3 +267,53 @@ export const calendarMockApi = {
     });
   }
 }
+
+export const programMockApi = {
+  getProgramInfo(programId){
+    return Promise.resolve({
+      mockSubjects : [
+      {
+        subjectId: 1,
+        subjectName: "Programación Orientada a Objetos",
+        code: "POO-201",
+        modules: [
+          {
+            moduleId: 10,
+            subjectId: 1,
+            num: 1
+          },
+          {
+            moduleId: 11,
+            subjectId: 1,
+            num: 2
+          },
+          {
+            moduleId: 12,
+            subjectId: 1,
+            num: 3
+          }
+        ]
+      },
+      {
+        subjectId: 2,
+        subjectName: "Bases de Datos I",
+        code: "BD-302",
+        modules: [  
+          {
+            moduleId: 20,
+            subjectId: 2,
+            num: 1
+          },
+          {
+            moduleId: 21,
+            subjectId: 2,
+            num: 2
+          }
+        ]
+      }
+    ]
+    })
+  }
+
+
+}

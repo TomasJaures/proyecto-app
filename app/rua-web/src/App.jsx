@@ -25,7 +25,7 @@ function App() {
         <Route path="/alumnohub" element={<AlumnoHub />} />
         <Route path="/qrattempt" element={<QrAttempt />} />
         <Route path="/docentehub" element={<DocenteHub />} />
-        <Route path="/docenteadmin" element={<DocenteAdmin />} />
+        <Route path="/docenteadmin/:programId" element={<DocenteAdmin />} />
         <Route path="/docentehorario/:calendarId" element={<DocenteHorario />} />
         <Route path="/alumnohorario/:calendarId" element={<AlumnoHorario />} />
         <Route path="/generadorqr/:classId" element={<GeneradorQR />} />

@@ -49,6 +49,13 @@ export const classApi = {
   },
 };
 
+export const programApi = {
+  getSubjects(programId){
+    //TODO: IMPLEMENTAR
+    //return apiClient.get()
+  }
+}
+
 export const calendarApi = {
   getBlocks(calendarId) {
     return apiClient.get(`/api/calendars/${calendarId}/blocks`);

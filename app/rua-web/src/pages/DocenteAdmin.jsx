@@ -1,13 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar.jsx";
 import SubjectCard from "../components/SubjectCard.jsx";
 import Modal from "../components/Modal.jsx";
 import { useAuth } from "../hooks/useAuth.js";
-
-const INITIAL_SUBJECTS = [
-  { id: 1, nombre: "Programación", codigo: "INF221", modulos: ["Introducción", "Estructuras de datos"] },
-  { id: 2, nombre: "Bases de Datos", codigo: "INF310", modulos: ["Modelo entidad relación"] },
-];
+import { programMockApi } from "../services/mockServices.js";
 
 function AddSubjectModal({ open, onClose, onAdd }) {
   const [name, setName] = useState("");
@@ -26,14 +22,17 @@ function AddSubjectModal({ open, onClose, onAdd }) {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
+
       <input
         placeholder="Código"
         value={code}
         onChange={(e) => setCode(e.target.value)}
       />
+
       <button className="confirmar" onClick={handleAdd}>
         Añadir
       </button>
+
       <button className="secundario" onClick={onClose}>
         Cancelar
       </button>
@@ -43,42 +42,92 @@ function AddSubjectModal({ open, onClose, onAdd }) {
 
 function DocenteAdmin() {
   const { user } = useAuth();
-  const [subjects, setSubjects] = useState(INITIAL_SUBJECTS);
+  const programId = user?.programId;
+
+  const [subjects, setSubjects] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [hasChanges, setHasChanges] = useState(false);
 
+
+  async function getSubjectsInfo(programId) {
+    try {
+      const { mockSubjects } = await programMockApi.getProgramInfo(programId); //TODO: Desmockear
+      return mockSubjects;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+
+  useEffect(() => {
+    async function loadSubjects() {
+      const data = await getSubjectsInfo(programId);
+
+      if (data) {
+        setSubjects(
+          data.map((subject) => ({
+            id: subject.subjectId,
+            nombre: subject.name,
+            codigo: subject.code,
+            modulos: subject.modules ?? []
+          }))
+        );
+      }
+    }
+
+    if (programId) {
+      loadSubjects();
+    }
+
+  }, [programId]);
+
+
   const handleAddSubject = (name, code) => {
     setSubjects((prev) => [
       ...prev,
-      { id: Date.now(), nombre: name, codigo: code, modulos: [] },
+      {
+        id: Date.now(),
+        nombre: name,
+        codigo: code,
+        modulos: []
+      }
     ]);
+
     setShowPopup(false);
     setHasChanges(true);
   };
 
+
   const handleDeleteSelected = () => {
     if (!window.confirm("¿Eliminar asignaturas seleccionadas?")) return;
-    setSubjects((prev) => prev.filter((s) => !selectedIds.includes(s.id)));
+
+    setSubjects((prev) =>
+      prev.filter((s) => !selectedIds.includes(s.id))
+    );
+
     setSelectedIds([]);
     setDeleteMode(false);
     setHasChanges(true);
   };
 
+
   return (
     <div className="pagina-asignaturas">
       <Navbar role="Docente" name={user?.name || "NoName"} />
-
       <div className="titulo-asignaturas">
         <h1>Gestionar asignaturas</h1>
       </div>
-
       <div className="toolbar">
-        <button onClick={() => setShowPopup(true)}>+ Añadir</button>
-        <button onClick={() => setDeleteMode(true)}>Eliminar</button>
+        <button onClick={() => setShowPopup(true)}>
+          + Añadir
+        </button>
+        <button onClick={() => setDeleteMode(true)}>
+          Eliminar
+        </button>
       </div>
-
       <div className="contenedor-asignaturas">
         {subjects.map((subject) => (
           <SubjectCard
@@ -92,20 +141,21 @@ function DocenteAdmin() {
           />
         ))}
       </div>
-
       {deleteMode && (
         <button className="confirmar-eliminar" onClick={handleDeleteSelected}>
           Confirmar eliminación
         </button>
       )}
-
       {hasChanges && (
         <div className="acciones-cambios">
-          <button>Guardar</button>
-          <button onClick={() => setHasChanges(false)}>Cancelar</button>
+          <button className="confirmar">
+            Guardar
+          </button>
+          <button className="confirmar" onClick={() => setHasChanges(false)}>
+            Cancelar
+          </button>
         </div>
       )}
-
       <AddSubjectModal
         open={showPopup}
         onClose={() => setShowPopup(false)}
@@ -114,5 +164,6 @@ function DocenteAdmin() {
     </div>
   );
 }
+
 
 export default DocenteAdmin;
