@@ -28,10 +28,10 @@ public class CalendarController {
         }
     }
 
-    @GetMapping("/{calendarId}/classes/week/{weekId}")
+    @GetMapping("/{calendarId}/classes")
     public ResponseEntity<CurrentCalendarClassesDTO> getStudentCalendarByWeek(
             @PathVariable Integer calendarId,
-            @PathVariable Integer weekId) {
+            @RequestParam Integer weekId) {
         try {
             CurrentCalendarClassesDTO calendarData = calendarService.getStudentCalendarByWeek(calendarId, weekId);
             return ResponseEntity.ok(calendarData);

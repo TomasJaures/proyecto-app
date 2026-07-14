@@ -20,6 +20,54 @@ function AlumnoHorario() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
 
+  // Controla el desplazamiento de semanas (0 = actual, -1 = anterior, etc.)
+  const [weekOffset, setWeekOffset] = useState(0);
+
+  const asignClassesWithBlocks = async (week, blocksData, isActual) => {
+    try {
+      setIsLoading(true);
+      setLoadError(null);
+
+      let classesData;
+
+      if (isActual) {
+        const response = await calendarMockApi.getActualClasses(calendarId);
+        classesData = response.mockClasses;
+      } else {
+        const response = await calendarMockApi.getCurrentClasses(calendarId, week);
+        classesData = response.mockClasses;
+      }
+
+      weekStorage.storeActualWeek(classesData.currentWeek);
+      console.log("Semana cargada:", classesData.currentWeek);
+
+      const blocksMap = new Map();
+      blocksData.forEach(block => {
+        blocksMap.set(block.blockId, {
+          ...block,
+          color: "white"
+        });
+      });
+      
+      // Colocar a los bloques su respectivo TimeState
+      const ci = classesData.classInfoDTOS || [];
+      for (let i = 0; i < ci.length; i++) {
+        const cb = blocksMap.get(ci[i].blockId);
+        if (cb) { 
+          cb.timeState = ci[i].timeState;
+        }
+      }
+      
+      const blocksWithColor = Array.from(blocksMap.values());
+      setBlocks(blocksWithColor);
+    } catch (error) {
+      console.error("ERROR en asignClassesWithBlocks:", error);
+      setLoadError("Error al procesar el horario de esta semana.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchBlocks = async () => {
       try {
@@ -27,30 +75,20 @@ function AlumnoHorario() {
         setLoadError(null);
 
         const { mockBlocks: blocksData } = await calendarMockApi.getBlocks(calendarId);
-        const { mockClasses: classesData } = await calendarMockApi.getActualClasses(calendarId);
-        setBlocks(blocksData);
-        weekStorage.storeActualWeek(classesData.currentWeek); //Guardar semana actual
         
-        const blocksMap = new Map();
-        blocksData.forEach(block => {
-          blocksMap.set(block.blockId, {
-            ...block,
-            color: "white"
-          });
-        });
-        
-        
-        // Colocar a los bloques un TimeState
-        const ci = classesData.classInfoDTOS;
-        for (let i = 0; i < ci.length; i++) {
-          const cb = blocksMap.get(ci[i].blockId);
-          cb.timeState = ci[i].timeState
+        if (weekOffset === 0) {
+          // Si el offset es 0, pedimos directamente la actual
+          const { mockClasses: classesData } = await calendarMockApi.getActualClasses(calendarId);
+          await asignClassesWithBlocks(classesData.currentWeek, blocksData, true);
+        } else {
+          // Si nos movimos en el tiempo, leemos la semana resultante calculada por tu 'weekStorage'
+          const targetWeek = weekStorage.getCurrentWeek(); 
+          await asignClassesWithBlocks(targetWeek, blocksData, false);
         }
-        
-        const blocksWithColor = Array.from(blocksMap.values());
-        setBlocks(blocksWithColor);
+
       } catch (err) {
-        console.log("ERROR")
+        console.error("ERROR en fetchBlocks:", err);
+        setLoadError("Error al cargar el horario de esta semana.");
       } finally {
         setIsLoading(false);
       }
@@ -59,8 +97,23 @@ function AlumnoHorario() {
     if (calendarId) {
       fetchBlocks();
     }
-  }, [calendarId]);
+  }, [calendarId, weekOffset]); 
 
+  // Funciones para navegar en el tiempo
+  const handlePrevWeek = () => {
+    weekStorage.subtractCurrentWeek(); 
+    setWeekOffset(prev => prev - 1);   
+  };
+  
+  const handleNextWeek = () => {
+    weekStorage.increaseCurrentWeek(); 
+    setWeekOffset(prev => prev + 1);   
+  };
+
+  const handleCurrentWeek = () => {
+    weekStorage.resetCurrentWeek();    
+    setWeekOffset(0);                  
+  };
 
   return (
     <div>
@@ -76,6 +129,18 @@ function AlumnoHorario() {
           <p>Estás registrado como Alumno.</p>
         </Card>
       </div>
+
+      {/* Selector de Semanas */}
+      <div className="semana-navegacion" style={{ display: "flex", justifyContent: "center", gap: "10px", margin: "15px 0" }}>
+        <button onClick={handlePrevWeek} className="boton-hub">← Semana Anterior</button>
+        <button onClick={handleCurrentWeek} disabled={weekOffset === 0} className="boton-hub">Semana Actual</button>
+        <button onClick={handleNextWeek} className="boton-hub">Semana Siguiente →</button>
+      </div>
+
+      <div style={{ textAlign: "center", fontStyle: "italic", marginBottom: "10px" }}>
+        {weekOffset === 0 ? "Mostrando Semana Actual" : `Desplazamiento: ${weekOffset} semana(s)`}
+      </div>
+
       {isLoading && (
         <p className="horario-estado">
           Cargando horario...

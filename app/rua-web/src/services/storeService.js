@@ -8,6 +8,11 @@ export const weekStorage = {
         }
     },
 
+    resetCurrentWeek(){
+        const actualWeek = Number(localStorage.getItem("actualWeek"));
+        localStorage.setItem("currentWeek", actualWeek)
+    },
+
     increaseCurrentWeek() {
         const currentWeek = Number(localStorage.getItem("currentWeek"));
         localStorage.setItem("currentWeek", currentWeek + 1);

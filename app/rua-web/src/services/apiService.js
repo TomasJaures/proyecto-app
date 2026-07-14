@@ -61,6 +61,14 @@ export const calendarApi = {
       },
     });
   },
+
+  getCurrentClasses(calendarId, currentWeek){
+    return apiClient.get(`/api/calendar/${calendarId}/classes`, {
+      params: {
+        currentWeek
+      }
+    })
+  }
 };
 
 export const qrApi = {
