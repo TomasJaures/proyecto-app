@@ -265,6 +265,70 @@ export const calendarMockApi = {
         ]
       }
     });
+  },
+
+  getActualAttendace(calendarId){
+    return Promise.resolve({
+      mockAttendance: [
+        {
+          classId: 101,
+          timeState: "PAST",
+          hasAssisted: true
+        },
+        { 
+          classId: 102,
+          timeState: "PAST",
+          hasAssisted: false
+        },
+        {
+          classId: 103,
+          timeState: "PRESENT",
+          hasAssisted: true
+        },
+        {
+          classId: 104,
+          timeState: "FUTURE",
+          hasAssisted: false
+        }
+      ]
+    });
+  },
+
+  getAttendanceByWeek(calendarId, currentWeek){
+    return Promise.resolve({
+      mockAttendance: [
+        {
+          classId: 101,
+          timeState: "PAST",
+          hasAssisted: true
+        },
+        {
+          classId: 102,
+          timeState: "PAST",
+          hasAssisted: false
+        },
+        {
+          classId: 103,
+          timeState: "PAST",
+          hasAssisted: true
+        },
+        {
+          classId: 104,
+          timeState: "PAST",
+          hasAssisted: true
+        },
+        {
+          classId: 105,
+          timeState: "PAST",
+          hasAssisted: true
+        },
+        {
+          classId: 106,
+          timeState: "PAST",
+          hasAssisted: true
+        }
+      ]
+    });
   }
 }
 

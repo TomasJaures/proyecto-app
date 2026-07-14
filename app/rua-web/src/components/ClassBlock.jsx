@@ -1,4 +1,4 @@
-function ClassBlock({ code, name, status, timeState }) {
+function ClassBlock({ code, name, status, timeState, color }) { // 1. Recibe 'color'
 
   const borderColor = {
     PAST: "blue",
@@ -10,7 +10,8 @@ function ClassBlock({ code, name, status, timeState }) {
     <div
       className={`bloque-clase ${status}`}
       style={{
-        border: `3px solid ${borderColor}`
+        border: `3px solid ${borderColor}`,
+        backgroundColor: color || "white" // 2. Aplica el color al fondo (por defecto blanco)
       }}
     >
       <strong>{code}</strong>
@@ -19,4 +20,4 @@ function ClassBlock({ code, name, status, timeState }) {
   );
 }
 
-export default ClassBlock;
+export default ClassBlock;  

@@ -20,7 +20,6 @@ function AlumnoHorario() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
 
-  // Controla el desplazamiento de semanas (0 = actual, -1 = anterior, etc.)
   const [weekOffset, setWeekOffset] = useState(0);
 
   const asignClassesWithBlocks = async (week, blocksData, isActual) => {
@@ -29,37 +28,68 @@ function AlumnoHorario() {
       setLoadError(null);
 
       let classesData;
+      let attendanceData;
 
       if (isActual) {
         const response = await calendarMockApi.getActualClasses(calendarId);
+        const attendance = await calendarMockApi.getActualAttendace(calendarId);
         classesData = response.mockClasses;
+        attendanceData = attendance.mockAttendance;
       } else {
         const response = await calendarMockApi.getCurrentClasses(calendarId, week);
+        const attendance = await calendarMockApi.getAttendanceByWeek(calendarId, week);
         classesData = response.mockClasses;
+        attendanceData = attendance.mockAttendance;
       }
 
       weekStorage.storeActualWeek(classesData.currentWeek);
       console.log("Semana cargada:", classesData.currentWeek);
-
+      console.log("Attendance data: ", attendanceData);
+    
       const blocksMap = new Map();
       blocksData.forEach(block => {
         blocksMap.set(block.blockId, {
           ...block,
-          color: "white"
+          color: "white",
+          timeState: null,
+          classId: null
         });
       });
       
-      // Colocar a los bloques su respectivo TimeState
+
       const ci = classesData.classInfoDTOS || [];
-      for (let i = 0; i < ci.length; i++) {
-        const cb = blocksMap.get(ci[i].blockId);
+      ci.forEach(classInfo => {
+        const cb = blocksMap.get(classInfo.blockId);
         if (cb) { 
-          cb.timeState = ci[i].timeState;
+          cb.timeState = classInfo.timeState;
+          cb.classId = classInfo.classId; 
         }
-      }
+      });
+
+      const attendanceMap = new Map();
+      const ad = attendanceData || [];
+      ad.forEach(att => {
+
+        attendanceMap.set(att.classId, att.hasAssisted);
+      });
+
+
+      blocksMap.forEach((block) => {
+        if (block.classId !== null) {
+          const hasAssisted = attendanceMap.get(block.classId);
+          
+          if (hasAssisted === true) {
+            block.color = "green";
+          } else if (hasAssisted === false) {
+            block.color = "red"; 
+          }
+        }
+      });
+      
       
       const blocksWithColor = Array.from(blocksMap.values());
       setBlocks(blocksWithColor);
+
     } catch (error) {
       console.error("ERROR en asignClassesWithBlocks:", error);
       setLoadError("Error al procesar el horario de esta semana.");
@@ -77,11 +107,11 @@ function AlumnoHorario() {
         const { mockBlocks: blocksData } = await calendarMockApi.getBlocks(calendarId);
         
         if (weekOffset === 0) {
-          // Si el offset es 0, pedimos directamente la actual
+          
           const { mockClasses: classesData } = await calendarMockApi.getActualClasses(calendarId);
           await asignClassesWithBlocks(classesData.currentWeek, blocksData, true);
         } else {
-          // Si nos movimos en el tiempo, leemos la semana resultante calculada por tu 'weekStorage'
+          
           const targetWeek = weekStorage.getCurrentWeek(); 
           await asignClassesWithBlocks(targetWeek, blocksData, false);
         }
@@ -99,7 +129,7 @@ function AlumnoHorario() {
     }
   }, [calendarId, weekOffset]); 
 
-  // Funciones para navegar en el tiempo
+  
   const handlePrevWeek = () => {
     weekStorage.subtractCurrentWeek(); 
     setWeekOffset(prev => prev - 1);   
