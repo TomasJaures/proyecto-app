@@ -49,14 +49,19 @@ class CalendarControllerTest {
 
     @Test
     void getStudentCalendarByWeek_ReturnsOk() throws Exception {
-        when(calendarService.getStudentCalendarByWeek(1, 28)).thenReturn(new CurrentCalendarClassesDTO());
-        mockMvc.perform(get("/api/calendar/1/classes/week/28")).andExpect(status().isOk());
+        when(calendarService.getStudentCalendarByWeek(1, 28))
+                .thenReturn(new CurrentCalendarClassesDTO());
+        mockMvc.perform(get("/api/calendar/1/classesByWeek")
+                .param("weekId", "28"))
+                .andExpect(status().isOk());
     }
 
     @Test
     void getStudentCalendarByWeek_ThrowsException_ReturnsBadRequest() throws Exception {
         when(calendarService.getStudentCalendarByWeek(1, 28)).thenThrow(new RuntimeException("Error"));
-        mockMvc.perform(get("/api/calendar/1/classes/week/28")).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/api/calendar/1/classesByWeek")
+                .param("weekId", "28"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
